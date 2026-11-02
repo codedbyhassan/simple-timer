@@ -2,6 +2,7 @@ import { useMemo, useState, useSyncExternalStore } from 'react'
 import { ArrowRight, CheckCircle2, FileCheck2, FileInput, Layers3, Plus, Search } from 'lucide-react'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from './claimsStore.js'
+import { getCareData, subscribeToCareData, updateCareData } from './careStore.js'
 import { getWorkspace, subscribeWorkspace, updateWorkspace } from '../admin/workspaceStore.js'
 import './ClaimsWorkspacePage.css'
 
@@ -44,6 +45,7 @@ export default function ClaimsWorkspacePage({ pageId, pageTitle }) {
   const canExport = hasPermission('claims.export')
   const canMap = hasPermission('claims.mapping.manage')
   const archive = useSyncExternalStore(subscribeToGeneratedClaims, getGeneratedClaimsSnapshot, getGeneratedClaimsSnapshot)
+  const care = useSyncExternalStore(subscribeToCareData, getCareData, getCareData)
   const workspace = useSyncExternalStore(subscribeWorkspace, getWorkspace, getWorkspace)
   const [batches, setBatches] = useState(() => readList(batchKey))
   const [imports, setImports] = useState(() => readList(importKey))
@@ -53,6 +55,7 @@ export default function ClaimsWorkspacePage({ pageId, pageTitle }) {
   const [mappingError, setMappingError] = useState('')
   const [editingMappingId, setEditingMappingId] = useState('')
   const [mappingEdit, setMappingEdit] = useState({ externalCode: '', note: '' })
+  const [mappingDrafts, setMappingDrafts] = useState({})
   const [importError, setImportError] = useState('')
   const [importNotice, setImportNotice] = useState('')
   const [search, setSearch] = useState('')
@@ -115,6 +118,25 @@ export default function ClaimsWorkspacePage({ pageId, pageTitle }) {
     updateWorkspace((current) => ({ ...current, mappings: [{ id: 'MAP-' + Date.now().toString(36).toUpperCase(), ...mappingForm, localCode: mappingForm.localCode.trim().toUpperCase(), externalCode: mappingForm.externalCode.trim().toUpperCase(), note: mappingForm.note.trim() }, ...current.mappings] }), { actor: 'Claims Officer', action: 'Reference mapping created', detail: mappingForm.localCode.trim() })
     setMappingForm({ localCode: '', system: 'G-DRG', externalCode: '', note: '' }); setMappingError('')
   }
+  const unmappedInventory = care.inventory.filter((item) => !item.claimCode)
+  const applyInventoryMapping = (item) => {
+    const externalCode = (mappingDrafts[item.id] || '').trim().toUpperCase()
+    if (!canMap || !externalCode) { setMappingError('Enter an official external code before applying this mapping.'); return }
+    updateCareData((current) => ({
+      ...current,
+      inventory: current.inventory.map((row) => row.id === item.id ? { ...row, claimCode: externalCode } : row),
+    }))
+    updateWorkspace((current) => ({
+      ...current,
+      mappings: [
+        { id: 'MAP-' + Date.now().toString(36).toUpperCase(), localCode: item.itemCode, system: item.department === 'laboratory' ? 'G-DRG' : 'NHIS medicine', externalCode, note: 'Applied from the claims mapping queue' },
+        ...(current.mappings || []),
+      ],
+    }), { actor: 'Claims Officer', action: 'Inventory claim code mapped', detail: item.itemCode })
+    setMappingDrafts((current) => ({ ...current, [item.id]: '' }))
+    setMappingError('')
+  }
+
   const saveMappingEdit = (event, mapping) => {
     event.preventDefault()
     if (!canMap || !mappingEdit.externalCode.trim()) return
@@ -133,6 +155,7 @@ export default function ClaimsWorkspacePage({ pageId, pageTitle }) {
   if (pageId === 'claims-mapping') return <section className="claims-workspace">
     {pageHeading(pageTitle, 'Maintain local reference mapping records for claim preparation. These mappings are not automatically applied to saved claim XML.')}
     <section className="claims-workspace-panel"><h2>Add reference mapping</h2><form className="claims-mapping-form" onSubmit={addMapping}><label><span>Local code</span><input value={mappingForm.localCode} onChange={(event) => setMappingForm({ ...mappingForm, localCode: event.target.value })} required placeholder="e.g. LAB-FBC"/></label><label><span>Target system</span><select value={mappingForm.system} onChange={(event) => setMappingForm({ ...mappingForm, system: event.target.value })}><option>G-DRG</option><option>ICD-10</option><option>NHIS medicine</option></select></label><label><span>External code</span><input value={mappingForm.externalCode} onChange={(event) => setMappingForm({ ...mappingForm, externalCode: event.target.value })} required placeholder="Official code"/></label><label><span>Note</span><input value={mappingForm.note} onChange={(event) => setMappingForm({ ...mappingForm, note: event.target.value })} placeholder="Optional validation note"/></label><button className="button button--primary" type="submit" disabled={!canMap}><Plus size={14}/> Add mapping</button></form>{mappingError && <p className="claims-workspace-error">{mappingError}</p>}</section>
+    <section className="claims-workspace-panel"><div className="claims-workspace-panel-heading"><div><h2>Unmapped catalogue items</h2><p>{unmappedInventory.length} inventory items still need a CLAIM-it code. Applying a code updates the item for future orders.</p></div></div><div className="claims-workspace-table-wrap"><table><thead><tr><th>Local item</th><th>Department</th><th>External code</th><th>Action</th></tr></thead><tbody>{unmappedInventory.map((item) => <tr key={item.id}><td><strong>{item.name}</strong><small>{item.itemCode}</small></td><td>{item.department === 'laboratory' ? 'Laboratory' : 'Pharmacy'}</td><td><input className="claims-inline-edit" value={mappingDrafts[item.id] || ''} onChange={(event) => setMappingDrafts((current) => ({ ...current, [item.id]: event.target.value }))} placeholder={item.department === 'laboratory' ? 'G-DRG code' : 'Medicine code'} /></td><td><button className="claims-text-action" type="button" disabled={!canMap} onClick={() => applyInventoryMapping(item)}>Apply code</button></td></tr>)}</tbody></table>{!unmappedInventory.length && <p className="claims-workspace-empty">All inventory items currently have a claim code assigned.</p>}</div>{mappingError && <p className="claims-workspace-error" role="alert">{mappingError}</p>}</section>
     <section className="claims-workspace-panel"><div className="claims-workspace-panel-heading"><div><h2>Configured mappings</h2><p>{workspace.mappings.length} mapping records in this browser.</p></div><label className="claims-workspace-search"><Search size={14}/><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search local or external code"/></label></div><div className="claims-workspace-table-wrap"><table><thead><tr><th>Local mapping</th><th>External code</th><th>Note</th><th>Action</th></tr></thead><tbody>{workspace.mappings.filter((item) => `${item.localCode} ${item.externalCode} ${item.system}`.toLowerCase().includes(search.toLowerCase())).map((item) => <tr key={item.id}><td><strong>{item.localCode}</strong><small>{item.system}</small></td><td>{editingMappingId === item.id ? <input className="claims-inline-edit" value={mappingEdit.externalCode} onChange={(event) => setMappingEdit({ ...mappingEdit, externalCode: event.target.value })}/> : item.externalCode}</td><td>{editingMappingId === item.id ? <input className="claims-inline-edit" value={mappingEdit.note} onChange={(event) => setMappingEdit({ ...mappingEdit, note: event.target.value })}/> : item.note || '—'}</td><td>{editingMappingId === item.id ? <><button className="claims-text-action" type="button" onClick={(event) => saveMappingEdit(event, item)}>Save</button><button className="claims-text-action" type="button" onClick={() => setEditingMappingId('')}>Cancel</button></> : <><button className="claims-text-action" type="button" disabled={!canMap} onClick={() => { setEditingMappingId(item.id); setMappingEdit({ externalCode: item.externalCode, note: item.note || '' }) }}>Edit</button><button className="claims-text-action" type="button" disabled={!canMap} onClick={() => removeMapping(item)}>Remove</button></>}</td></tr>)}</tbody></table>{!workspace.mappings.length && <p className="claims-workspace-empty">No reference mappings have been configured.</p>}</div></section>
   </section>
 
