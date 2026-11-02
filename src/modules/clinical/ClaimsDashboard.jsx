@@ -44,7 +44,7 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(value)
 }
 
-export default function ClaimsDashboard() {
+export default function ClaimsDashboard({ pageTitle = 'Claims' }) {
   const { hasPermission } = useRoleAccess()
   const canViewClaims = hasPermission('claims.view')
   const canExportClaims = hasPermission('claims.export')
@@ -69,7 +69,7 @@ export default function ClaimsDashboard() {
       <header className="claims-dashboard-heading">
         <div>
           <span className="claims-dashboard-eyebrow"><FileCheck2 size={15} /> Revenue cycle</span>
-          <h1 id="claims-dashboard-title">Claims</h1>
+          <h1 id="claims-dashboard-title">{pageTitle}</h1>
           <p>Browse saved claim sheets and their matching CLAIM-it XML by generation month.</p>
         </div>
         <span className="claims-local-badge">Local archive · not submitted</span>
