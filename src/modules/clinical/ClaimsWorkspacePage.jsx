@@ -1,5 +1,5 @@
 import { useMemo, useState, useSyncExternalStore } from 'react'
-import { ArrowDownToLine, ArrowRight, CheckCircle2, FileCheck2, FileInput, Layers3, Plus, Search, Settings2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2, FileCheck2, FileInput, Layers3, Plus, Search } from 'lucide-react'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from './claimsStore.js'
 import { getWorkspace, subscribeWorkspace, updateWorkspace } from '../admin/workspaceStore.js'
@@ -11,7 +11,6 @@ const readList = (key) => {
   try { const value = JSON.parse(localStorage.getItem(key) || '[]'); return Array.isArray(value) ? value : [] } catch { return [] }
 }
 const saveList = (key, value) => localStorage.setItem(key, JSON.stringify(value))
-const currency = (value) => new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS' }).format(value)
 const download = (name, content, type) => {
   const url = URL.createObjectURL(new Blob([content], { type }))
   const link = document.createElement('a')
