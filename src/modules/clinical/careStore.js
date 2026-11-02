@@ -9,6 +9,7 @@ const initialCareData = () => ({
   consultations: [],
   labOrders: [],
   prescriptions: [],
+  inventoryMovements: [],
   inventory: [
     { id: 'lab-stock-fbc', department: 'laboratory', itemCode: 'LAB-FBC', name: 'Full blood count', unit: 'tests', onHand: 18, reorderLevel: 5, trackStock: true, claimCode: '' },
     { id: 'lab-stock-glucose', department: 'laboratory', itemCode: 'LAB-FBG', name: 'Fasting blood glucose', unit: 'tests', onHand: 22, reorderLevel: 6, trackStock: true, claimCode: '' },
