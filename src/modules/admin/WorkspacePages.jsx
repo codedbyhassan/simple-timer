@@ -612,6 +612,7 @@ const pages = {
   'nursing-tasks': NursingTasksPage,
   'till-shift': TillShiftPage,
   refunds: RefundsPage,
+  'refund-approvals': RefundsPage,
   'shift-reconciliation': ShiftReconciliationPage,
   'price-list': PriceListPage,
   'hospital-profile': HospitalProfilePage,

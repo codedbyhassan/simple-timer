@@ -1,5 +1,24 @@
 :root {
-  font-family: 'Segoe UI Variable', 'Segoe UI', Arial, sans-serif;
+  --font-sans: 'Segoe UI Variable', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
+  --text-xs: 12px;
+  --text-sm: 13px;
+  --text-md: 14px;
+  --text-base: 15px;
+  --text-lg: 16px;
+  --text-xl: 20px;
+  --text-2xl: 26px;
+  --radius-control: 8px;
+  --radius-card: 12px;
+  --radius-section: 16px;
+  --radius-pill: 999px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  font-family: var(--font-sans);
   color: #172033;
   background: #ffffff;
   font-synthesis: none;

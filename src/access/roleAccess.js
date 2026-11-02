@@ -108,7 +108,7 @@ export const roleDefinitions = [
     groups: [
       group('Pharmacy', [
         item('pharmacy-queue', 'Prescription queue', 'pharmacy.queue.view', 'pharmacy', LayoutDashboard),
-        item('dispensing-panel', 'Dispensing panel', 'pharmacy.queue.view', 'pharmacy', Pill),
+        item('dispensing-panel', 'Dispensing panel', 'pharmacy.dispense', 'pharmacy', Pill),
         item('stock-alerts', 'Stock alerts', 'inventory.read', 'pharmacy', Bell),
         item('stock-levels', 'Stock levels', 'inventory.read', 'pharmacy', ReceiptText),
         item('formulary-mapping', 'Formulary mapping flags', 'pharmacy.mapping.view', 'pharmacy', FileCheck2),
@@ -124,7 +124,7 @@ export const roleDefinitions = [
     groups: [
       group('Cashier desk', [
         item('pending-charges', 'Pending charges', 'cashier.charges.view', 'finance', Wallet),
-        item('payments-receipts', 'Payment panel & receipts', 'cashier.charges.view', 'finance', ReceiptText),
+        item('payments-receipts', 'Payment panel & receipts', 'cashier.payment.record', 'finance', ReceiptText),
         item('till-shift', 'My till & shift', 'cashier.shift.view', 'workspace', ClipboardList),
         item('refunds', 'Refunds', 'cashier.refund.request', 'workspace', ReceiptText),
         item('shift-reconciliation', 'Shift reconciliation', 'cashier.reconcile', 'workspace', ChartNoAxesColumn),
@@ -166,6 +166,7 @@ export const roleDefinitions = [
       ]),
       group('Administration', [
         item('reports', 'Reports', 'admin.dashboard.view', 'reports', ChartNoAxesColumn),
+        item('refund-approvals', 'Refund approvals', 'cashier.refund.approve', 'workspace', ReceiptText),
         item('inventory-console', 'Inventory console', 'inventory.manage', 'pharmacy', ReceiptText),
         item('audit-viewer', 'Audit viewer', 'admin.audit.view', 'workspace', ClipboardList),
         item('sync-conflicts', 'Sync conflicts', 'admin.sync.review', 'workspace', Activity),
@@ -252,7 +253,7 @@ export const defaultRolePermissions = {
     'clinical.admissions.view', 'opd.queue.view',
   ],
   lab: [
-    'patient360.read', 'lab.worklist.view', 'lab.specimens.manage', 'lab.results.enter', 'lab.results.verify', 'lab.critical.view',
+    'patient360.read', 'lab.worklist.view', 'lab.specimens.manage', 'lab.results.enter', 'lab.results.verify', 'lab.critical.view', 'lab.catalogue.manage',
     'inventory.read',
   ],
   pharmacy: [

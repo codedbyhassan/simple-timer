@@ -64,9 +64,10 @@ function readRoleGrants() {
         ? saved[role.id].filter((permission) => typeof permission === 'string' && knownPermissions.has(permission))
         : [...(defaultRolePermissions[role.id] || [])],
     ]))
-    if (localStorage.getItem(GRANTS_SCHEMA_KEY) !== '3') {
+    if (localStorage.getItem(GRANTS_SCHEMA_KEY) !== '4') {
       grants['hospital-admin'] = [...new Set([...(grants['hospital-admin'] || []), 'cashier.refund.approve'])]
-      localStorage.setItem(GRANTS_SCHEMA_KEY, '3')
+      grants.lab = [...new Set([...(grants.lab || []), 'lab.catalogue.manage'])]
+      localStorage.setItem(GRANTS_SCHEMA_KEY, '4')
     }
     return grants
   } catch (error) {
