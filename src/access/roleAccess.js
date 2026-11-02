@@ -46,9 +46,9 @@ export const roleDefinitions = [
         item('reception-desk', 'Reception desk', 'reception.dashboard.view', 'front-desk', LayoutDashboard),
         item('appointments', 'Appointments', 'appointments.manage', 'front-desk', CalendarDays),
         item('patients', 'Patients', 'patients.directory', 'patients', Users),
-        item('documents', 'Documents', 'documents.manage', 'preview'),
+        item('documents', 'Documents', 'documents.manage', 'workspace'),
         item('opd-queue', 'OPD queue', 'opd.queue.manage', 'front-desk', ClipboardCheck),
-        item('claim-data-gaps', 'Claim data gaps', 'claims.gaps.view', 'preview', FileCheck2),
+        item('claim-data-gaps', 'Claim data gaps', 'claims.gaps.view', 'workspace', FileCheck2),
         item('payment-status', 'Payment status', 'payments.status.view', 'finance', Wallet),
       ]),
     ],
@@ -62,7 +62,7 @@ export const roleDefinitions = [
       group('Nursing', [
         item('triage-queue', 'Triage queue', 'nursing.triage', 'nursing', HeartPulse),
         item('ward-bed-board', 'Ward & bed board', 'ward.view', 'inpatient', BedDouble),
-        item('nursing-tasks', 'Nursing tasks', 'nursing.tasks', 'preview', ClipboardList),
+        item('nursing-tasks', 'Nursing tasks', 'nursing.tasks', 'workspace', ClipboardList),
         item('admission-requests', 'Admission requests', 'admission.request', 'inpatient', FileText),
         item('discharge-checklist', 'Discharge checklist', 'discharge.checklist', 'inpatient', CheckCheck),
         item('nurse-opd-queue', 'OPD queue', 'opd.queue.view', 'front-desk', ClipboardCheck),
@@ -125,10 +125,10 @@ export const roleDefinitions = [
       group('Cashier desk', [
         item('pending-charges', 'Pending charges', 'cashier.charges.view', 'finance', Wallet),
         item('payments-receipts', 'Payment panel & receipts', 'cashier.charges.view', 'finance', ReceiptText),
-        item('till-shift', 'My till & shift', 'cashier.shift.view', 'preview', ClipboardList),
-        item('refunds', 'Refunds', 'cashier.refund.request', 'preview', ReceiptText),
-        item('shift-reconciliation', 'Shift reconciliation', 'cashier.reconcile', 'preview', ChartNoAxesColumn),
-        item('price-list', 'Price list', 'prices.view', 'preview', FileText),
+        item('till-shift', 'My till & shift', 'cashier.shift.view', 'workspace', ClipboardList),
+        item('refunds', 'Refunds', 'cashier.refund.request', 'workspace', ReceiptText),
+        item('shift-reconciliation', 'Shift reconciliation', 'cashier.reconcile', 'workspace', ChartNoAxesColumn),
+        item('price-list', 'Price list', 'prices.view', 'workspace', FileText),
         item('billed-vs-claimed', 'Billed vs claimed', 'claims.summary.view', 'finance', FileCheck2),
       ]),
     ],
@@ -157,20 +157,21 @@ export const roleDefinitions = [
     groups: [
       group('Management', [
         item('management-dashboard', 'Management dashboard', 'admin.dashboard.view', 'management', LayoutDashboard),
-        item('hospital-profile', 'Hospital profile', 'admin.settings.manage', 'preview', UserRound),
+        item('hospital-profile', 'Hospital profile', 'admin.settings.manage', 'workspace', UserRound),
         item('departments-wards', 'Departments, wards, beds', 'admin.facilities.manage', 'inpatient', BedDouble),
         item('users-permissions', 'Users, roles, permissions', 'admin.permissions.manage', 'permissions', KeyRound),
-        item('service-catalogue', 'Service catalogue & prices', 'admin.catalogue.manage', 'preview', FileText),
-        item('reference-mappings', 'Reference mappings', 'admin.mappings.manage', 'preview', FileCheck2),
-        item('thresholds-settings', 'Thresholds & settings', 'admin.settings.manage', 'preview', Settings),
+        item('service-catalogue', 'Service catalogue & prices', 'admin.catalogue.manage', 'workspace', FileText),
+        item('reference-mappings', 'Reference mappings', 'admin.mappings.manage', 'workspace', FileCheck2),
+        item('thresholds-settings', 'Thresholds & settings', 'admin.settings.manage', 'workspace', Settings),
       ]),
       group('Administration', [
+        item('reports', 'Reports', 'admin.dashboard.view', 'reports', ChartNoAxesColumn),
         item('inventory-console', 'Inventory console', 'inventory.manage', 'pharmacy', ReceiptText),
-        item('audit-viewer', 'Audit viewer', 'admin.audit.view', 'preview', ClipboardList),
-        item('break-glass-review', 'Break-glass review', 'admin.breakglass.review', 'preview', ShieldAlert),
-        item('sync-conflicts', 'Sync conflicts', 'admin.sync.review', 'preview', Activity),
-        item('realtime-sla', 'Realtime SLA monitor', 'admin.monitor.view', 'preview', Activity),
-        item('backup-status', 'Backup status', 'admin.backup.view', 'preview', FileCheck2),
+        item('audit-viewer', 'Audit viewer', 'admin.audit.view', 'workspace', ClipboardList),
+        item('break-glass-review', 'Break-glass review', 'admin.breakglass.review', 'workspace', ShieldAlert),
+        item('sync-conflicts', 'Sync conflicts', 'admin.sync.review', 'workspace', Activity),
+        item('realtime-sla', 'Realtime SLA monitor', 'admin.monitor.view', 'workspace', Activity),
+        item('backup-status', 'Backup status', 'admin.backup.view', 'workspace', FileCheck2),
       ]),
     ],
   },
@@ -272,6 +273,7 @@ export const defaultRolePermissions = {
     'admin.dashboard.view', 'admin.settings.manage', 'admin.facilities.manage', 'admin.permissions.manage',
     'admin.catalogue.manage', 'admin.mappings.manage', 'inventory.read', 'inventory.manage', 'ward.view',
     'admin.audit.view', 'admin.breakglass.review', 'admin.sync.review', 'admin.monitor.view', 'admin.backup.view',
+    'cashier.refund.approve',
     'patient360.read',
   ],
 }
@@ -316,7 +318,8 @@ export function getPageRoute(page) {
 }
 
 export function getPageFromPath(pathname) {
-  if (/^\/patients\/[^/]+\/?$/.test(pathname)) return 'patient-detail'
+  const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
+  if (/^\/patients\/[^/]+$/.test(normalizedPath)) return 'patient-detail'
   const legacyPaths = {
     '/front-desk': 'opd-queue',
     '/nursing': 'triage-queue',
@@ -326,11 +329,11 @@ export function getPageFromPath(pathname) {
     '/claims': 'claims-pipeline',
     '/inpatient': 'ward-bed-board',
     '/finance': 'pending-charges',
-    '/reports': 'management-dashboard',
+    '/reports': 'reports',
     '/settings': 'thresholds-settings',
   }
-  if (legacyPaths[pathname]) return legacyPaths[pathname]
-  if (pathname === '/') return 'home'
+  if (legacyPaths[normalizedPath]) return legacyPaths[normalizedPath]
+  if (normalizedPath === '/') return 'home'
   const items = roleDefinitions.flatMap((role) => role.groups.flatMap((section) => section.items))
-  return items.find((entry) => entry.path === pathname)?.id || 'home'
+  return items.find((entry) => entry.path === normalizedPath)?.id || 'not-found'
 }

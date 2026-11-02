@@ -39,6 +39,7 @@ import { FinancePage, InpatientPage, ReportsPage } from './modules/operations/Op
 import PatientsPage from './modules/patients/PatientsPage.jsx'
 import { getDemoPatients, subscribeToDemoPatients } from './modules/patients/patientStore.js'
 import { ManagementDashboard, PermissionSettingsPage, RoleModulePreview } from './modules/role-workspaces/RoleWorkspacePages.jsx'
+import { WorkspacePage } from './modules/admin/WorkspacePages.jsx'
 
 const GRANTS_STORAGE_KEY = 'ascend-hms-preview-role-grants-v1'
 const THEME_STORAGE_KEY = 'hms-theme'
@@ -93,17 +94,21 @@ function App() {
     ).slice(0, 6)
     : []
 
-  const canOpenPage = useCallback((page) => page === 'patient-detail'
-    ? permissions.has('patient360.read')
-    : pageItems.some((item) => item.id === page), [permissions, pageItems])
+  const canOpenPage = useCallback((page) => page === 'not-found'
+    ? true
+    : page === 'patient-detail'
+      ? permissions.has('patient360.read')
+      : pageItems.some((item) => item.id === page), [permissions, pageItems])
 
-  const navigate = useCallback((page, { replace = false } = {}) => {
+  const navigate = useCallback((page, { replace = false, patientId = '' } = {}) => {
     const targetPage = page === 'home' || page === 'overview' ? homePage : page
     if (!canOpenPage(targetPage)) {
       setDialog('You do not have permission to open that workspace.')
       return
     }
-    const path = getPageRoute(targetPage)
+    const path = targetPage === 'patient-detail' && patientId
+      ? `/patients/${encodeURIComponent(patientId)}`
+      : getPageRoute(targetPage)
     if (window.location.pathname !== path) {
       if (replace) window.history.replaceState({}, '', path)
       else window.history.pushState({}, '', path)
@@ -156,6 +161,7 @@ function App() {
       if (pathname !== '/signin') window.history.replaceState({}, '', '/signin')
       return
     }
+    if (routePage === 'not-found') return
     if (canOpenPage(requestedPage)) {
       if (routePage === 'home') {
         window.history.replaceState({}, '', getPageRoute(homePage))
@@ -246,6 +252,19 @@ function App() {
     pageContent = <ManagementDashboard />
   } else if (pageKind === 'permissions') {
     pageContent = <PermissionSettingsPage />
+  } else if (pageKind === 'workspace') {
+    pageContent = <WorkspacePage pageId={activePage} />
+  } else if (activePage === 'not-found') {
+    pageContent = (
+      <section className="module-placeholder" aria-labelledby="not-found-title">
+        <span className="placeholder-icon"><CircleAlert size={20} /></span>
+        <h1 id="not-found-title">Page not found</h1>
+        <p>This address does not match a page in the current workspace.</p>
+        <div className="heading-actions">
+          <button className="button button--primary" type="button" onClick={() => navigate('home')}>Return to workspace</button>
+        </div>
+      </section>
+    )
   } else {
     pageContent = <RoleModulePreview title={pageTitle} roleName={selectedRoleNames.join(' + ')} />
   }

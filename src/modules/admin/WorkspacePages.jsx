@@ -177,7 +177,7 @@ function NursingTasksPage() {
     setForm({ patientId: '', type: 'Medication', detail: '', due: '' })
   }
   const addFromRx = (rx) => addRecord('nursingTasks', {
-    patientId: rx.patientId, type: 'Medication', detail: `${rx.medicineName || rx.name || 'Medicine'} ${rx.dosage || ''} ${rx.frequency || ''}`.trim(), due: '', status: 'Pending', prescriptionId: rx.id,
+    patientId: rx.patientId, type: 'Medication', detail: `${rx.medication || 'Medicine'} ${rx.dose || ''} ${rx.frequency || ''} ${rx.duration || ''}`.trim(), due: '', status: 'Pending', prescriptionId: rx.id,
   }, { actor, action: 'MAR task created', detail: rx.id })
   const complete = (t, status) => patchRecord('nursingTasks', t.id, { status, doneAt: new Date().toISOString(), doneBy: actor }, { actor, action: `Nursing task ${status.toLowerCase()}`, detail: t.detail })
   return (
@@ -195,7 +195,7 @@ function NursingTasksPage() {
         <Panel title="Dispensed medicines without a MAR task">
           <Table rows={dispensed.filter((rx) => !tasks.some((t) => t.prescriptionId === rx.id))} columns={[
             { label: 'Patient', render: (r) => r.patientName || name(r.patientId) },
-            { label: 'Medicine', render: (r) => r.medicineName || r.name || r.itemCode },
+            { label: 'Medicine', render: (r) => r.medication || r.medicineName || r.name || r.itemCode },
             { label: '', render: (r) => <button type="button" className="button" onClick={() => addFromRx(r)}>Add to MAR</button> },
           ]} />
         </Panel>
@@ -328,7 +328,7 @@ function RefundsPage() {
     setForm({ patientId: '', amount: '', reason: '' })
   }
   const decide = (r, status) => patchRecord('refunds', r.id, { status, decidedBy: actor, decidedAt: new Date().toISOString() }, { actor, action: `Refund ${status.toLowerCase()}`, detail: money(r.amount) })
-  const canApprove = hasPermission('cashier.reconcile') || hasPermission('admin.settings.manage')
+  const canApprove = hasPermission('cashier.refund.approve')
   return (
     <Shell eyebrow="Cashier" title="Refunds" description="Request refunds and record supervisor approval.">
       <Panel title="New refund request">
