@@ -11,7 +11,6 @@ import {
   Moon,
   Search,
   Settings,
-  ShieldAlert,
   Sun,
   UserRound,
   X,
@@ -165,6 +164,14 @@ function App() {
   useEffect(() => {
     if (!session) {
       if (pathname !== '/signin') window.history.replaceState({}, '', '/signin')
+      return
+    }
+    if (pathname === '/signin' || routePage === 'home') {
+      const destination = getPageRoute(homePage)
+      if (pathname !== destination) {
+        window.history.replaceState({}, '', destination)
+        window.dispatchEvent(new PopStateEvent('popstate'))
+      }
       return
     }
     if (routePage === 'not-found') return
@@ -355,10 +362,6 @@ function App() {
               </div>
             </div>
             <div className="topbar-actions">
-              <span className="connection-status" title="Workspace interface ready">Workspace ready</span>
-              <button className="break-glass-button" type="button" onClick={() => setDialog('Break-glass access requires an authenticated and audited emergency workflow. Contact the system administrator.')}>
-                <ShieldAlert size={15} /> <span>Break-glass</span>
-              </button>
               <div className="menu-anchor">
                 <button className="icon-button" type="button" aria-label="Notifications" aria-expanded={menu === 'notifications'} onClick={() => setMenu(menu === 'notifications' ? '' : 'notifications')}>
                   <Bell size={18} strokeWidth={1.8} />

@@ -13,7 +13,7 @@ function ToastCard({ toast, onDismiss }) {
   const Icon = config.icon
 
   useEffect(() => {
-    const timer = window.setTimeout(() => onDismiss(toast.id), 5000)
+    const timer = window.setTimeout(() => onDismiss(toast.id), 3000)
     return () => window.clearTimeout(timer)
   }, [toast.id, onDismiss])
 
