@@ -1,0 +1,125 @@
+.toast-viewport {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  z-index: 100;
+  display: flex;
+  width: min(390px, calc(100vw - 32px));
+  flex-direction: column;
+  align-items: stretch;
+  gap: 9px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.app-toast {
+  display: flex;
+  min-height: 76px;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 15px;
+  background: #202023;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+  color: #f5f5f6;
+  pointer-events: auto;
+  animation: toast-enter 180ms ease-out;
+}
+
+.app-toast--info {
+  background: #202023;
+}
+
+.app-toast--error {
+  background: #3a2024;
+}
+
+.app-toast--success {
+  background: #243425;
+}
+
+.app-toast-icon {
+  display: grid;
+  width: 25px;
+  flex: 0 0 25px;
+  place-items: center;
+}
+
+.app-toast--info .app-toast-icon {
+  color: #f4f4f5;
+}
+
+.app-toast--error .app-toast-icon {
+  color: #ff5a63;
+}
+
+.app-toast--success .app-toast-icon {
+  color: #a4ff64;
+}
+
+.app-toast-copy {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.app-toast-copy strong {
+  color: #f6f6f7;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.app-toast-copy > span {
+  color: #c4c4c8;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.app-toast-action,
+.app-toast-close {
+  display: inline-flex;
+  min-height: 34px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.09);
+  color: #ededee;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.app-toast-close {
+  width: 30px;
+  padding: 0;
+}
+
+.app-toast-action:hover,
+.app-toast-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@keyframes toast-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  .toast-viewport {
+    top: 12px;
+    width: calc(100vw - 24px);
+  }
+}

@@ -1,0 +1,2032 @@
+[
+  {
+    "code": "ARTLUMDT1",
+    "description": "Artemether + Lumefantrine Dispersible, (20 mg + 120 mg) Tablet",
+    "pack": "6 Tablets",
+    "nhisPrice": 2.0,
+    "category": "A"
+  },
+  {
+    "code": "ARTLUMSU1",
+    "description": "Artemether + Lumefantrine Suspension, (Powder For Reconstitution) 20 m",
+    "pack": "100 mL",
+    "nhisPrice": 8.0,
+    "category": "A"
+  },
+  {
+    "code": "ARTLUMTA1",
+    "description": "Artemether + Lumefantrine Tablet, 20 mg + 120 mg (24's)",
+    "pack": "1 Course",
+    "nhisPrice": 3.5,
+    "category": "A"
+  },
+  {
+    "code": "ARTESUIN1",
+    "description": "Artesunate Injection, 30 mg",
+    "pack": "Vial",
+    "nhisPrice": 7.0,
+    "category": "B2"
+  },
+  {
+    "code": "ARTESUIN2",
+    "description": "Artesunate Injection, 60 mg",
+    "pack": "Vial",
+    "nhisPrice": 9.0,
+    "category": "B2"
+  },
+  {
+    "code": "ARTESURE1",
+    "description": "Artesunate Suppository, 50 mg",
+    "pack": "Supp.",
+    "nhisPrice": 2.5,
+    "category": "A"
+  },
+  {
+    "code": "ARTESURE2",
+    "description": "Artesunate Suppository, 200 mg",
+    "pack": "Supp.",
+    "nhisPrice": 3.33,
+    "category": "A"
+  },
+  {
+    "code": "ATEHYDTA1",
+    "description": "Atenolol + Hydrochlorothiazide Tablet, 50 mg + 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.5,
+    "category": "B2"
+  },
+  {
+    "code": "ATEHYDTA2",
+    "description": "Atenolol + Hydrochlorothiazide Tablet, 100 mg + 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 3.0,
+    "category": "B2"
+  },
+  {
+    "code": "ATENOLIN1",
+    "description": "Atenolol Injection, 500 microgram/10 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 9.75,
+    "category": "D"
+  },
+  {
+    "code": "ATENOLTA1",
+    "description": "Atenolol Tablet, 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.13,
+    "category": "B2"
+  },
+  {
+    "code": "ATENOLTA2",
+    "description": "Atenolol Tablet, 50 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.2,
+    "category": "B2"
+  },
+  {
+    "code": "ATENOLTA3",
+    "description": "Atenolol Tablet, 100 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.2,
+    "category": "C"
+  },
+  {
+    "code": "ATORVATA1",
+    "description": "Atorvastatin Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.59,
+    "category": "C"
+  },
+  {
+    "code": "ATORVATA2",
+    "description": "Atorvastatin Tablet, 20 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.89,
+    "category": "C"
+  },
+  {
+    "code": "ATROPIID1",
+    "description": "Atropine Eye Drops, 1%",
+    "pack": "10 mL",
+    "nhisPrice": 17.0,
+    "category": "C"
+  },
+  {
+    "code": "ATROPIN1",
+    "description": "Atropine Injection, 0.6 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 3.0,
+    "category": "B2"
+  },
+  {
+    "code": "AZITHRCA1",
+    "description": "Azithromycin Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 1.33,
+    "category": "C"
+  },
+  {
+    "code": "AZITHRSU1",
+    "description": "Azithromycin Oral Suspension, 200 mg/5",
+    "pack": "15 mL",
+    "nhisPrice": 9.5,
+    "category": "C"
+  },
+  {
+    "code": "AZITHRSU2",
+    "description": "Azithromycin Oral Suspension, 200 mg/5",
+    "pack": "30 mL",
+    "nhisPrice": 12.0,
+    "category": "C"
+  },
+  {
+    "code": "BADOESIN1",
+    "description": "Badoe's Solution Injection, 1000 mL",
+    "pack": "1000 mL",
+    "nhisPrice": 8.17,
+    "category": "B2"
+  },
+  {
+    "code": "BECDIPGA1",
+    "description": "Beclometasone dipropionate Inhaler, 50 microgram/metered dose (200 dos",
+    "pack": "Inhaler",
+    "nhisPrice": 42.5,
+    "category": "B2"
+  },
+  {
+    "code": "BECDIPGA2",
+    "description": "Beclometasone dipropionate Inhaler, 100 microgram/metered dose (200 do",
+    "pack": "Inhaler",
+    "nhisPrice": 64.0,
+    "category": "B2"
+  },
+  {
+    "code": "BECDIPGA3",
+    "description": "Beclometasone dipropionate Inhaler, 200 microgram/metered dose (200 do",
+    "pack": "Inhaler",
+    "nhisPrice": 90.0,
+    "category": "B2"
+  },
+  {
+    "code": "BENDROTA1",
+    "description": "Bendroflumethiazide Tablet, 2.5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.07,
+    "category": "B1"
+  },
+  {
+    "code": "BENDROTA2",
+    "description": "Bendroflumethiazide Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.1,
+    "category": "C"
+  },
+  {
+    "code": "BENZATIN1",
+    "description": "Benzotropine Injection, 1 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 8.65,
+    "category": "C"
+  },
+  {
+    "code": "BENZATTA1",
+    "description": "Benzotropine Tablet, 2 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.35,
+    "category": "C"
+  },
+  {
+    "code": "BEACSAO1",
+    "description": "Benzoic Acid + Salicylic Acid Ointment, 6% + 6%",
+    "pack": "25 G",
+    "nhisPrice": 3.5,
+    "category": "B1"
+  },
+  {
+    "code": "BENPERCR1",
+    "description": "Benzoyl Peroxide Cream, 5%",
+    "pack": "30 G",
+    "nhisPrice": 21.75,
+    "category": "C"
+  },
+  {
+    "code": "BENPERCR2",
+    "description": "Benzoyl Peroxide Cream, 10%",
+    "pack": "30 G",
+    "nhisPrice": 18.77,
+    "category": "C"
+  },
+  {
+    "code": "BENBENLO1",
+    "description": "Benzyl Benzoate Lotion, 25%",
+    "pack": "30 mL",
+    "nhisPrice": 4.5,
+    "category": "A"
+  },
+  {
+    "code": "BENBENLO2",
+    "description": "Benzyl Benzoate Lotion, 25%",
+    "pack": "100 mL",
+    "nhisPrice": 6.0,
+    "category": "A"
+  },
+  {
+    "code": "BENZYLIN1",
+    "description": "Benzylpenicillin Injection, 1 MU",
+    "pack": "Vial",
+    "nhisPrice": 0.8,
+    "category": "B1"
+  },
+  {
+    "code": "BENZYLIN2",
+    "description": "Benzylpenicillin Injection, 5 MU",
+    "pack": "Vial",
+    "nhisPrice": 1.5,
+    "category": "B2"
+  },
+  {
+    "code": "BETVALCR2",
+    "description": "Betamethasone Valerate cream, 0.1%",
+    "pack": "15 G",
+    "nhisPrice": 10.93,
+    "category": "D"
+  },
+  {
+    "code": "BETAXOID1",
+    "description": "Betaxolol HCl Eye Drops, 0.5%",
+    "pack": "5 mL",
+    "nhisPrice": 22.15,
+    "category": "SD"
+  },
+  {
+    "code": "BISACOTA1",
+    "description": "Bisacodyl Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.12,
+    "category": "B2"
+  },
+  {
+    "code": "BROMOCTA1",
+    "description": "Bromocriptine Tablet, 2.5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.23,
+    "category": "D"
+  },
+  {
+    "code": "BUDFORGA2",
+    "description": "Budesonide + Formoterol Inhaler 160 microgram/4.5 microgram (60 Doses)",
+    "pack": "Inhaler",
+    "nhisPrice": 111.62,
+    "category": "SD"
+  },
+  {
+    "code": "BUDFORGA1",
+    "description": "Budesonide + Formoterol Inhaler 80 microgram/4.5 microgram (60 Doses)",
+    "pack": "Inhaler",
+    "nhisPrice": 68.73,
+    "category": "SD"
+  },
+  {
+    "code": "BUDESOGA1",
+    "description": "Budesonide DPI, 100 microgram (100 Doses)",
+    "pack": "Inhaler",
+    "nhisPrice": 48.0,
+    "category": "SD"
+  },
+  {
+    "code": "BUDESOGA2",
+    "description": "Budesonide DPI, 200 microgram (100 Doses)",
+    "pack": "Inhaler",
+    "nhisPrice": 73.84,
+    "category": "SD"
+  },
+  {
+    "code": "CIPTINTA1",
+    "description": "Ciprofloxacin + Tinidazole Tablet, 500 mg +",
+    "pack": "Tablet",
+    "nhisPrice": 1.2,
+    "category": "B2"
+  },
+  {
+    "code": "CLARITCA1",
+    "description": "Clarithromycin Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 1.5,
+    "category": "C"
+  },
+  {
+    "code": "CLARITCA2",
+    "description": "Clarithromycin Capsule, 500 mg",
+    "pack": "Capsule",
+    "nhisPrice": 3.0,
+    "category": "C"
+  },
+  {
+    "code": "CLARITSU1",
+    "description": "Clarithromycin Paediatric Suspension, 125 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 22.5,
+    "category": "C"
+  },
+  {
+    "code": "CLINDACA1",
+    "description": "Clindamycin Capsule, 150 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.8,
+    "category": "C"
+  },
+  {
+    "code": "CLINDAIN1",
+    "description": "Clindamycin Injection, 150 mg/mL in 2 mL",
+    "pack": "Vial",
+    "nhisPrice": 13.8,
+    "category": "C"
+  },
+  {
+    "code": "CLINDASU1",
+    "description": "Clindamycin Suspension, 75 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 36.7,
+    "category": "C"
+  },
+  {
+    "code": "CLINDASO1",
+    "description": "Clindamycin Topical Solution, 1%",
+    "pack": "30 mL",
+    "nhisPrice": 45.0,
+    "category": "C"
+  },
+  {
+    "code": "CLOPROCR1",
+    "description": "Clobetasol Propionate Cream, 0.05%",
+    "pack": "15 G",
+    "nhisPrice": 3.5,
+    "category": "SD"
+  },
+  {
+    "code": "CLOHYDC1",
+    "description": "Clotrimazole + Hydrocortisone Cream, 1% +",
+    "pack": "15 G",
+    "nhisPrice": 4.29,
+    "category": "C"
+  },
+  {
+    "code": "CLOTRICR1",
+    "description": "Clotrimazole Cream, 1%",
+    "pack": "15 G",
+    "nhisPrice": 4.0,
+    "category": "B1"
+  },
+  {
+    "code": "CLOTRICR2",
+    "description": "Clotrimazole Cream, 2%",
+    "pack": "15 G",
+    "nhisPrice": 4.3,
+    "category": "B2"
+  },
+  {
+    "code": "CLOTRIVP1",
+    "description": "Clotrimazole Pessary, 100 mg",
+    "pack": "6 Pess.",
+    "nhisPrice": 4.0,
+    "category": "M"
+  },
+  {
+    "code": "CLOTRIVP2",
+    "description": "Clotrimazole Pessary, 200 mg",
+    "pack": "3 Pess.",
+    "nhisPrice": 5.02,
+    "category": "M"
+  },
+  {
+    "code": "CLOTRIVP3",
+    "description": "Clotrimazole Pessary, 500 mg",
+    "pack": "1 Pess.",
+    "nhisPrice": 6.85,
+    "category": "B1"
+  },
+  {
+    "code": "CLOXACIN1",
+    "description": "Cloxacillin Injection, 250 mg",
+    "pack": "Vial",
+    "nhisPrice": 1.5,
+    "category": "B2"
+  },
+  {
+    "code": "CLOXACIN2",
+    "description": "Cloxacillin Injection, 500 mg",
+    "pack": "Vial",
+    "nhisPrice": 2.5,
+    "category": "B2"
+  },
+  {
+    "code": "CODEINTA1",
+    "description": "Codeine Tablet, 30 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.5,
+    "category": "B2"
+  },
+  {
+    "code": "COOENOTA1",
+    "description": "Conjugated Oestrogen + Norgesterol Tablet, 625 microgram + 150 microgr",
+    "pack": "Tablet",
+    "nhisPrice": 2.0,
+    "category": "C"
+  },
+  {
+    "code": "CONOESTA1",
+    "description": "Conjugated Oestrogen Tablet, 625 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 1.0,
+    "category": "D"
+  },
+  {
+    "code": "CONOESVC1",
+    "description": "Conjugated Oestrogen Vaginal cream, 625 microgram/g",
+    "pack": "1 G",
+    "nhisPrice": 1.25,
+    "category": "D"
+  },
+  {
+    "code": "CORANTID1",
+    "description": "Corticosteroid + Antibiotic Eye Drops",
+    "pack": "10 mL",
+    "nhisPrice": 8.5,
+    "category": "C"
+  },
+  {
+    "code": "CORANTEO1",
+    "description": "Corticosteroid + Antibiotic Eye Ointment",
+    "pack": "10 G",
+    "nhisPrice": 7.7,
+    "category": "C"
+  },
+  {
+    "code": "COTRIMSU1",
+    "description": "Co-trimoxazole Suspension, (200+40) mg/5",
+    "pack": "100 mL",
+    "nhisPrice": 2.5,
+    "category": "B1"
+  },
+  {
+    "code": "COTRIMTA1",
+    "description": "Cotrimoxazole Tablet, (400+80) mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.08,
+    "category": "B1"
+  },
+  {
+    "code": "CYCLOPID1",
+    "description": "Cyclopentolate Eye Drops, 1%",
+    "pack": "5 mL",
+    "nhisPrice": 15.0,
+    "category": "SD"
+  },
+  {
+    "code": "CYCLOPIN1",
+    "description": "Cyclophosphamide Injection, 500 mg",
+    "pack": "Vial",
+    "nhisPrice": 8.27,
+    "category": "D"
+  },
+  {
+    "code": "DALSODIN1",
+    "description": "Dalteparin Sodium Injection, 5000 units/0.2",
+    "pack": "Prefilled Syringe",
+    "nhisPrice": 35.21,
+    "category": "D"
+  },
+  {
+    "code": "DARROWIN1",
+    "description": "Darrow's Solution Injection, HalfStrength 250",
+    "pack": "250 mL",
+    "nhisPrice": 3.39,
+    "category": "B2"
+  },
+  {
+    "code": "DEXAMEID1",
+    "description": "Dexamethasone Eye Drops, 1%",
+    "pack": "5 mL",
+    "nhisPrice": 8.0,
+    "category": "C"
+  },
+  {
+    "code": "DEXAMEEO1",
+    "description": "Dexamethasone Eye Ointment, 1%",
+    "pack": "5 G",
+    "nhisPrice": 5.25,
+    "category": "C"
+  },
+  {
+    "code": "DEXAMEIN1",
+    "description": "Dexamethasone Injection, 4 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 0.61,
+    "category": "C"
+  },
+  {
+    "code": "DEXAMEIN2",
+    "description": "Dexamethasone Injection, 8 mg/2 mL",
+    "pack": "2 mL",
+    "nhisPrice": 1.0,
+    "category": "C"
+  },
+  {
+    "code": "DEXAMETA1",
+    "description": "Dexamethasone Tablet, 500 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 0.05,
+    "category": "D"
+  },
+  {
+    "code": "DESOCHIN1",
+    "description": "Dextrose in Sodium Chloride Intravenous Infusion, 4.3% in 0.18% (250 m",
+    "pack": "250 mL",
+    "nhisPrice": 3.87,
+    "category": "B1"
+  },
+  {
+    "code": "DESOCHIN2",
+    "description": "Dextrose in Sodium Chloride Intravenous Infusion, 5% in 0.9% (500 mL)",
+    "pack": "500 mL",
+    "nhisPrice": 4.84,
+    "category": "M"
+  },
+  {
+    "code": "DEXTROIN1",
+    "description": "Dextrose Infusion, 5% (250 mL)",
+    "pack": "250 mL",
+    "nhisPrice": 3.87,
+    "category": "M"
+  },
+  {
+    "code": "DEXTROIN2",
+    "description": "Dextrose Infusion, 5% (500 mL)",
+    "pack": "500 mL",
+    "nhisPrice": 4.8,
+    "category": "M"
+  },
+  {
+    "code": "DEXTROIN3",
+    "description": "Dextrose Infusion, 10% (250 mL)",
+    "pack": "250 mL",
+    "nhisPrice": 3.95,
+    "category": "B1"
+  },
+  {
+    "code": "DEXTROIN4",
+    "description": "Dextrose Infusion, 10% (500 mL)",
+    "pack": "500 mL",
+    "nhisPrice": 4.95,
+    "category": "B1"
+  },
+  {
+    "code": "DEXTROIN6",
+    "description": "Dextrose Infusion, 50% (250 mL)",
+    "pack": "250 mL",
+    "nhisPrice": 4.56,
+    "category": "B1"
+  },
+  {
+    "code": "DIAZEPIN1",
+    "description": "Diazepam Injection, 5 mg/mL in 2 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 2.53,
+    "category": "M"
+  },
+  {
+    "code": "DIAZEPRS1",
+    "description": "Diazepam Rectal Tubes, 2 mg/mL in 1.25 mL",
+    "pack": "Rectal Tube",
+    "nhisPrice": 4.5,
+    "category": "A"
+  },
+  {
+    "code": "DIAZEPTA1",
+    "description": "Diazepam Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.04,
+    "category": "M"
+  },
+  {
+    "code": "DIAZEPTA2",
+    "description": "Diazepam Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.07,
+    "category": "M"
+  },
+  {
+    "code": "DICLOFCA1",
+    "description": "Diclofenac Capsule, 75 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.6,
+    "category": "B1"
+  },
+  {
+    "code": "DICLOFGE1",
+    "description": "Diclofenac Gel",
+    "pack": "30 G",
+    "nhisPrice": 3.3,
+    "category": "A"
+  },
+  {
+    "code": "DICLOFIN1",
+    "description": "Diclofenac Injection, 75 mg/3 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 0.58,
+    "category": "B1"
+  },
+  {
+    "code": "DICLOFRE1",
+    "description": "Diclofenac Suppository, 50 mg",
+    "pack": "Supp.",
+    "nhisPrice": 0.7,
+    "category": "A"
+  },
+  {
+    "code": "DICLOFRE2",
+    "description": "Diclofenac Suppository, 100 mg",
+    "pack": "Supp.",
+    "nhisPrice": 0.94,
+    "category": "A"
+  },
+  {
+    "code": "DICLOFTA1",
+    "description": "Diclofenac Tablet, 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.06,
+    "category": "B1"
+  },
+  {
+    "code": "DICLOFTA2",
+    "description": "Diclofenac Tablet, 50 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.06,
+    "category": "B1"
+  },
+  {
+    "code": "DIESTITA1",
+    "description": "Diethylstilboestrol Tablet, 1 mg",
+    "pack": "Tablet",
+    "nhisPrice": 25.0,
+    "category": "SD"
+  },
+  {
+    "code": "DIESTITA2",
+    "description": "Diethylstilboestrol Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 41.0,
+    "category": "SD"
+  },
+  {
+    "code": "DIGOXIEL1",
+    "description": "Digoxin Elixir, 50 microgram/mL",
+    "pack": "60 mL",
+    "nhisPrice": 51.06,
+    "category": "C"
+  },
+  {
+    "code": "DIGOXITA1",
+    "description": "Digoxin Tablet, 62.5 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 0.33,
+    "category": "C"
+  },
+  {
+    "code": "DIGOXITA2",
+    "description": "Digoxin Tablet, 125 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 0.27,
+    "category": "C"
+  },
+  {
+    "code": "DIGOXITA3",
+    "description": "Digoxin Tablet, 250 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 0.33,
+    "category": "C"
+  },
+  {
+    "code": "DIHPIPPO1",
+    "description": "Dihydroartemisin + Piperaquine Granular Powder, 10 mg + 80 mg",
+    "pack": "Sachet",
+    "nhisPrice": 1.0,
+    "category": "A"
+  },
+  {
+    "code": "DIHYDRTA1",
+    "description": "Dihydrocodeine Tablet, 30 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.35,
+    "category": "C"
+  },
+  {
+    "code": "DISOPYCA1",
+    "description": "Disopyramide Capsule, 100 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.65,
+    "category": "D"
+  },
+  {
+    "code": "DISPHOIN1",
+    "description": "Disopyramide Phosphate Injection, 10 mg/mL in 5 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 17.5,
+    "category": "D"
+  },
+  {
+    "code": "DOCETAIN1",
+    "description": "Docetaxel Injection, 20 mg/mL",
+    "pack": "Ampoule",
+    "nhisPrice": 220.3,
+    "category": "D"
+  },
+  {
+    "code": "DOMPERTA1",
+    "description": "Domperidone Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.74,
+    "category": "D"
+  },
+  {
+    "code": "DOPAMIN1",
+    "description": "Dopamine Injection, 40 mg/mL in 5 mL",
+    "pack": "Vial",
+    "nhisPrice": 20.5,
+    "category": "D"
+  },
+  {
+    "code": "DOXAPRIN1",
+    "description": "Doxapram Injection, 20 mg/mL in 5 mL",
+    "pack": "Vial",
+    "nhisPrice": 15.5,
+    "category": "D"
+  },
+  {
+    "code": "DOXYCYCA1",
+    "description": "Doxycycline Capsule, 100 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.15,
+    "category": "M"
+  },
+  {
+    "code": "ENOSODIN2",
+    "description": "Enoxaparin Sodium Injection, 40 mg/0.4 mL",
+    "pack": "Prefilled Syringe",
+    "nhisPrice": 43.1,
+    "category": "B2"
+  },
+  {
+    "code": "EPHEDRIN1",
+    "description": "Ephedrine HCl Injection, 30 mg/mL",
+    "pack": "Ampoule",
+    "nhisPrice": 6.0,
+    "category": "C"
+  },
+  {
+    "code": "EPHEDRND1",
+    "description": "Ephedrine Nasal Drops, 0.5%",
+    "pack": "10 mL",
+    "nhisPrice": 3.5,
+    "category": "A"
+  },
+  {
+    "code": "EPHEDRND2",
+    "description": "Ephedrine Nasal Drops, 1%",
+    "pack": "10 mL",
+    "nhisPrice": 3.5,
+    "category": "A"
+  },
+  {
+    "code": "ERGOMEIN1",
+    "description": "Ergometrine Injection, 0.2 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 0.4,
+    "category": "M"
+  },
+  {
+    "code": "ERGOMEIN2",
+    "description": "Ergometrine Injection, 0.5 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 1.45,
+    "category": "M"
+  },
+  {
+    "code": "ERGOMETA1",
+    "description": "Ergometrine Tablet, 0.5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.18,
+    "category": "A"
+  },
+  {
+    "code": "ERGOTATA1",
+    "description": "Ergotamine Tablet, 2 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.21,
+    "category": "C"
+  },
+  {
+    "code": "ERYTHRSY1",
+    "description": "Erythromycin Syrup, 125 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 5.0,
+    "category": "M"
+  },
+  {
+    "code": "ERYTHRTA1",
+    "description": "Erythromycin Tablet, 250 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.21,
+    "category": "M"
+  },
+  {
+    "code": "ESOMEPCA1",
+    "description": "Esomeprazole Capsule, 20 mg",
+    "pack": "Capsule",
+    "nhisPrice": 2.1,
+    "category": "D"
+  },
+  {
+    "code": "ESOMEPCA2",
+    "description": "Esomeprazole Capsule, 40 mg",
+    "pack": "Capsule",
+    "nhisPrice": 3.4,
+    "category": "D"
+  },
+  {
+    "code": "ETHOSUSY1",
+    "description": "Ethosuximide Syrup, 250 mg/5 mL",
+    "pack": "200 mL",
+    "nhisPrice": 32.25,
+    "category": "D"
+  },
+  {
+    "code": "ETHOSUTA1",
+    "description": "Ethosuximide Tablet, 250 mg",
+    "pack": "Tablet",
+    "nhisPrice": 6.5,
+    "category": "D"
+  },
+  {
+    "code": "FEAMCISU1",
+    "description": "Ferric Ammonium Citrate Mixture (FAC)",
+    "pack": "200 mL",
+    "nhisPrice": 3.0,
+    "category": "A"
+  },
+  {
+    "code": "FERFUMTA1",
+    "description": "Ferrous Fumarate Tablet, 100 mg (Elemental)",
+    "pack": "Tablet",
+    "nhisPrice": 0.02,
+    "category": "M"
+  },
+  {
+    "code": "FERSUSY1",
+    "description": "Ferrous Sulphate (BPC) Syrup, 60 mg/5 mL",
+    "pack": "200 mL",
+    "nhisPrice": 3.95,
+    "category": "M"
+  },
+  {
+    "code": "FESUFOTA1",
+    "description": "Ferrous Sulphate + Folic Acid Tablet, 50 mg (Elemental Iron) + 400 mic",
+    "pack": "Tablet",
+    "nhisPrice": 0.19,
+    "category": "A"
+  },
+  {
+    "code": "FERSUTA1",
+    "description": "Ferrous Sulphate Tablet, 60 mg (Elemental)",
+    "pack": "Tablet",
+    "nhisPrice": 0.02,
+    "category": "M"
+  },
+  {
+    "code": "FINASTTA1",
+    "description": "Finasteride Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.89,
+    "category": "SD"
+  },
+  {
+    "code": "FLUCLOCA1",
+    "description": "Flucloxacillin Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.19,
+    "category": "M"
+  },
+  {
+    "code": "FLUCLOIN1",
+    "description": "Flucloxacillin Injection, 250 mg",
+    "pack": "Vial",
+    "nhisPrice": 3.5,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCLOIN2",
+    "description": "Flucloxacillin Injection, 500 mg",
+    "pack": "Vial",
+    "nhisPrice": 4.0,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCLOSU1",
+    "description": "Flucloxacillin Suspension, 125 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 4.0,
+    "category": "M"
+  },
+  {
+    "code": "FLUCONCA1",
+    "description": "Fluconazole Capsule, 150 mg",
+    "pack": "Capsule",
+    "nhisPrice": 3.4,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCONCA2",
+    "description": "Fluconazole Capsule, 200 mg",
+    "pack": "Capsule",
+    "nhisPrice": 3.9,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCONSU1",
+    "description": "Fluconazole Suspension, 10 mg/mL",
+    "pack": "35 mL",
+    "nhisPrice": 6.0,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCONSU2",
+    "description": "Fluconazole Suspension, 50 mg/5 mL",
+    "pack": "35 mL",
+    "nhisPrice": 8.0,
+    "category": "B2"
+  },
+  {
+    "code": "FLUCONTA1",
+    "description": "Fluconazole Tablet, 50 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.5,
+    "category": "B2"
+  },
+  {
+    "code": "FLUDROTA1",
+    "description": "Fludrocortisone Tablet, 100 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 1.32,
+    "category": "D"
+  },
+  {
+    "code": "FLUOXECA1",
+    "description": "Fluoxetine Capsule, 20 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.76,
+    "category": "C"
+  },
+  {
+    "code": "FLUPENTA1",
+    "description": "Flupentixol Tablet, 500 microgram",
+    "pack": "Tablet",
+    "nhisPrice": 1.25,
+    "category": "C"
+  },
+  {
+    "code": "FLUPENTA2",
+    "description": "Flupentixol Tablet, 1 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.25,
+    "category": "C"
+  },
+  {
+    "code": "FLUDECIN1",
+    "description": "Fluphenazine Decanoate Injection, 25 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 18.25,
+    "category": "SD"
+  },
+  {
+    "code": "FLUSALGA1",
+    "description": "Fluticasone + Salmeterol Inhaler, 250 microgram/50 microgram (60 Doses)",
+    "pack": "Inhaler",
+    "nhisPrice": 96.56,
+    "category": "SD"
+  },
+  {
+    "code": "FLUTICGA1",
+    "description": "Fluticasone MDI, 50 microgram (120 Dose)",
+    "pack": "Inhaler",
+    "nhisPrice": 30.52,
+    "category": "SD"
+  },
+  {
+    "code": "FLUTICGA2",
+    "description": "Fluticasone MDI, 125 microgram (120 Dose)",
+    "pack": "Inhaler",
+    "nhisPrice": 54.94,
+    "category": "SD"
+  },
+  {
+    "code": "FLUTICGA3",
+    "description": "Fluticasone MDI, 250 microgram (120 Dose)",
+    "pack": "Inhaler",
+    "nhisPrice": 92.0,
+    "category": "SD"
+  },
+  {
+    "code": "FLUVASCA1",
+    "description": "Fluvastatin Capsule, 20 mg",
+    "pack": "Capsule",
+    "nhisPrice": 2.6,
+    "category": "D"
+  },
+  {
+    "code": "FOLACITA1",
+    "description": "Folic Acid Tablet, 5 mg (Blister Pack)",
+    "pack": "10 Tablets",
+    "nhisPrice": 0.1,
+    "category": "M"
+  },
+  {
+    "code": "FUROSEIN1",
+    "description": "Furosemide Injection, 10 mg/mL in 2 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 0.5,
+    "category": "B1"
+  },
+  {
+    "code": "FUROSET1",
+    "description": "Furosemide Tablet, 40 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.14,
+    "category": "B1"
+  },
+  {
+    "code": "GELATIIN1",
+    "description": "Gelatin Infusion (Succinylated Gelatin)",
+    "pack": "500 mL",
+    "nhisPrice": 14.5,
+    "category": "B2"
+  },
+  {
+    "code": "GENTAMED1",
+    "description": "Gentamicin Ear Drops, 0.3%",
+    "pack": "10 mL",
+    "nhisPrice": 2.0,
+    "category": "B1"
+  },
+  {
+    "code": "GENTAMID1",
+    "description": "Gentamicin Eye Drops, 0.3%",
+    "pack": "10 mL",
+    "nhisPrice": 2.0,
+    "category": "B1"
+  },
+  {
+    "code": "GENTAMIN1",
+    "description": "Gentamicin Injection, 40 mg/mL in 2 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 0.48,
+    "category": "B2"
+  },
+  {
+    "code": "GUBENTA1",
+    "description": "Glibenclamide Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.06,
+    "category": "B2"
+  },
+  {
+    "code": "GUCLATA1",
+    "description": "Gliclazide Tablet, 80 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.3,
+    "category": "C"
+  },
+  {
+    "code": "GLIMEPTA1",
+    "description": "Glimepiride Tablet, 1 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.8,
+    "category": "C"
+  },
+  {
+    "code": "GLIMEPTA2",
+    "description": "Glimepiride Tablet, 2 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.25,
+    "category": "C"
+  },
+  {
+    "code": "GLIMEPTA3",
+    "description": "Glimepiride Tablet, 3 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.97,
+    "category": "C"
+  },
+  {
+    "code": "GLIMEPTA4",
+    "description": "Glimepiride Tablet, 4 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.5,
+    "category": "C"
+  },
+  {
+    "code": "GLUCAGIN1",
+    "description": "Glucagon Injection, 1 mg",
+    "pack": "Ampoule",
+    "nhisPrice": 78.55,
+    "category": "C"
+  },
+  {
+    "code": "GLTRSUTA1",
+    "description": "Glyceryl Trinitrate Sublingual Tablet, 500 microgram",
+    "pack": "100 Tablets",
+    "nhisPrice": 39.0,
+    "category": "C"
+  },
+  {
+    "code": "GRANISIN1",
+    "description": "Granisetron Injection, 1 mg/1 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 29.53,
+    "category": "D"
+  },
+  {
+    "code": "GRANISTA1",
+    "description": "Granisetron Tablet, 1 mg",
+    "pack": "Tablet",
+    "nhisPrice": 14.03,
+    "category": "D"
+  },
+  {
+    "code": "GRISESOSU1",
+    "description": "Griseofulvin Suspension, 125 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 7.65,
+    "category": "B2"
+  },
+  {
+    "code": "GRISEOTA1",
+    "description": "Griseofulvin Tablet, 125 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.1,
+    "category": "B1"
+  },
+  {
+    "code": "GRISEOTA2",
+    "description": "Griseofulvin Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.5,
+    "category": "B1"
+  },
+  {
+    "code": "HALOPEIN1",
+    "description": "Haloperidol Injection, 5 mg/5 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 4.0,
+    "category": "SD"
+  },
+  {
+    "code": "HALOPETA1",
+    "description": "Haloperidol Tablet, 0.5 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.52,
+    "category": "C"
+  },
+  {
+    "code": "HALOPETA2",
+    "description": "Haloperidol Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.68,
+    "category": "C"
+  },
+  {
+    "code": "HALOPETA3",
+    "description": "Haloperidol Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.2,
+    "category": "C"
+  },
+  {
+    "code": "HEPARIN1",
+    "description": "Heparin Injection, 1000 units/mL in 5 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 11.5,
+    "category": "D"
+  },
+  {
+    "code": "HEPARIN2",
+    "description": "Heparin Injection, 5000 units/mL in 1 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 10.0,
+    "category": "D"
+  },
+  {
+    "code": "HEPARIN3",
+    "description": "Heparin Injection, 5000 units/mL in 5 mL",
+    "pack": "Vial",
+    "nhisPrice": 26.45,
+    "category": "B2"
+  },
+  {
+    "code": "HUIMTEIN1",
+    "description": "Human Immune Tetanus Globulins Injection, 250 IU/mL",
+    "pack": "1 mL",
+    "nhisPrice": 26.6,
+    "category": "B1"
+  },
+  {
+    "code": "HUIMTEIN2",
+    "description": "Human Immune Tetanus Globulins Injection, 500 IU/mL",
+    "pack": "2 mL",
+    "nhisPrice": 5.0,
+    "category": "B1"
+  },
+  {
+    "code": "HYDRALIN1",
+    "description": "Hydralazine Injection, 20 mg",
+    "pack": "Ampoule",
+    "nhisPrice": 22.3,
+    "category": "C"
+  },
+  {
+    "code": "HYDRALTA1",
+    "description": "Hydralazine Tablet, 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.0,
+    "category": "C"
+  },
+  {
+    "code": "HYDROCCR1",
+    "description": "Hydrocortisone Cream, 1%",
+    "pack": "15 G",
+    "nhisPrice": 5.75,
+    "category": "B1"
+  },
+  {
+    "code": "HYDROCID1",
+    "description": "Hydrocortisone Eye Drops, 1%",
+    "pack": "5 mL",
+    "nhisPrice": 7.75,
+    "category": "C"
+  },
+  {
+    "code": "HYDROCEO1",
+    "description": "Hydrocortisone Eye Ointment, 1%",
+    "pack": "5 G",
+    "nhisPrice": 6.0,
+    "category": "C"
+  },
+  {
+    "code": "HYSOSUIN1",
+    "description": "Hydrocortisone Sodium Succinate Injection, 100 mg",
+    "pack": "Vial",
+    "nhisPrice": 3.0,
+    "category": "M"
+  },
+  {
+    "code": "HYDROXIN1",
+    "description": "Hydroxocobalamin Injection, 1 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 7.5,
+    "category": "D"
+  },
+  {
+    "code": "HYOBUTIN1",
+    "description": "Hyoscine Butylbromide Injection, 20 mg/mL",
+    "pack": "1 mL",
+    "nhisPrice": 1.0,
+    "category": "M"
+  },
+  {
+    "code": "HYOBUTTA1",
+    "description": "Hyoscine Butylbromide Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.67,
+    "category": "M"
+  },
+  {
+    "code": "IBUPROSU1",
+    "description": "Ibuprofen Suspension, 100 mg/5 mL",
+    "pack": "100 mL",
+    "nhisPrice": 3.0,
+    "category": "M"
+  },
+  {
+    "code": "IBUPROTA1",
+    "description": "Ibuprofen Tablet, 200 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.05,
+    "category": "M"
+  },
+  {
+    "code": "MEBENDSU1",
+    "description": "Mebendazole Suspension, 100 mg/5 mL",
+    "pack": "30 mL",
+    "nhisPrice": 4.0,
+    "category": "A"
+  },
+  {
+    "code": "MEBENDTA1",
+    "description": "Mebendazole Tablet, 100 mg",
+    "pack": "6 Tablets",
+    "nhisPrice": 1.8,
+    "category": "A"
+  },
+  {
+    "code": "MEBENDTA2",
+    "description": "Mebendazole Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.5,
+    "category": "A"
+  },
+  {
+    "code": "MEBEVETTA1",
+    "description": "Mebeverine Tablet, 135 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.81,
+    "category": "C"
+  },
+  {
+    "code": "MEDACETA1",
+    "description": "Medroxyprogesterone Acetate Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.25,
+    "category": "C"
+  },
+  {
+    "code": "MEFACICA1",
+    "description": "Mefenamic Acid Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.3,
+    "category": "M"
+  },
+  {
+    "code": "MEFACITA1",
+    "description": "Mefenamic Acid Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.4,
+    "category": "M"
+  },
+  {
+    "code": "METFORTA1",
+    "description": "Metformin Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.11,
+    "category": "B2"
+  },
+  {
+    "code": "METHOTIN1",
+    "description": "Methotrexate Injection, 2.5 mg/mL",
+    "pack": "Ampoule",
+    "nhisPrice": 5.5,
+    "category": "D"
+  },
+  {
+    "code": "METHOTIN2",
+    "description": "Methotrexate Injection, 25 mg/mL in 2 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 15.0,
+    "category": "D"
+  },
+  {
+    "code": "METHOTTA1",
+    "description": "Methotrexate Tablet, 2.5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.51,
+    "category": "D"
+  },
+  {
+    "code": "METHOTTA2",
+    "description": "Methotrexate Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.5,
+    "category": "D"
+  },
+  {
+    "code": "METCELID1",
+    "description": "Methyl Cellulose Eye Drops, 0.3%",
+    "pack": "10 mL",
+    "nhisPrice": 14.0,
+    "category": "B2"
+  },
+  {
+    "code": "METHYLTA1",
+    "description": "Methyldopa Tablet, 250 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.35,
+    "category": "B2"
+  },
+  {
+    "code": "METOCLIN1",
+    "description": "Metoclopramide Injection, 5 mg/mL in 2 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 1.5,
+    "category": "C"
+  },
+  {
+    "code": "METOCLSY1",
+    "description": "Metoclopramide Syrup, 5 mg/5 mL",
+    "pack": "200 mL",
+    "nhisPrice": 21.15,
+    "category": "C"
+  },
+  {
+    "code": "METOCLTA1",
+    "description": "Metoclopramide Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.3,
+    "category": "C"
+  },
+  {
+    "code": "METOLATA1",
+    "description": "Metolazone Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.1,
+    "category": "D"
+  },
+  {
+    "code": "METRONIN1",
+    "description": "Metronidazole Injection, 5 mg/mL in 100 mL",
+    "pack": "Bottle",
+    "nhisPrice": 2.5,
+    "category": "B2"
+  },
+  {
+    "code": "METRONRE1",
+    "description": "Metronidazole Suppository, 500 mg",
+    "pack": "Supp.",
+    "nhisPrice": 2.0,
+    "category": "B2"
+  },
+  {
+    "code": "METRONSU1",
+    "description": "Metronidazole Suspension, 100 mg/5 mL (as benzoate)",
+    "pack": "100 mL",
+    "nhisPrice": 3.0,
+    "category": "M"
+  },
+  {
+    "code": "METRONSU2",
+    "description": "Metronidazole Suspension, 200 mg/5 mL (as benzoate)",
+    "pack": "100 mL",
+    "nhisPrice": 3.0,
+    "category": "M"
+  },
+  {
+    "code": "METRONTA1",
+    "description": "Metronidazole Tablet, 200 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.05,
+    "category": "M"
+  },
+  {
+    "code": "METRONTA2",
+    "description": "Metronidazole Tablet, 400 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.08,
+    "category": "M"
+  },
+  {
+    "code": "MICHYDC1",
+    "description": "Miconazole + Hydrocortisone Cream, 2% + 1%",
+    "pack": "15 G",
+    "nhisPrice": 7.0,
+    "category": "C"
+  },
+  {
+    "code": "MICONACR1",
+    "description": "Miconazole Cream, 2%",
+    "pack": "15 G",
+    "nhisPrice": 6.0,
+    "category": "B2"
+  },
+  {
+    "code": "MICONAOG1",
+    "description": "Miconazole Oral Gel, 25 mg/mL",
+    "pack": "40 G",
+    "nhisPrice": 30.0,
+    "category": "B2"
+  },
+  {
+    "code": "MICONAVP1",
+    "description": "Miconazole Ovule, 400 mg",
+    "pack": "3 Ovules",
+    "nhisPrice": 11.09,
+    "category": "A"
+  },
+  {
+    "code": "MIDAZOIN1",
+    "description": "Midazolam Injection, 5 mg/5 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 12.26,
+    "category": "C"
+  },
+  {
+    "code": "MIDAZOTA1",
+    "description": "Midazolam Tablet, 15 mg",
+    "pack": "Tablet",
+    "nhisPrice": 3.0,
+    "category": "C"
+  },
+  {
+    "code": "MORPHIIN1",
+    "description": "Morphine Injection, 10 mg/mL",
+    "pack": "Ampoule",
+    "nhisPrice": 6.0,
+    "category": "C"
+  },
+  {
+    "code": "MORPHIIN2",
+    "description": "Morphine Injection, 10 mg/mL (Preservative)",
+    "pack": "Ampoule",
+    "nhisPrice": 14.0,
+    "category": "SD"
+  },
+  {
+    "code": "MORSULTA1",
+    "description": "Morphine Sulphate Tablet, 10 mg (Slow)",
+    "pack": "Tablet",
+    "nhisPrice": 2.0,
+    "category": "C"
+  },
+  {
+    "code": "MORSULTA2",
+    "description": "Morphine Sulphate Tablet, 30 mg (Slow)",
+    "pack": "Tablet",
+    "nhisPrice": 5.03,
+    "category": "C"
+  },
+  {
+    "code": "MULTIVDR1",
+    "description": "Multivitamin Drops",
+    "pack": "20 mL",
+    "nhisPrice": 4.58,
+    "category": "A"
+  },
+  {
+    "code": "MULTIVSY1",
+    "description": "Multivitamin Syrup",
+    "pack": "125 mL",
+    "nhisPrice": 2.6,
+    "category": "A"
+  },
+  {
+    "code": "MULTIVTA1",
+    "description": "Multivitamin Tablet (Blister Pack)",
+    "pack": "10 Tablets",
+    "nhisPrice": 0.14,
+    "category": "A"
+  },
+  {
+    "code": "NALOXOIN1",
+    "description": "Naloxone Injection, 400 microgram/mL in 1 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 11.3,
+    "category": "C"
+  },
+  {
+    "code": "NEOMYCATA1",
+    "description": "Neomycin Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 3.25,
+    "category": "C"
+  },
+  {
+    "code": "NEOBROTA1",
+    "description": "Neostigmine Bromide Tablet, 15 mg",
+    "pack": "Tablet",
+    "nhisPrice": 7.0,
+    "category": "D"
+  },
+  {
+    "code": "NEOSTIIN1",
+    "description": "Neostigmine Injection, 2.5 mg/mL",
+    "pack": "Ampoule",
+    "nhisPrice": 5.9,
+    "category": "C"
+  },
+  {
+    "code": "NIFEDICA1",
+    "description": "Nifedipine Capsule, 10 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.49,
+    "category": "D"
+  },
+  {
+    "code": "NIFEDITA1",
+    "description": "Nifedipine Tablet, 10 mg (slow release)",
+    "pack": "Tablet",
+    "nhisPrice": 0.25,
+    "category": "B1"
+  },
+  {
+    "code": "NIFEDITA2",
+    "description": "Nifedipine Tablet, 20 mg (slow release)",
+    "pack": "Tablet",
+    "nhisPrice": 0.17,
+    "category": "B1"
+  },
+  {
+    "code": "NIFEDITA3",
+    "description": "Nifedipine Tablet, 30 mg (GITS)",
+    "pack": "Tablet",
+    "nhisPrice": 0.55,
+    "category": "B2"
+  },
+  {
+    "code": "NITROFTA1",
+    "description": "Nitrofurantoin Tablet, 100 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.8,
+    "category": "B2"
+  },
+  {
+    "code": "NORETHTA1",
+    "description": "Norethisterone Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.62,
+    "category": "D"
+  },
+  {
+    "code": "NYSTATOI1",
+    "description": "Nystatin Ointment, 100,000 IU",
+    "pack": "30 G",
+    "nhisPrice": 15.0,
+    "category": "B2"
+  },
+  {
+    "code": "NYSTATTA1",
+    "description": "Nystatin Pessary, 100,000 IU",
+    "pack": "Pessary",
+    "nhisPrice": 0.85,
+    "category": "B1"
+  },
+  {
+    "code": "NYSTATSU1",
+    "description": "Nystatin Suspension, 100,000 IU/mL",
+    "pack": "15 mL",
+    "nhisPrice": 9.0,
+    "category": "B2"
+  },
+  {
+    "code": "NYSTATTA2",
+    "description": "Nystatin Tablet, 500,000 IU",
+    "pack": "Tablet",
+    "nhisPrice": 0.72,
+    "category": "B1"
+  },
+  {
+    "code": "SODCHLIN1",
+    "description": "Sodium Chloride Infusion, 0.45% (250 mL)",
+    "pack": "250 mL",
+    "nhisPrice": 3.81,
+    "category": "B2"
+  },
+  {
+    "code": "SODCHLIN3",
+    "description": "Sodium Chloride Infusion, 0.9% (500 mL)",
+    "pack": "500 mL",
+    "nhisPrice": 4.69,
+    "category": "B1"
+  },
+  {
+    "code": "SODCHLND1",
+    "description": "Sodium Chloride Nasal Drops, 0.9%",
+    "pack": "10 mL",
+    "nhisPrice": 3.0,
+    "category": "A"
+  },
+  {
+    "code": "SODVALCA1",
+    "description": "Sodium Valproate Capsule, 200 mg",
+    "pack": "Capsule",
+    "nhisPrice": 1.12,
+    "category": "D"
+  },
+  {
+    "code": "SODVALCA2",
+    "description": "Sodium Valproate Capsule (Slow Release)",
+    "pack": "Capsule",
+    "nhisPrice": 2.99,
+    "category": "D"
+  },
+  {
+    "code": "SODVALSY1",
+    "description": "Sodium Valproate Syrup, 200 mg/5 mL",
+    "pack": "300 mL",
+    "nhisPrice": 71.9,
+    "category": "D"
+  },
+  {
+    "code": "SODVALTA1",
+    "description": "Sodium Valproate Tablet, 200 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.12,
+    "category": "D"
+  },
+  {
+    "code": "SOANSTO11",
+    "description": "Soothing Agent + Local Anaesthetic + Steroid Ointment",
+    "pack": "15 G",
+    "nhisPrice": 15.0,
+    "category": "B2"
+  },
+  {
+    "code": "SOANSTRE1",
+    "description": "Soothing Agent + Local Anaesthetic + Steroid Suppository",
+    "pack": "Supp",
+    "nhisPrice": 2.0,
+    "category": "B2"
+  },
+  {
+    "code": "SOOANAO11",
+    "description": "Soothing Agent + Local Anaesthetic Ointment",
+    "pack": "15 G",
+    "nhisPrice": 14.0,
+    "category": "M"
+  },
+  {
+    "code": "SOOANARE1",
+    "description": "Soothing Agent + Local Anaesthetic",
+    "pack": "Supp",
+    "nhisPrice": 2.5,
+    "category": "M"
+  },
+  {
+    "code": "SPIRONTA1",
+    "description": "Spironolactone Tablet, 25 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.51,
+    "category": "C"
+  },
+  {
+    "code": "SPIRONTA2",
+    "description": "Spironolactone Tablet, 50 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.8,
+    "category": "C"
+  },
+  {
+    "code": "STREPTIN1",
+    "description": "Streptokinase Injection, 100,000 unit-vial",
+    "pack": "Vial",
+    "nhisPrice": 8.5,
+    "category": "D"
+  },
+  {
+    "code": "STREPTIN2",
+    "description": "Streptokinase Injection, 250,000 unit-vial",
+    "pack": "Vial",
+    "nhisPrice": 110.0,
+    "category": "D"
+  },
+  {
+    "code": "STREPTIN3",
+    "description": "Streptokinase Injection, 750,000 unit-vial",
+    "pack": "Vial",
+    "nhisPrice": 180.0,
+    "category": "D"
+  },
+  {
+    "code": "SULFASTA1",
+    "description": "Sulfasalazine Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.1,
+    "category": "SD"
+  },
+  {
+    "code": "TAMOXITA1",
+    "description": "Tamoxifen Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.5,
+    "category": "SD"
+  },
+  {
+    "code": "TAMOXITA2",
+    "description": "Tamoxifen Tablet, 20 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.2,
+    "category": "SD"
+  },
+  {
+    "code": "TAMSULCA1",
+    "description": "Tamsulosin Capsule, 400 microgram",
+    "pack": "Capsule",
+    "nhisPrice": 1.0,
+    "category": "SD"
+  },
+  {
+    "code": "TERAZOTA1",
+    "description": "Terazosin Tablet, 2 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.95,
+    "category": "SD"
+  },
+  {
+    "code": "TERAZOTA2",
+    "description": "Terazosin Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.43,
+    "category": "SD"
+  },
+  {
+    "code": "TERBINTA1",
+    "description": "Terbinafine HCl Tablet, 250 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.5,
+    "category": "D"
+  },
+  {
+    "code": "TETRACCA1",
+    "description": "Tetracycline Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 0.07,
+    "category": "SD"
+  },
+  {
+    "code": "TETRACEO1",
+    "description": "Tetracycline Eye Ointment, 0.5%",
+    "pack": "5 G",
+    "nhisPrice": 1.5,
+    "category": "B1"
+  },
+  {
+    "code": "TETRACEO2",
+    "description": "Tetracycline Eye Ointment, 1%",
+    "pack": "5 G",
+    "nhisPrice": 1.9,
+    "category": "B1"
+  },
+  {
+    "code": "THEOPHTA1",
+    "description": "Theophylline Tablet, 200 mg (slow release)",
+    "pack": "Tablet",
+    "nhisPrice": 1.0,
+    "category": "C"
+  },
+  {
+    "code": "THIAMIN1",
+    "description": "Thiamine Injection, 100 mg",
+    "pack": "Vial",
+    "nhisPrice": 1.22,
+    "category": "C"
+  },
+  {
+    "code": "THIAMITA1",
+    "description": "Thiamine Tablet, 50 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.47,
+    "category": "C"
+  },
+  {
+    "code": "THIAMITA2",
+    "description": "Thiamine Tablet, 100 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.5,
+    "category": "C"
+  },
+  {
+    "code": "TIABENTA1",
+    "description": "Tiabendazole Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.75,
+    "category": "B2"
+  },
+  {
+    "code": "TIMMALID1",
+    "description": "Timolol Maleate Eye Drops, 0.5%",
+    "pack": "10 mL",
+    "nhisPrice": 7.39,
+    "category": "C"
+  },
+  {
+    "code": "TINIDACA1",
+    "description": "Tinidazole Capsule, 500 mg",
+    "pack": "Capsule",
+    "nhisPrice": 4.4,
+    "category": "B2"
+  },
+  {
+    "code": "TIROFIN1",
+    "description": "Tirofiban Infusion, 50 micrograms/mL",
+    "pack": "100 mL",
+    "nhisPrice": 270.01,
+    "category": "D"
+  },
+  {
+    "code": "TIROFIN2",
+    "description": "Tirofiban Infusion, 250 micrograms/mL (concentrate)",
+    "pack": "100 mL",
+    "nhisPrice": 320.0,
+    "category": "D"
+  },
+  {
+    "code": "TOLBUTTA1",
+    "description": "Tolbutamide Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.6,
+    "category": "B2"
+  },
+  {
+    "code": "TRAACICA1",
+    "description": "Tranexamic Acid Capsule, 250 mg",
+    "pack": "Capsule",
+    "nhisPrice": 1.6,
+    "category": "C"
+  },
+  {
+    "code": "TRAACIN1",
+    "description": "Tranexamic Acid Injection, 500 mg/5 mL",
+    "pack": "Ampoule",
+    "nhisPrice": 8.5,
+    "category": "C"
+  },
+  {
+    "code": "TRAACITA1",
+    "description": "Tranexamic Acid Tablet, 500 mg",
+    "pack": "Tablet",
+    "nhisPrice": 2.06,
+    "category": "C"
+  },
+  {
+    "code": "TRIHEXTA1",
+    "description": "Trihexyphenidyl Tablet, 2 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.11,
+    "category": "C"
+  },
+  {
+    "code": "TRIHEXTA2",
+    "description": "Trihexyphenidyl Tablet, 5 mg",
+    "pack": "Tablet",
+    "nhisPrice": 1.2,
+    "category": "C"
+  },
+  {
+    "code": "VERAPATA1",
+    "description": "Verapamil Tablet, 40 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.72,
+    "category": "D"
+  },
+  {
+    "code": "VERAPATA2",
+    "description": "Verapamil Tablet, 80 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.99,
+    "category": "D"
+  },
+  {
+    "code": "WARFARTA1",
+    "description": "Warfarin Tablet, 1 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.2,
+    "category": "D"
+  },
+  {
+    "code": "WARFARTA2",
+    "description": "Warfarin Tablet, 3 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.25,
+    "category": "D"
+  },
+  {
+    "code": "WARFARTA3",
+    "description": "Warfarin Tablet, 5 mg (scored)",
+    "pack": "Tablet",
+    "nhisPrice": 0.37,
+    "category": "D"
+  },
+  {
+    "code": "WATFORIN1",
+    "description": "Water for Injection",
+    "pack": "10 mL",
+    "nhisPrice": 0.2,
+    "category": "A"
+  },
+  {
+    "code": "ZINCOOTA1",
+    "description": "Zinc Tablet, 10 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.05,
+    "category": "A"
+  },
+  {
+    "code": "ZINCOOTA2",
+    "description": "Zinc Tablet, 20 mg",
+    "pack": "Tablet",
+    "nhisPrice": 0.08,
+    "category": "A"
+  },
+  {
+    "code": "5FLUORIN1",
+    "description": "5-Fluorouracil Injection, 50 mg/mL",
+    "pack": "10 mL",
+    "nhisPrice": 9.0,
+    "category": "D"
+  }
+]
