@@ -42,6 +42,7 @@ import { ManagementDashboard, PermissionSettingsPage, RoleModulePreview } from '
 import { WorkspacePage } from './modules/admin/WorkspacePages.jsx'
 
 const GRANTS_STORAGE_KEY = 'ascend-hms-preview-role-grants-v1'
+const GRANTS_SCHEMA_KEY = 'ascend-hms-preview-role-grants-schema-v2'
 const THEME_STORAGE_KEY = 'hms-theme'
 
 function subscribeToLocation(listener) {
@@ -56,15 +57,20 @@ function getLocationSnapshot() {
 function readRoleGrants() {
   try {
     const saved = JSON.parse(localStorage.getItem(GRANTS_STORAGE_KEY) || 'null')
-    return Object.fromEntries(roleDefinitions.map((role) => [
+    const grants = Object.fromEntries(roleDefinitions.map((role) => [
       role.id,
       Array.isArray(saved?.[role.id])
         ? saved[role.id].filter((permission) => typeof permission === 'string')
         : [...(defaultRolePermissions[role.id] || [])],
     ]))
+    if (localStorage.getItem(GRANTS_SCHEMA_KEY) !== '2') {
+      grants['hospital-admin'] = [...new Set([...(grants['hospital-admin'] || []), 'cashier.refund.approve'])]
+      localStorage.setItem(GRANTS_SCHEMA_KEY, '2')
+    }
+    return grants
   } catch (error) {
     console.error('Could not read the preview role permission seeds.', error)
-    return Object.fromEntries(Object.entries(defaultRolePermissions).map(([role, grants]) => [role, [...grants]]))
+    return Object.fromEntries(Object.entries(defaultRolePermissions).map(([role, permissions]) => [role, [...permissions]]))
   }
 }
 
