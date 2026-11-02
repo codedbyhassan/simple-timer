@@ -440,12 +440,20 @@ const financeStore = createBrowserStore({
     && Number.isFinite(invoice.paid)),
 })
 
+const paymentReceiptsStore = createBrowserStore({
+  key: 'payment-receipts',
+  seed: () => [],
+  validate: (value) => Array.isArray(value) && value.every((receipt) => receipt && typeof receipt.id === 'string' && typeof receipt.invoiceId === 'string' && Number.isFinite(receipt.amount)),
+})
+
 export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' }) {
   const claims = useClaims()
   const care = useCare()
   const { hasPermission } = useRoleAccess()
   const canRecordPayments = hasPermission('cashier.payment.record')
   const storedInvoices = useSyncExternalStore(financeStore.subscribe, financeStore.getSnapshot, financeStore.getSnapshot)
+  const receipts = useSyncExternalStore(paymentReceiptsStore.subscribe, paymentReceiptsStore.getSnapshot, paymentReceiptsStore.getSnapshot)
+  const [paymentMethod, setPaymentMethod] = useState('Cash')
   const [filter, setFilter] = useState('all')
   const [query, setQuery] = useState('')
   const [selectedInvoiceId, setSelectedInvoiceId] = useState('')
@@ -521,9 +529,20 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
       setError('The invoice balance changed or the payment exceeds the remaining amount. Review the current balance.')
       return
     }
-    setNotice(`${formatMoney(payment)} payment recorded for ${selectedInvoice.id}.`)
+    const receipt = {
+      id: `RCT-${Date.now().toString(36).toUpperCase()}`,
+      invoiceId: selectedInvoice.id,
+      patientId: selectedInvoice.patientId,
+      patientName: selectedInvoice.patientName,
+      amount: payment,
+      method: paymentMethod,
+      issuedAt: currentTimestamp(),
+    }
+    paymentReceiptsStore.update((current) => [receipt, ...current])
+    setNotice(`${formatMoney(payment)} payment recorded for ${selectedInvoice.id}. Receipt ${receipt.id} issued.`)
     setSelectedInvoiceId('')
     setAmount('')
+    setPaymentMethod('Cash')
     setError('')
   }
 
@@ -547,6 +566,10 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
         <span className="finance-estimate-label">Estimate only</span>
       </section>
 
+      {pageId === 'payments-receipts' && <section className="content-panel finance-ledger">
+        <div className="operations-section-heading"><div><h2>Receipt register</h2><p>{receipts.length} receipts issued in this browser.</p></div></div>
+        <div className="operations-table-wrap"><table className="operations-table"><thead><tr><th>Receipt</th><th>Invoice / patient</th><th>Amount / method</th><th>Issued</th></tr></thead><tbody>{receipts.map((receipt) => <tr key={receipt.id}><td><strong>{receipt.id}</strong></td><td>{receipt.invoiceId}<span>{receipt.patientName} · {receipt.patientId}</span></td><td><strong>{formatMoney(receipt.amount)}</strong><span>{receipt.method}</span></td><td>{formatDateTime(receipt.issuedAt)}</td></tr>)}</tbody></table>{!receipts.length && <div className="operations-empty"><ReceiptText size={20}/><strong>No receipts issued yet</strong><span>Recorded payments will create receipt references here.</span></div>}</div>
+      </section>}
       <section className="content-panel finance-ledger">
         <div className="operations-section-heading">
           <div><h2>{pageId === 'pending-charges' ? 'Outstanding charges' : pageId === 'payments-receipts' ? 'Payment history' : pageId === 'payment-status' ? 'Patient payment status' : pageId === 'billed-vs-claimed' ? 'Billed versus claimed' : 'Invoice ledger'}</h2><p>Dispensed medication charges and invoice transactions · GH₵.</p></div>
@@ -578,6 +601,7 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
           <div className="operations-modal-heading"><div><span><Wallet size={14} /> Payment preview</span><h2 id="payment-title">Record a payment</h2><p>{selectedInvoice.patientName} · {selectedInvoice.id} · balance {formatMoney(outstanding(selectedInvoice))}</p></div><button className="icon-button" aria-label="Close payment dialog" type="button" onClick={() => setSelectedInvoiceId('')}><X size={17} /></button></div>
           <form className="operations-form operations-form--single" onSubmit={recordPayment}>
             <label><span>Payment amount (GH₵)</span><input required type="number" min="0.01" max={outstanding(selectedInvoice).toFixed(2)} step="0.01" value={amount} onChange={(event) => setAmount(event.target.value)} /></label>
+            <label><span>Payment method</span><select required value={paymentMethod} onChange={(event) => setPaymentMethod(event.target.value)}><option>Cash</option><option>Mobile Money</option><option>Card</option><option>Bank transfer</option></select></label>
             {error && <p className="operations-form-error" role="alert">{error}</p>}
             <div className="operations-modal-actions"><button className="button button--secondary" type="button" onClick={() => setSelectedInvoiceId('')}>Cancel</button><button className="button button--primary" type="submit"><Check size={14} /> Record payment</button></div>
           </form>
