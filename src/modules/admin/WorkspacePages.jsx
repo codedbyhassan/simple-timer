@@ -5,6 +5,7 @@ import { getAppointments, subscribeToAppointments } from '../front-desk/frontDes
 import { getCareData, subscribeToCareData } from '../clinical/careStore.js'
 import { getDemoPatients, subscribeToDemoPatients } from '../patients/patientStore.js'
 import { addRecord, getWorkspace, patchRecord, priceFor, removeRecord, subscribeWorkspace, updateWorkspace } from './workspaceStore.js'
+import { DateTime12Input, formatDateTime12 } from '../shared/TimeInput.jsx'
 import '../role-workspaces/RoleWorkspacePages.css'
 import './WorkspacePages.css'
 
@@ -14,7 +15,7 @@ const useCare = () => useSyncExternalStore(subscribeToCareData, getCareData, get
 const useAppts = () => useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
 const today = () => new Date().toISOString().slice(0, 10)
 const money = (n) => `GH₵ ${Number(n || 0).toFixed(2)}`
-const fmt = (iso) => iso ? new Date(iso).toLocaleString() : '—'
+const fmt = (iso) => formatDateTime12(iso)
 
 function Shell({ eyebrow, title, description, children }) {
   return (
@@ -187,7 +188,7 @@ function NursingTasksPage() {
           <Field label="Patient"><PatientSelect value={form.patientId} onChange={(v) => setForm((f) => ({ ...f, patientId: v }))} /></Field>
           <Field label="Type"><select {...bind('type')}>{['Medication', 'Vitals round', 'Wound dressing', 'IV fluids', 'Other'].map((t) => <option key={t}>{t}</option>)}</select></Field>
           <Field label="Detail"><input {...bind('detail')} /></Field>
-          <Field label="Due"><input {...bind('due', 'datetime-local')} /></Field>
+          <Field label="Due"><DateTime12Input value={form.due} onChange={(due) => setForm((current) => ({ ...current, due }))} /></Field>
         </div>
         <button className="button button--primary" type="button" onClick={add}><Plus size={14} /> Add task</button>
       </Panel>

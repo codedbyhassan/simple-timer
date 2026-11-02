@@ -25,11 +25,12 @@ import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from '../clini
 import PatientLink from '../patients/PatientLink.jsx'
 import { createBrowserStore } from '../shared/browserStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
+import { formatClockTime, formatDateTime12 } from '../shared/TimeInput.jsx'
 import './OperationsPages.css'
 
 const currency = new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 })
 const formatMoney = (value) => currency.format(value)
-const formatDateTime = (value) => value ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : '—'
+const formatDateTime = (value) => formatDateTime12(value)
 const currentTimestamp = () => new Date().toISOString()
 const todayDate = new Date()
 const today = todayDate.toISOString().slice(0, 10)
@@ -359,7 +360,7 @@ export function InpatientPage() {
                   <tr>
                     <td><strong><PatientLink patientId={admission.patientId}>{admission.patientName}</PatientLink></strong><span>{admission.patientId}</span></td>
                     <td>{wards.find((ward) => ward.id === beds.find((bed) => bed.id === admission.bedId)?.ward)?.name}<strong className="operations-subvalue">{admission.bedId}</strong></td>
-                    <td>{admission.reason}</td><td>{admission.since}</td>
+                    <td>{admission.reason}</td><td>{formatClockTime(admission.since)}</td>
                     <td>{canManageBeds && <button className="operations-table-action" type="button" onClick={() => discharge(admission)} disabled={Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked)}>Discharge</button>}</td>
                   </tr>
                   <tr><td colSpan={5}>
@@ -664,7 +665,7 @@ export function ReportsPage() {
         <div className="operations-table-wrap">
           <table className="operations-table">
             <thead><tr><th>Reference</th><th>Patient</th><th>Activity</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody>{rows.map((row) => <tr key={row.ref}><td><strong>{row.ref}</strong></td><td>{row.subject}</td><td>{row.type}</td><td>{row.date && !Number.isNaN(new Date(row.date).getTime()) ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(row.date)) : '—'}</td><td><span className="report-status">{row.status}</span></td></tr>)}</tbody>
+            <tbody>{rows.map((row) => <tr key={row.ref}><td><strong>{row.ref}</strong></td><td>{row.subject}</td><td>{row.type}</td><td>{row.date && !Number.isNaN(new Date(row.date).getTime()) ? formatDateTime12(row.date) : '—'}</td><td><span className="report-status">{row.status}</span></td></tr>)}</tbody>
           </table>
           {!rows.length && <div className="operations-empty"><FileText size={20} /><strong>No activity in this report</strong><span>No activity has been recorded yet. Complete a patient visit or workflow to populate this report.</span></div>}
         </div>

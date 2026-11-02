@@ -21,6 +21,7 @@ import { getDemoPatients, subscribeToDemoPatients } from '../patients/patientSto
 import PatientLink from '../patients/PatientLink.jsx'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { calculatePrescriptionBilling, createCareId, getCareData, subscribeToCareData, updateCareData } from './careStore.js'
+import { formatClockTime, formatDateTime12 } from '../shared/TimeInput.jsx'
 import './CarePages.css'
 
 const today = new Date().toISOString().slice(0, 10)
@@ -41,7 +42,7 @@ function formatCurrency(value) {
 }
 
 function formatDateTime(value) {
-  return value ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : '—'
+  return formatDateTime12(value)
 }
 
 function currentTimestamp() {
@@ -360,7 +361,7 @@ function ClinicalPage() {
                     <div className="clinical-patient-copy">
                       <strong><PatientLink patientId={appointment.patientId}>{appointment.patientName}</PatientLink></strong>
                       <span>{appointment.patientId} · {appointment.department}</span>
-                      <small>{patient?.sex || 'Patient'} · {appointment.time} · {appointment.visitType}</small>
+                      <small>{patient?.sex || 'Patient'} · {formatClockTime(appointment.time)} · {appointment.visitType}</small>
                     </div>
                   </div>
                   <div className="clinical-queue-item-bottom">

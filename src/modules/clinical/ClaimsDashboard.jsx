@@ -3,6 +3,7 @@ import { CalendarDays, Download, Eye, FileCheck2, Printer, Search, X } from 'luc
 import ClaimFormSheet from './ClaimFormSheet.jsx'
 import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from './claimsStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
+import { formatDateTime12 } from '../shared/TimeInput.jsx'
 import './ClaimsDashboard.css'
 
 const monthNames = new Intl.DateTimeFormat('en', { month: 'long', timeZone: 'UTC' })
@@ -26,7 +27,7 @@ function dateLabel(value, withTime = false) {
   return Number.isNaN(date.getTime())
     ? '—'
     : new Intl.DateTimeFormat('en', withTime
-      ? { dateStyle: 'medium', timeStyle: 'short' }
+      ? { dateStyle: 'medium', timeStyle: 'short', hour12: true }
       : { dateStyle: 'medium', timeZone: 'UTC' }).format(date)
 }
 

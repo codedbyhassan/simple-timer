@@ -33,6 +33,7 @@ import { buildClaimXml, createClaimFromEncounter, createClaimId, getClaimPatient
 import ClaimFormSheet from '../clinical/ClaimFormSheet.jsx'
 import { getGeneratedClaimsSnapshot, saveGeneratedClaim, subscribeToGeneratedClaims } from '../clinical/claimsStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
+import { formatDateTime12 } from '../shared/TimeInput.jsx'
 
 const tabs = [
   { id: 'personal', label: 'Personal info', icon: UserRound },
@@ -114,7 +115,7 @@ const historyContent = {
 
 function formatDateTime(value) {
   return value
-    ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+    ? formatDateTime12(value)
     : '—'
 }
 
@@ -504,7 +505,7 @@ function VitalsHistory({ patientId }) {
   )
 
   const formatRecordedAt = (value) => value
-    ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value))
+    ? formatDateTime12(value)
     : 'Date not recorded'
 
   return (

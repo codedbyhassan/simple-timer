@@ -18,6 +18,7 @@ import {
 import { getAppointments, subscribeToAppointments, updateAppointments } from '../front-desk/frontDeskStore.js'
 import { getDemoPatients, subscribeToDemoPatients } from '../patients/patientStore.js'
 import PatientLink from '../patients/PatientLink.jsx'
+import { formatClockTime } from '../shared/TimeInput.jsx'
 import './NursePage.css'
 
 const today = new Date().toISOString().slice(0, 10)
@@ -205,7 +206,7 @@ function NursePage() {
                           {hasVitals ? 'Vitals recorded' : appointment.status}
                         </span>
                       </div>
-                      <span className="nurse-patient-meta">{appointment.patientId} · {appointment.department} · {appointment.time}</span>
+                      <span className="nurse-patient-meta">{appointment.patientId} · {appointment.department} · {formatClockTime(appointment.time)}</span>
                       <span className="nurse-patient-detail">
                         {patient?.sex || 'Patient'}{patient?.dob ? ` · DOB ${patient.dob}` : ''} · {appointment.visitType}
                       </span>

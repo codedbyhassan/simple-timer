@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 import { getDemoPatients, getPatientInsuranceStatus, subscribeToDemoPatients } from '../patients/patientStore.js'
 import PatientLink from '../patients/PatientLink.jsx'
+import TimeInput, { formatClockTime } from '../shared/TimeInput.jsx'
 import { getAppointments, subscribeToAppointments, updateAppointments } from './frontDeskStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import './FrontDeskPage.css'
@@ -152,7 +153,7 @@ function FrontDeskPage() {
 
   const openSms = (appointment) => {
     setSmsPatientId(appointment.patientId)
-    setSmsText(`Hello ${appointment.patientName.split(' ')[0]}, this is Ascend Hospital. Your ${appointment.time} appointment is scheduled for ${appointment.department}.`)
+    setSmsText(`Hello ${appointment.patientName.split(' ')[0]}, this is Ascend Hospital. Your ${formatClockTime(appointment.time)} appointment is scheduled for ${appointment.department}.`)
     setModal('sms')
   }
 
@@ -252,7 +253,7 @@ function FrontDeskPage() {
                   const status = patient ? getPatientInsuranceStatus(patient) : 'Non-insured'
                   return (
                     <tr key={appointment.id}>
-                      <td><span className="front-desk-time">{appointment.time}</span></td>
+                      <td><span className="front-desk-time">{formatClockTime(appointment.time)}</span></td>
                       <td>
                         <div className="front-desk-patient">
                           <span className="front-desk-avatar">{initials(appointment.patientName)}</span>
@@ -363,7 +364,7 @@ function FrontDeskPage() {
                   </select>
                 </label>
                 <label className="front-desk-form-field"><span>Date <b>*</b></span><input type="date" required value={form.date} onChange={(event) => setForm({ ...form, date: event.target.value })} /></label>
-                <label className="front-desk-form-field"><span>Time <b>*</b></span><input type="time" required value={form.time} onChange={(event) => setForm({ ...form, time: event.target.value })} /></label>
+                <label className="front-desk-form-field"><span>Time <b>*</b></span><TimeInput required value={form.time} onChange={(time) => setForm({ ...form, time })} /></label>
                 <label className="front-desk-form-field"><span>Department <b>*</b></span><select required value={form.department} onChange={(event) => setForm({ ...form, department: event.target.value })}><option value="">Select department</option>{departments.map((department) => <option key={department}>{department}</option>)}</select></label>
                 <label className="front-desk-form-field"><span>Clinician <b>*</b></span><select required value={form.clinician} onChange={(event) => setForm({ ...form, clinician: event.target.value })}><option value="">Select clinician</option>{clinicians.map((clinician) => <option key={clinician}>{clinician}</option>)}</select></label>
                 <label className="front-desk-form-field front-desk-form-field--wide"><span>Visit type</span><select value={form.visitType} onChange={(event) => setForm({ ...form, visitType: event.target.value })}><option>General consultation</option><option>Follow-up</option><option>Review</option><option>New patient</option></select></label>
