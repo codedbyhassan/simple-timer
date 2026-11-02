@@ -358,3 +358,5 @@
   font-size: 14px;
   line-height: 1.6;
 }
+
+.role-dashboard-actions{display:flex;flex-wrap:wrap;gap:9px}.role-dashboard-actions .button{min-height:38px}.role-dashboard-list{display:grid;gap:0}.role-dashboard-row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line)}.role-dashboard-row:first-child{border-top:0}.role-dashboard-row>span{display:flex;min-width:0;flex-direction:column;gap:4px}.role-dashboard-row strong{color:var(--ink-soft);font-size:14px}.role-dashboard-row small{color:var(--muted);font-size:12px}.role-dashboard-row button{flex:0 0 auto}.role-dashboard-empty{padding:22px 12px;color:var(--muted);text-align:center;font-size:13px}.role-dashboard-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:14px}@media(max-width:760px){.role-dashboard-grid{grid-template-columns:minmax(0,1fr)}.role-workspace-heading{align-items:flex-start;flex-direction:column}.role-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:420px){.role-metric-grid{grid-template-columns:minmax(0,1fr)}}
