@@ -36,6 +36,19 @@ const newLabDraft = () => ({ id: createCareId('LAB-DRAFT'), inventoryItemId: '',
 const newPrescriptionDraft = () => ({ id: createCareId('RX-DRAFT'), inventoryItemId: '', dose: '', frequency: '', duration: '', quantity: '', instructions: '' })
 const initialInventoryForm = { name: '', unit: '', onHand: '', reorderLevel: '', claimCode: '', retailPrice: '', trackStock: true }
 const currencyFormatter = new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 })
+const createInventoryMovement = ({ item, type, quantity, balance, reference = '' }) => ({
+  id: createCareId('MOV'),
+  inventoryItemId: item.id,
+  itemCode: item.itemCode,
+  itemName: item.name,
+  department: item.department,
+  type,
+  quantity,
+  balance,
+  unit: item.unit,
+  reference,
+  createdAt: currentTimestamp(),
+})
 
 function formatCurrency(value) {
   return currencyFormatter.format(value)
@@ -643,6 +656,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const completeCount = rows.length - pendingCount
   const pageTitle = requestedPageTitle || (isLab ? 'Laboratory' : 'Pharmacy')
   const selectedInventoryItem = inventory.find((item) => item.id === selectedInventoryId)
+  const inventoryMovements = (careData.inventoryMovements || []).filter((movement) => movement.department === type).slice(0, 100)
 
   const patchRecord = (recordId, changes) => {
     updateCareData((current) => isLab
@@ -723,6 +737,9 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
         labOrders: current.labOrders.map((row) => row.id === item.id
           ? { ...row, status: 'Processing', startedAt: currentTimestamp(), specimenId: row.specimenId || `SP-${Date.now().toString(36).toUpperCase()}`, specimenCollectedAt: currentTimestamp(), stockDeducted: stockItem.trackStock }
           : row),
+        inventoryMovements: stockItem.trackStock
+          ? [createInventoryMovement({ item: stockItem, type: 'Lab issue', quantity: -1, balance: stockItem.onHand - 1, reference: order.id }), ...(current.inventoryMovements || [])]
+          : current.inventoryMovements || [],
       }
     })
     setStockError(problem)
@@ -810,6 +827,9 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
             }),
           }
           : row),
+        inventoryMovements: stockItem.trackStock
+          ? [createInventoryMovement({ item: stockItem, type: 'Dispense', quantity: -quantity, balance: stockItem.onHand - quantity, reference: prescription.id }), ...(current.inventoryMovements || [])]
+          : current.inventoryMovements || [],
       }
     })
     setStockError(problem)
@@ -849,14 +869,20 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
       testTopUpCedis: null,
       pricingMode: 'verified-retail',
     }
-    updateCareData((current) => ({ ...current, inventory: [...current.inventory, item] }))
+    updateCareData((current) => ({
+      ...current,
+      inventory: [...current.inventory, item],
+      inventoryMovements: openingStock > 0 && item.trackStock
+        ? [createInventoryMovement({ item, type: 'Opening balance', quantity: openingStock, balance: openingStock }), ...(current.inventoryMovements || [])]
+        : current.inventoryMovements || [],
+    }))
     setInventoryForm(initialInventoryForm)
     setStockError('')
     setStockNotice(`${item.name} added to ${pageTitle} inventory.`)
   }
 
   const openInventoryEditor = (item) => {
-    if (!canManageInventory) return
+    if (!canEditInventory) return
     setSelectedInventoryId(item.id)
     setInventoryEditForm({
       name: item.name,
@@ -874,8 +900,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
 
   const saveInventoryEdits = (event) => {
     event.preventDefault()
-    if (!canManageInventory) {
-      setStockError('You do not have permission to manage inventory.')
+    if (!canEditInventory) {
+      setStockError('You do not have permission to manage this catalogue.')
       return
     }
     if (!selectedInventoryItem || !inventoryEditForm) return
@@ -906,8 +932,14 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
       setStockError('Enter a valid non-negative retail price, or leave it blank until confirmed.')
       return
     }
+    const stockAdjustment = onHand - selectedInventoryItem.onHand
     updateCareData((current) => ({
       ...current,
+      inventoryMovements: [
+        ...(stockAdjustment !== 0 ? [createInventoryMovement({ item: selectedInventoryItem, type: 'Adjustment', quantity: stockAdjustment, balance: onHand })] : []),
+        ...(receivedStock > 0 ? [createInventoryMovement({ item: selectedInventoryItem, type: 'Stock received', quantity: receivedStock, balance: onHand + receivedStock })] : []),
+        ...(current.inventoryMovements || []),
+      ],
       inventory: current.inventory.map((row) => row.id === selectedInventoryItem.id
         ? {
           ...row,
@@ -950,7 +982,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
       {showInventory && <section className="content-panel department-inventory">
         <div className="care-panel-heading">
           <div><h2>{pageTitle} inventory</h2><p>{isLab ? 'Stock deductions occur at lab processing, and only for tracked items.' : 'Supplied NHIS tariffs are separate from synthetic test charges and verified retail prices.'}</p></div>
-          <span>{inventory.length} items · {inventory.filter((item) => item.trackStock && item.onHand <= item.reorderLevel).length} low</span>
+          <span>{inventory.length} items · {inventory.filter((item) => item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel).length} low</span>
         </div>
         {!isLab && (
           <label className="care-search department-inventory-search">
@@ -963,11 +995,11 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
             <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`${canEditInventory ? 'Edit' : 'View'} ${item.name} inventory`} disabled={!canEditInventory}>
               <span className="department-inventory-card-heading">
                 <span><strong>{item.name}</strong><small>{item.itemCode}</small></span>
-                <span className={`department-inventory-indicator${item.trackStock && item.onHand <= item.reorderLevel ? ' department-inventory-indicator--low' : ''}`} aria-hidden="true" />
+                <span className={`department-inventory-indicator${item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel ? ' department-inventory-indicator--low' : ''}`} aria-hidden="true" />
               </span>
               <span className="department-inventory-card-stock">
                 <strong>{item.trackStock ? `${item.onHand} ${item.unit}` : 'Not tracked'}</strong>
-                <small>{item.trackStock ? item.onHand <= item.reorderLevel ? 'Reorder needed' : `Reorder at ${item.reorderLevel}` : 'Dispenses without stock deduction'}</small>
+                <small>{item.trackStock ? item.reorderLevel > 0 && item.onHand <= item.reorderLevel ? 'Reorder needed' : `Reorder at ${item.reorderLevel}` : 'Dispenses without stock deduction'}</small>
               </span>
               {item.nhisPrice != null && <span className="department-inventory-card-meta">NHIS {formatCurrency(item.nhisPrice)} · {item.nhisCategory}</span>}
               <span className={item.claimCode ? 'department-inventory-card-meta' : 'department-inventory-card-meta clinical-claim-warning'}>
@@ -980,7 +1012,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                     ? 'Retail price not set'
                     : `Retail ${formatCurrency(item.retailPrice)}`}
               </span>}
-              {canManageInventory && <span className="department-inventory-card-action">Click to edit <ArrowRight size={13} /></span>}
+              {canEditInventory && <span className="department-inventory-card-action">Click to edit <ArrowRight size={13} /></span>}
             </button>
           ))}
           {!visibleInventory.length && <p className="clinical-empty-note">No matching inventory items. Adjust the search or add an item below.</p>}
@@ -988,7 +1020,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
         {!isLab && !inventorySearch.trim() && !showAllInventory && matchingInventory.length > visibleInventory.length && (
           <button className="clinical-add-button" type="button" onClick={() => setShowAllInventory(true)}>Show all {matchingInventory.length} medicines</button>
         )}
-        {canManageInventory && <form className="department-inventory-form" onSubmit={addInventoryItem}>
+        {canEditInventory && <form className="department-inventory-form" onSubmit={addInventoryItem}>
           <div className="clinical-subheading"><h3><Plus size={14} /> Add inventory item</h3><span>{isLab ? 'Tests become selectable in Consultation' : 'Medications become selectable in Consultation'}</span></div>
           <div className="clinical-form-row clinical-form-row--three">
             <label className="care-field"><span>{isLab ? 'Test / item name' : 'Medication / item name'}</span><input required value={inventoryForm.name} onChange={(event) => setInventoryForm({ ...inventoryForm, name: event.target.value })} placeholder={isLab ? 'e.g. Full blood count' : 'Catalog medication name'} /></label>
@@ -1055,6 +1087,10 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
             </section>
           </div>
         )}
+      </section>}
+      {showInventory && ['stock-levels', 'pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId) && <section className="content-panel department-worklist">
+        <div className="care-panel-heading"><div><h2>Stock movement ledger</h2><p>Receipts, adjustments and issues recorded in this browser.</p></div><span>{inventoryMovements.length} recent movements</span></div>
+        <div className="department-inventory-movement-table"><table><thead><tr><th>When</th><th>Item</th><th>Movement</th><th>Balance</th></tr></thead><tbody>{inventoryMovements.map((movement) => <tr key={movement.id}><td>{formatDateTime(movement.createdAt)}</td><td><strong>{movement.itemName}</strong><small>{movement.itemCode}</small></td><td><strong>{movement.type}</strong><small>{movement.quantity > 0 ? '+' : ''}{movement.quantity} {movement.unit} {movement.reference ? '· ' + movement.reference : ''}</small></td><td>{movement.balance} {movement.unit}</td></tr>)}</tbody></table>{!inventoryMovements.length && <p className="clinical-empty-note">No stock movements have been recorded yet. Future receipts, lab issues and dispensing activity will appear here.</p>}</div>
       </section>}
       {showWorklist && <section className="content-panel department-worklist">
         <div className="care-panel-heading">
