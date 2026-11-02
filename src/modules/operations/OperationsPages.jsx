@@ -24,6 +24,7 @@ import { createCareId, getCareData, subscribeToCareData } from '../clinical/care
 import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from '../clinical/claimsStore.js'
 import PatientLink from '../patients/PatientLink.jsx'
 import { createBrowserStore } from '../shared/browserStore.js'
+import { getWorkspace, subscribeWorkspace, updateWorkspace } from '../admin/workspaceStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { formatClockTime, formatDateTime12 } from '../shared/TimeInput.jsx'
 import './OperationsPages.css'
@@ -146,9 +147,10 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
   const canRequestAdmission = hasPermission('admission.request')
   const canCompleteDischargeChecklist = hasPermission('discharge.checklist')
   const inpatientData = useSyncExternalStore(inpatientStore.subscribe, inpatientStore.getSnapshot, inpatientStore.getSnapshot)
+  const workspace = useSyncExternalStore(subscribeWorkspace, getWorkspace, getWorkspace)
   const { beds, admissions, requests = [] } = inpatientData
   const facilityWards = inpatientData.wards || defaultWards
-  const facilityDepartments = inpatientData.departments || defaultDepartments
+  const facilityDepartments = workspace.departments || defaultDepartments
   const [wardFilter, setWardFilter] = useState('all')
   const [query, setQuery] = useState('')
   const [admitOpen, setAdmitOpen] = useState(false)
@@ -181,7 +183,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
     const name = departmentName.trim()
     if (!canManageBeds || !name) return
     if (facilityDepartments.some((item) => item.toLowerCase() === name.toLowerCase())) { setFormError('This department already exists.'); return }
-    inpatientStore.update((current) => ({ ...current, departments: [...(current.departments || defaultDepartments), name] }))
+    updateWorkspace((current) => ({ ...current, departments: [...(current.departments || defaultDepartments), name] }), { actor: 'Hospital Administrator', action: 'Facility department created', detail: name })
     setDepartmentName(''); setFormError(''); setNotice(`${name} department added.`)
   }
 
