@@ -44,7 +44,7 @@ function recordedTime(value) {
   return new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 }
 
-function NursePage() {
+function NursePage({ pageTitle = 'Triage queue' }) {
   const appointments = useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
   const [query, setQuery] = useState('')
@@ -130,7 +130,7 @@ function NursePage() {
       <header className="nurse-heading">
         <div>
           <div className="nurse-eyebrow"><HeartPulse size={15} /> Care operations</div>
-          <h1 id="nurse-title">Nursing station</h1>
+          <h1 id="nurse-title">{pageTitle}</h1>
           <p>Assess checked-in patients, record their observations, and hand off to consultation.</p>
         </div>
         <div className="nurse-shift"><span className="nurse-shift-dot" /> Today’s patient flow</div>
