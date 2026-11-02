@@ -297,7 +297,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
 
       {notice && <p className="operations-status" role="status"><CheckCircle2 size={14} />{notice}</p>}
 
-      {(pageId === 'admission-requests' || pageId === 'departments-wards') && <section className="content-panel inpatient-admissions">
+      {(pageId === 'admission-requests' || (pageId === 'departments-wards' && requests.length > 0)) && <section className="content-panel inpatient-admissions">
         <div className="operations-section-heading">
           <div><h2>Admission requests</h2><p>{requests.filter((request) => request.status === 'Requested').length} awaiting bed assignment</p></div>
         </div>
@@ -311,6 +311,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
               <td>{canManageBeds && request.status === 'Requested' && <button className="operations-table-action" type="button" onClick={() => openRequestedAdmission(request)}>Assign bed</button>}</td>
             </tr>)}</tbody>
           </table>
+          {!requests.length && <div className="operations-empty"><BedDouble size={20}/><strong>No admission requests</strong><span>New nursing handoffs will appear here for bed assignment.</span></div>}
         </div>
       </section>}
 
