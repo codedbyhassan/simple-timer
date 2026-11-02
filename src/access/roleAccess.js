@@ -40,9 +40,10 @@ export const roleDefinitions = [
     id: 'reception',
     name: 'Reception',
     description: 'Receptionist + Records officer',
-    homePage: 'reception-desk',
+    homePage: 'reception-overview',
     groups: [
       group('Reception', [
+        item('reception-overview', 'Overview', 'reception.dashboard.view', 'role-dashboard', LayoutDashboard),
         item('reception-desk', 'Reception desk', 'reception.dashboard.view', 'front-desk', LayoutDashboard),
         item('appointments', 'Appointments', 'appointments.manage', 'front-desk', CalendarDays),
         item('patients', 'Patients', 'patients.directory', 'patients', Users),
@@ -57,9 +58,10 @@ export const roleDefinitions = [
     id: 'nurse',
     name: 'Nurse',
     description: 'Triage nurse + Ward nurse',
-    homePage: 'triage-queue',
+    homePage: 'nurse-overview',
     groups: [
       group('Nursing', [
+        item('nurse-overview', 'Overview', 'nursing.triage', 'role-dashboard', LayoutDashboard),
         item('triage-queue', 'Triage queue', 'nursing.triage', 'nursing', HeartPulse),
         item('ward-bed-board', 'Ward & bed board', 'ward.view', 'inpatient', BedDouble),
         item('nursing-tasks', 'Nursing tasks', 'nursing.tasks', 'workspace', ClipboardList),
@@ -73,9 +75,10 @@ export const roleDefinitions = [
     id: 'doctor',
     name: 'Doctor / Consulting',
     description: 'Consulting clinician',
-    homePage: 'doctor-queue',
+    homePage: 'doctor-overview',
     groups: [
       group('Doctor workspace', [
+        item('doctor-overview', 'Overview', 'clinical.queue.view', 'role-dashboard', LayoutDashboard),
         item('doctor-queue', 'My queue', 'clinical.queue.view', 'clinical', LayoutDashboard),
         item('consultation', 'Consultation', 'clinical.consult', 'clinical', Stethoscope),
         item('results-inbox', 'Results inbox', 'clinical.results.review', 'clinical', FlaskConical),
@@ -88,9 +91,10 @@ export const roleDefinitions = [
     id: 'lab',
     name: 'Lab',
     description: 'Laboratory technician',
-    homePage: 'lab-worklist',
+    homePage: 'lab-overview',
     groups: [
       group('Laboratory', [
+        item('lab-overview', 'Overview', 'lab.worklist.view', 'role-dashboard', LayoutDashboard),
         item('lab-worklist', 'Worklist', 'lab.worklist.view', 'laboratory', LayoutDashboard),
         item('specimens', 'Specimens', 'lab.specimens.manage', 'laboratory', FlaskConical),
         item('lab-results', 'Result entry & verification', 'lab.results.enter', 'laboratory', FileCheck2),
@@ -104,9 +108,10 @@ export const roleDefinitions = [
     id: 'pharmacy',
     name: 'Pharmacy',
     description: 'Pharmacist + Pharmacy assistant',
-    homePage: 'pharmacy-queue',
+    homePage: 'pharmacy-overview',
     groups: [
       group('Pharmacy', [
+        item('pharmacy-overview', 'Overview', 'pharmacy.queue.view', 'role-dashboard', LayoutDashboard),
         item('pharmacy-queue', 'Prescription queue', 'pharmacy.queue.view', 'pharmacy', LayoutDashboard),
         item('dispensing-panel', 'Dispensing panel', 'pharmacy.dispense', 'pharmacy', Pill),
         item('stock-alerts', 'Stock alerts', 'inventory.read', 'pharmacy', Bell),
@@ -120,9 +125,10 @@ export const roleDefinitions = [
     id: 'cashier',
     name: 'Cashier / Accountant',
     description: 'Cashier + Finance officer',
-    homePage: 'pending-charges',
+    homePage: 'cashier-overview',
     groups: [
       group('Cashier desk', [
+        item('cashier-overview', 'Overview', 'cashier.charges.view', 'role-dashboard', LayoutDashboard),
         item('pending-charges', 'Pending charges', 'cashier.charges.view', 'finance', Wallet),
         item('payments-receipts', 'Payment panel & receipts', 'cashier.payment.record', 'finance', ReceiptText),
         item('till-shift', 'My till & shift', 'cashier.shift.view', 'workspace', ClipboardList),
@@ -137,9 +143,10 @@ export const roleDefinitions = [
     id: 'claims',
     name: 'Claims Officer',
     description: 'Claims preparation and validation',
-    homePage: 'claims-pipeline',
+    homePage: 'claims-overview',
     groups: [
       group('Claims office', [
+        item('claims-overview', 'Overview', 'claims.pipeline.view', 'role-dashboard', LayoutDashboard),
         item('claims-pipeline', 'Pipeline', 'claims.pipeline.view', 'claims', LayoutDashboard),
         item('claims-list', 'Claims list & detail', 'claims.view', 'claims', FileCheck2),
         item('claims-mapping', 'Mapping queue', 'claims.mapping.manage', 'claims', ClipboardList),
