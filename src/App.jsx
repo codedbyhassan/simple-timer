@@ -198,7 +198,7 @@ function App() {
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [])
 
-  const dismissToast = (toastId) => setToasts((current) => current.filter((toast) => toast.id !== toastId))
+  const dismissToast = useCallback((toastId) => setToasts((current) => current.filter((toast) => toast.id !== toastId)), [])
   const addToast = (toast) => setToasts((current) => [...current, { ...toast, id: `${Date.now()}-${Math.random()}` }].slice(-3))
   const handleSignIn = (selectedRoles) => {
     try {
