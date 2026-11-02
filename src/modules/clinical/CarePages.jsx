@@ -844,8 +844,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
           }
           : row),
         inventoryMovements: stockItem.trackStock
-          ? [createInventoryMovement({ item: stockItem, type: 'Dispense', quantity: -quantity, balance: stockItem.onHand - quantity, reference: prescription.id }), ...(current.inventoryMovements || [])]
-          : current.inventoryMovements || [],
+          ? [createInventoryMovement({ item: stockItem, type: 'Dispense', quantity: -quantity, balance: stockItem.onHand - quantity, reference: prescription.id }), ...getInventoryMovements(current)]
+          : getInventoryMovements(current),
       }
     })
     setStockError(problem)
