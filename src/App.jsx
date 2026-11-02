@@ -33,6 +33,7 @@ import {
 import './App.css'
 import ClinicalPage, { LaboratoryPage, PharmacyPage } from './modules/clinical/CarePages.jsx'
 import ClaimsDashboard from './modules/clinical/ClaimsDashboard.jsx'
+import ClaimsWorkspacePage from './modules/clinical/ClaimsWorkspacePage.jsx'
 import FrontDeskPage from './modules/front-desk/FrontDeskPage.jsx'
 import NursePage from './modules/nursing/NursePage.jsx'
 import { FinancePage, InpatientPage, ReportsPage } from './modules/operations/OperationsPages.jsx'
@@ -258,7 +259,9 @@ function App() {
   } else if (pageKind === 'patients') {
     pageContent = <PatientsPage />
   } else if (pageKind === 'claims') {
-    pageContent = <ClaimsDashboard pageId={activePage} pageTitle={pageTitle} />
+    pageContent = activePage === 'claims-list'
+      ? <ClaimsDashboard pageId={activePage} pageTitle={pageTitle} />
+      : <ClaimsWorkspacePage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'inpatient') {
     pageContent = <InpatientPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'finance') {
