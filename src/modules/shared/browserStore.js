@@ -25,7 +25,12 @@ export function createBrowserStore({ key, seed, validate = (_value) => true }) {
   }
 
   function handleStorage(event) {
-    if (event.key !== storageKey || event.newValue === null) return
+    if (event.key !== storageKey) return
+    if (event.newValue === null) {
+      // A clear/reset in another tab must not leave this tab showing stale records.
+      notify(typeof seed === 'function' ? seed() : seed)
+      return
+    }
     try {
       const next = JSON.parse(event.newValue)
       if (!validate(next)) throw new Error('Received preview data did not match the expected format.')
