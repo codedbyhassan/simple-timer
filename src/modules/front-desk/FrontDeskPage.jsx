@@ -304,7 +304,7 @@ function FrontDeskPage({ pageId = 'reception-desk', pageTitle = 'Reception desk'
         </div>
       </section>
 
-      <section className="front-desk-bottom-grid">
+      {pageId === 'reception-desk' && <section className="front-desk-bottom-grid">
         <article className="content-panel front-desk-queue-panel">
           <div className="front-desk-board-heading">
             <div><h2>Live check-in queue</h2><p>Patients ready for their next care step</p></div>
@@ -346,7 +346,7 @@ function FrontDeskPage({ pageId = 'reception-desk', pageTitle = 'Reception desk'
           </button>}
           <div className="front-desk-quick-note"><ShieldAlert size={14} /> Arkesel SMS sending will be enabled after secure backend configuration.</div>
         </article>
-      </section>
+      </section>}
 
       {(modal === 'booking' || modal === 'walk-in') && (
         <div className="front-desk-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setModal('')}>
