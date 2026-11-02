@@ -32,7 +32,7 @@ function Shell({ eyebrow, title, description, children }) {
   )
 }
 
-function Panel({ title, children }) {
+function Panel({ title = '', children }) {
   return <section className="role-panel ws-panel">{title && <h2 className="ws-title">{title}</h2>}{children}</section>
 }
 

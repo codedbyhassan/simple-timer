@@ -273,7 +273,7 @@ function PatientsPage() {
             <div className="patients-form-grid">
               <label className="patients-form-field patients-form-field--wide">
                 <span>Full name <b>*</b></span>
-                <input autoFocus required maxLength="120" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
+                <input autoFocus required maxLength={120} value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} />
               </label>
               <label className="patients-form-field">
                 <span>Date of birth <b>*</b></span>
@@ -291,11 +291,11 @@ function PatientsPage() {
               </label>
               <label className="patients-form-field">
                 <span>Phone number <b>*</b></span>
-                <input type="tel" required maxLength="32" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
+                <input type="tel" required maxLength={32} value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
               </label>
               <label className="patients-form-field">
                 <span>Email <small>Optional</small></span>
-                <input type="email" maxLength="254" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
+                <input type="email" maxLength={254} value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} />
               </label>
               <label className="patients-form-field patients-form-field--wide">
                 <span>Insurance provider</span>
@@ -308,7 +308,7 @@ function PatientsPage() {
                 <>
                   <label className="patients-form-field">
                     <span>Member number <b>*</b></span>
-                    <input required maxLength="48" value={form.insuranceMemberId} onChange={(event) => setForm({ ...form, insuranceMemberId: event.target.value })} />
+                    <input required maxLength={48} value={form.insuranceMemberId} onChange={(event) => setForm({ ...form, insuranceMemberId: event.target.value })} />
                   </label>
                   <label className="patients-form-field">
                     <span>Coverage expiry <b>*</b></span>

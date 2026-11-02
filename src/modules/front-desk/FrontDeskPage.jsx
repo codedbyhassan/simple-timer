@@ -387,7 +387,7 @@ function FrontDeskPage() {
               <div><span className="front-desk-modal-icon"><MessageSquareText size={18} /></span><h2 id="sms-title">Appointment SMS draft</h2><p>To {smsPatient.name} · {smsPatient.phone}</p></div>
               <button className="icon-button" type="button" aria-label="Close SMS draft" onClick={() => setModal('')}><X size={18} /></button>
             </div>
-            <label className="front-desk-form-field"><span>Message</span><textarea rows="4" maxLength="320" value={smsText} onChange={(event) => setSmsText(event.target.value)} /></label>
+            <label className="front-desk-form-field"><span>Message</span><textarea rows={4} maxLength={320} value={smsText} onChange={(event) => setSmsText(event.target.value)} /></label>
             <div className="front-desk-form-note"><ShieldAlert size={14} /> Arkesel is not configured. This draft will not be sent.</div>
             <div className="front-desk-modal-actions"><span>{smsText.length}/320 characters</span><button className="button button--secondary" type="button" onClick={() => setModal('')}>Close draft</button></div>
           </section>

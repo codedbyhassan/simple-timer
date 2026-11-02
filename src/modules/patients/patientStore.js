@@ -115,7 +115,7 @@ export function getPatientInsuranceStatus(patient) {
   const expiry = new Date(`${patient.insuranceExpires}T00:00:00Z`)
   const today = new Date()
   today.setUTCHours(0, 0, 0, 0)
-  const daysUntilExpiry = Math.ceil((expiry - today) / 86_400_000)
+  const daysUntilExpiry = Math.ceil((expiry.getTime() - today.getTime()) / 86_400_000)
   if (daysUntilExpiry < 0) return 'Non-insured'
   if (daysUntilExpiry <= 30) return 'Near expiry'
   return 'Insured'

@@ -430,15 +430,15 @@ function ClinicalPage() {
                 </label>
                 <label className="care-field">
                   <span>History of present illness</span>
-                  <textarea rows="2" value={form.history} onChange={(event) => setForm({ ...form, history: event.target.value })} placeholder="Symptoms, onset, duration, relevant history" />
+                  <textarea rows={2} value={form.history} onChange={(event) => setForm({ ...form, history: event.target.value })} placeholder="Symptoms, onset, duration, relevant history" />
                 </label>
                 <label className="care-field">
                   <span>Examination findings</span>
-                  <textarea rows="2" value={form.examination} onChange={(event) => setForm({ ...form, examination: event.target.value })} placeholder="Relevant clinical examination" />
+                  <textarea rows={2} value={form.examination} onChange={(event) => setForm({ ...form, examination: event.target.value })} placeholder="Relevant clinical examination" />
                 </label>
                 <label className="care-field">
                   <span>Assessment and plan</span>
-                  <textarea rows="2" value={form.plan} onChange={(event) => setForm({ ...form, plan: event.target.value })} placeholder="Treatment and follow-up plan" />
+                  <textarea rows={2} value={form.plan} onChange={(event) => setForm({ ...form, plan: event.target.value })} placeholder="Treatment and follow-up plan" />
                 </label>
               </div>}
 

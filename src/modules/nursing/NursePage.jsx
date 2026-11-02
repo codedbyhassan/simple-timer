@@ -334,7 +334,7 @@ function NursePage() {
               </div>
               <label className="nurse-field nurse-notes-field">
                 <span>Assessment notes <small>optional</small></span>
-                <textarea rows="3" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} placeholder="Add brief nursing observations for the clinician" />
+                <textarea rows={3} value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} placeholder="Add brief nursing observations for the clinician" />
               </label>
               <div className="nurse-modal-hint"><ShieldAlert size={14} /> Recorded observations are passed to the clinician; this preview does not provide clinical alerts.</div>
               {formError && <p className="nurse-form-error" role="alert">{formError}</p>}

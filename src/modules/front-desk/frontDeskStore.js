@@ -5,6 +5,7 @@ const today = () => new Date().toISOString().slice(0, 10)
 
 function seedAppointments() {
   const patients = getDemoPatients()
+  /** @type {Array<[number, string, string, string, string]>} */
   const assignments = [
     [0, '08:30', 'General practice', 'Dr. K. Mensah', 'With clinician'],
     [1, '08:45', 'Outpatient', 'Dr. A. Owusu', 'In triage'],

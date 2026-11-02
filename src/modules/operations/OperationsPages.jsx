@@ -30,6 +30,8 @@ import './OperationsPages.css'
 
 const currency = new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 })
 const formatMoney = (value) => currency.format(value)
+const formatDateTime = (value) => value ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)) : '—'
+const currentTimestamp = () => new Date().toISOString()
 const todayDate = new Date()
 const today = todayDate.toISOString().slice(0, 10)
 const todayLabel = new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(todayDate)
@@ -366,7 +368,7 @@ export function InpatientPage() {
                     <td>{admission.reason}</td><td>{admission.since}</td>
                     <td>{canManageBeds && <button className="operations-table-action" type="button" onClick={() => discharge(admission)} disabled={Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked)}>Discharge</button>}</td>
                   </tr>
-                  <tr><td colSpan="5">
+                  <tr><td colSpan={5}>
                     <div className="inpatient-discharge-checklist">
                       <strong>Discharge checklist</strong>
                       {dischargeChecklistItems.map(([id, label]) => <label key={id}>

@@ -1,4 +1,4 @@
-export function createBrowserStore({ key, seed, validate = () => true }) {
+export function createBrowserStore({ key, seed, validate = (_value) => true }) {
   const storageKey = `ascend-hms-preview-${key}-v1`
   const subscribers = new Set()
   const channel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(`${storageKey}:updates`)
