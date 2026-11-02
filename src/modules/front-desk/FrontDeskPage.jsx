@@ -46,7 +46,7 @@ function formatDay(value) {
   return new Intl.DateTimeFormat('en', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(`${value}T12:00:00`))
 }
 
-function FrontDeskPage() {
+function FrontDeskPage({ pageId = 'reception-desk', pageTitle = 'Reception desk' }) {
   const { hasPermission } = useRoleAccess()
   const canManageAppointments = hasPermission('appointments.manage')
   const canManageQueue = hasPermission('opd.queue.manage')
@@ -70,13 +70,16 @@ function FrontDeskPage() {
     const term = query.trim().toLowerCase()
     return datedAppointments
       .filter((appointment) => {
-        const matchesStatus = statusFilter === 'All statuses' || appointment.status === statusFilter
+        const queueOnly = ['opd-queue', 'nurse-opd-queue', 'doctor-opd-queue'].includes(pageId)
+        const appointmentOnly = pageId === 'appointments'
+        const matchesPage = queueOnly ? ['Checked in', 'In triage', 'With clinician'].includes(appointment.status) : !appointmentOnly || appointment.status !== 'Cancelled'
+        const matchesStatus = matchesPage && (statusFilter === 'All statuses' || appointment.status === statusFilter)
         const patient = patients.find((item) => item.id === appointment.patientId)
         const searchable = `${appointment.patientName} ${appointment.patientId} ${appointment.department} ${appointment.clinician} ${patient?.phone || appointment.phone}`.toLowerCase()
         return matchesStatus && (!term || searchable.includes(term))
       })
       .sort((left, right) => left.time.localeCompare(right.time))
-  }, [datedAppointments, patients, query, statusFilter])
+  }, [datedAppointments, pageId, patients, query, statusFilter])
 
   const summary = useMemo(() => {
     const counts = { Scheduled: 0, 'Checked in': 0, 'In triage': 0, 'With clinician': 0, Completed: 0, Cancelled: 0 }
@@ -164,8 +167,8 @@ function FrontDeskPage() {
       <header className="front-desk-heading">
         <div>
           <div className="front-desk-eyebrow"><ClipboardCheck size={15} /> Care operations</div>
-          <h1 id="front-desk-title">Front desk</h1>
-          <p>Manage today’s appointments, patient arrivals, and check-in queue.</p>
+          <h1 id="front-desk-title">{pageTitle}</h1>
+          <p>{pageId.includes('opd-queue') ? 'Monitor patients checked in and moving through the outpatient care queue.' : pageId === 'appointments' ? 'Review scheduled visits, manage bookings and follow appointment status.' : 'Coordinate arrivals, appointment bookings and the outpatient front desk.'}</p>
         </div>
         <div className="front-desk-heading-actions">
           <label className="front-desk-date">
@@ -207,8 +210,8 @@ function FrontDeskPage() {
       <section className="front-desk-board content-panel" aria-label="Front desk appointment board">
         <div className="front-desk-board-heading">
           <div>
-            <h2>Appointment board</h2>
-            <p>Check patients in and track their visit through the queue.</p>
+            <h2>{pageId.includes('opd-queue') ? 'Outpatient queue' : pageId === 'appointments' ? 'Appointment schedule' : 'Appointment board'}</h2>
+            <p>{pageId.includes('opd-queue') ? 'Patients who have arrived and are waiting for or receiving care.' : 'Check patients in and track their visit through the queue.'}</p>
           </div>
           <div className="front-desk-board-count"><Users size={15} /> {datedAppointments.length} visits</div>
         </div>
