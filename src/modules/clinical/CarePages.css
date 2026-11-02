@@ -1299,3 +1299,5 @@
     flex-direction: column;
   }
 }
+
+.department-inventory-movement-table{width:100%;overflow:auto}.department-inventory-movement-table table{width:100%;border-collapse:collapse;text-align:left}.department-inventory-movement-table th,.department-inventory-movement-table td{padding:10px 9px;border-top:1px solid var(--line);color:var(--muted-strong);font-size:12px;white-space:nowrap}.department-inventory-movement-table th{color:var(--muted);font-weight:600}.department-inventory-movement-table td strong,.department-inventory-movement-table td small{display:block}.department-inventory-movement-table td strong{color:var(--ink-soft);font-size:12px}.department-inventory-movement-table td small{margin-top:3px;color:var(--muted);font-size:11px}
