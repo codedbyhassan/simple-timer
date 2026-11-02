@@ -86,9 +86,15 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
   const clinicalVisits = useMemo(
     () => appointments
       .filter((appointment) => appointment.date === today && ['With clinician', 'In consultation'].includes(appointment.status))
-      .filter((appointment) => pageId !== 'results-inbox' || careData.labOrders.some((order) => order.appointmentId === appointment.id && order.status === 'Result ready' && !order.reviewedAt))
+      .filter((appointment) => pageId === 'results-inbox'
+        ? careData.labOrders.some((order) => order.appointmentId === appointment.id && order.status === 'Result ready' && !order.reviewedAt)
+        : pageId === 'doctor-queue'
+          ? !careData.consultations.some((consultation) => consultation.appointmentId === appointment.id && consultation.status !== 'Completed')
+          : pageId === 'consultation'
+            ? careData.consultations.some((consultation) => consultation.appointmentId === appointment.id && consultation.status !== 'Completed')
+            : true)
       .sort((left, right) => left.time.localeCompare(right.time)),
-    [appointments, careData.labOrders, pageId],
+    [appointments, careData.consultations, careData.labOrders, pageId],
   )
   const visibleVisits = useMemo(() => {
     const term = query.trim().toLowerCase()
@@ -625,10 +631,12 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const visible = rows.filter((item) => {
     const matchesSearch = `${item.patientName} ${item.patientId} ${isLab ? item.testName : item.medication}`.toLowerCase().includes(term)
     if (!matchesSearch) return false
-    if (isSpecimenView) return ['Requested', 'Processing'].includes(item.status)
+    if (isSpecimenView) return Boolean(item.specimenId) && ['Processing', 'Result entered', 'Result ready'].includes(item.status)
     if (isCriticalView) return Boolean(item.critical) && item.status === 'Result ready'
     if (isLabResultsView) return ['Processing', 'Result entered'].includes(item.status)
-    if (pageId === 'pharmacy-queue' || pageId === 'dispensing-panel') return item.status !== 'Dispensed'
+    if (pageId === 'lab-worklist') return item.status === 'Requested'
+    if (pageId === 'pharmacy-queue') return ['Requested', 'Sent to pharmacy'].includes(item.status)
+    if (pageId === 'dispensing-panel') return item.status === 'Verified'
     return true
   })
   const pendingCount = rows.filter((item) => isLab ? item.status !== 'Result ready' : item.status !== 'Dispensed').length
@@ -729,7 +737,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
     let problem = ''
     updateCareData((current) => {
       const prescription = current.prescriptions.find((row) => row.id === item.id)
-      if (!prescription || prescription.status !== 'Requested') {
+      if (!prescription || !['Requested', 'Sent to pharmacy'].includes(prescription.status)) {
         problem = 'This prescription is no longer waiting for verification.'
         return current
       }
