@@ -5,6 +5,7 @@ const now = () => new Date().toISOString()
 
 const seed = () => ({
   staff: [],
+  departments: ['General practice', 'Outpatient', 'Paediatrics', 'Cardiology', 'Dental'],
   profile: {
     name: 'Ascend Demo Hospital',
     nhisProviderNo: '',
