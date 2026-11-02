@@ -39,6 +39,7 @@ import { FinancePage, InpatientPage, ReportsPage } from './modules/operations/Op
 import PatientsPage from './modules/patients/PatientsPage.jsx'
 import { getDemoPatients, subscribeToDemoPatients } from './modules/patients/patientStore.js'
 import { ManagementDashboard, PermissionSettingsPage, RoleModulePreview } from './modules/role-workspaces/RoleWorkspacePages.jsx'
+import RoleDashboardPage from './modules/role-workspaces/RoleDashboardPage.jsx'
 import { WorkspacePage } from './modules/admin/WorkspacePages.jsx'
 
 const GRANTS_STORAGE_KEY = 'ascend-hms-preview-role-grants-v1'
@@ -245,25 +246,27 @@ function App() {
 
   let pageContent
   if (pageKind === 'front-desk') {
-    pageContent = <FrontDeskPage />
+    pageContent = <FrontDeskPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'nursing') {
-    pageContent = <NursePage />
+    pageContent = <NursePage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'clinical') {
-    pageContent = <ClinicalPage />
+    pageContent = <ClinicalPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'laboratory') {
-    pageContent = <LaboratoryPage />
+    pageContent = <LaboratoryPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'pharmacy') {
-    pageContent = <PharmacyPage />
+    pageContent = <PharmacyPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'patients') {
     pageContent = <PatientsPage />
   } else if (pageKind === 'claims') {
-    pageContent = <ClaimsDashboard />
+    pageContent = <ClaimsDashboard pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'inpatient') {
-    pageContent = <InpatientPage />
+    pageContent = <InpatientPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'finance') {
-    pageContent = <FinancePage />
+    pageContent = <FinancePage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'reports') {
     pageContent = <ReportsPage />
+  } else if (pageKind === 'role-dashboard') {
+    pageContent = <RoleDashboardPage roleId={activePage.replace(/-overview$/, '')} />
   } else if (pageKind === 'management') {
     pageContent = <ManagementDashboard />
   } else if (pageKind === 'permissions') {
