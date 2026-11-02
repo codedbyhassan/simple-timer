@@ -138,7 +138,7 @@ const inpatientStore = createBrowserStore({
     && Array.isArray(value.admissions),
 })
 
-export function InpatientPage() {
+export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatient' }) {
   const patients = usePatients()
   const { hasPermission } = useRoleAccess()
   const canManageBeds = hasPermission('admin.facilities.manage')
@@ -281,8 +281,8 @@ export function InpatientPage() {
       <PageHeading
         icon={BedDouble}
         eyebrow="Care operations"
-        title="Inpatient"
-        description="Coordinate admissions, ward capacity, bed assignments and discharges."
+        title={pageTitle}
+        description={pageId === 'admission-requests' ? 'Review admission requests submitted by the nursing team and assign available beds.' : pageId === 'discharge-checklist' ? 'Complete discharge requirements for admitted patients before discharge.' : pageId === 'my-admissions' ? 'Review patients currently admitted under the clinical service.' : pageId === 'departments-wards' ? 'Review ward capacity and current bed assignments.' : 'Coordinate admissions, ward capacity, bed assignments and discharges.'}
         aside={canManageBeds
           ? <button className="button button--primary" type="button" onClick={() => { setSelectedPatientId(''); setSelectedRequestId(''); setReason(''); setAdmitOpen(true); setFormError(''); setNotice('') }} disabled={!availablePatients.length || !available}><Plus size={15} /> Admit patient</button>
           : canRequestAdmission && <button className="button button--primary" type="button" onClick={() => { setSelectedPatientId(''); setReason(''); setRequestOpen(true); setFormError(''); setNotice('') }} disabled={!requestablePatients.length}><Plus size={15} /> Request admission</button>}
@@ -297,7 +297,7 @@ export function InpatientPage() {
 
       {notice && <p className="operations-status" role="status"><CheckCircle2 size={14} />{notice}</p>}
 
-      {requests.length > 0 && <section className="content-panel inpatient-admissions">
+      {(pageId === 'admission-requests' || pageId === 'departments-wards') && <section className="content-panel inpatient-admissions">
         <div className="operations-section-heading">
           <div><h2>Admission requests</h2><p>{requests.filter((request) => request.status === 'Requested').length} awaiting bed assignment</p></div>
         </div>
@@ -314,8 +314,8 @@ export function InpatientPage() {
         </div>
       </section>}
 
-      <div className="inpatient-layout">
-        <section className="content-panel inpatient-wards">
+      {pageId !== 'admission-requests' && <div className="inpatient-layout">
+        <section className="content-panel inpatient-wards" hidden={pageId === 'my-admissions' || pageId === 'discharge-checklist'}>
           <div className="operations-section-heading">
             <div><h2>Ward capacity</h2><p>Select a ward to filter beds and admissions.</p></div>
             <select aria-label="Filter by ward" value={wardFilter} onChange={(event) => setWardFilter(event.target.value)}>
@@ -342,7 +342,7 @@ export function InpatientPage() {
           </div>
         </section>
 
-        <section className="content-panel inpatient-admissions">
+        <section className="content-panel inpatient-admissions" hidden={pageId === 'ward-bed-board' || pageId === 'departments-wards'}>
           <div className="operations-section-heading">
             <div><h2>Current admissions</h2><p>{activeAdmissions.length} patients currently assigned</p></div>
             <label className="operations-search"><Search size={14} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find patient or bed" aria-label="Search admissions" /></label>
@@ -378,7 +378,7 @@ export function InpatientPage() {
             {!visibleAdmissions.length && <div className="operations-empty"><BedDouble size={20} /><strong>No active admissions match</strong><span>Adjust the ward filter or search.</span></div>}
           </div>
         </section>
-      </div>
+      </div>}
 
       {admitOpen && <div className="operations-modal-backdrop" onMouseDown={(event) => event.target === event.currentTarget && setAdmitOpen(false)}>
         <section className="operations-modal" role="dialog" aria-modal="true" aria-labelledby="admit-modal-title">
@@ -440,7 +440,7 @@ const financeStore = createBrowserStore({
     && Number.isFinite(invoice.paid)),
 })
 
-export function FinancePage() {
+export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' }) {
   const claims = useClaims()
   const care = useCare()
   const { hasPermission } = useRoleAccess()
@@ -486,6 +486,8 @@ export function FinancePage() {
   }), { billed: 0, covered: 0, collected: 0, due: 0 })
   const visibleInvoices = invoices.filter((invoice) => {
     const balance = outstanding(invoice)
+    if (['pending-charges', 'payment-status'].includes(pageId) && balance <= 0) return false
+    if (pageId === 'payments-receipts' && invoice.paid <= 0) return false
     const status = balance === 0 ? 'settled' : invoice.paid > 0 ? 'partial' : 'due'
     return (filter === 'all' || filter === status)
       && `${invoice.id} ${invoice.patientName} ${invoice.patientId} ${invoice.service}`.toLowerCase().includes(query.trim().toLowerCase())
@@ -527,7 +529,7 @@ export function FinancePage() {
 
   return (
     <section className="operations-page" aria-labelledby="finance-title">
-      <PageHeading icon={Wallet} eyebrow="Revenue cycle" title="Finance" description="Review invoices, dispensed medication charges, patient balances and NHIS estimates." aside={<span className="operations-date-badge"><CalendarDays size={14} /> {todayLabel}</span>} />
+      <PageHeading icon={Wallet} eyebrow="Revenue cycle" title={pageTitle} description={pageId === 'pending-charges' ? 'Review invoices with an outstanding patient balance and record payments.' : pageId === 'payments-receipts' ? 'Review recorded payments and receipt references.' : pageId === 'payment-status' ? 'Check patient payment balances and invoice status.' : pageId === 'billed-vs-claimed' ? 'Compare billed service totals with generated claim records and available tariff estimates.' : 'Review invoices, dispensed medication charges, patient balances and NHIS estimates.'} aside={<span className="operations-date-badge"><CalendarDays size={14} /> {todayLabel}</span>} />
       {claims.error && <div className="operations-error" role="alert">{claims.error}</div>}
 
       <div className="operations-metrics operations-metrics--four">
@@ -547,7 +549,7 @@ export function FinancePage() {
 
       <section className="content-panel finance-ledger">
         <div className="operations-section-heading">
-          <div><h2>Invoice ledger</h2><p>Dispensed medication charges and invoice transactions · GH₵.</p></div>
+          <div><h2>{pageId === 'pending-charges' ? 'Outstanding charges' : pageId === 'payments-receipts' ? 'Payment history' : pageId === 'payment-status' ? 'Patient payment status' : pageId === 'billed-vs-claimed' ? 'Billed versus claimed' : 'Invoice ledger'}</h2><p>Dispensed medication charges and invoice transactions · GH₵.</p></div>
           <label className="operations-search"><Search size={14} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Patient, service or invoice" aria-label="Search invoice ledger" /></label>
         </div>
         <div className="operations-filter-row">
