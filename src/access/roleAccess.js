@@ -17,6 +17,7 @@ import {
   Pill,
   ReceiptText,
   Settings,
+  ShieldAlert,
   Stethoscope,
   UserRound,
   Users,
