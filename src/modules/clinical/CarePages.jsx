@@ -49,6 +49,22 @@ const createInventoryMovement = ({ item, type, quantity, balance, reference = ''
   reference,
   createdAt: currentTimestamp(),
 })
+function getInventoryMovements(data) {
+  if (Array.isArray(data.inventoryMovements) && data.inventoryMovements.length) return data.inventoryMovements
+  return (data.inventory || []).filter((item) => item.trackStock && item.onHand > 0).map((item) => ({
+    id: `OPEN-${item.id}`,
+    inventoryItemId: item.id,
+    itemCode: item.itemCode,
+    itemName: item.name,
+    department: item.department,
+    type: 'Opening balance snapshot',
+    quantity: item.onHand,
+    balance: item.onHand,
+    unit: item.unit,
+    reference: 'Existing preview stock at ledger introduction',
+    createdAt: '',
+  }))
+}
 
 function formatCurrency(value) {
   return currencyFormatter.format(value)
@@ -656,7 +672,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const completeCount = rows.length - pendingCount
   const pageTitle = requestedPageTitle || (isLab ? 'Laboratory' : 'Pharmacy')
   const selectedInventoryItem = inventory.find((item) => item.id === selectedInventoryId)
-  const inventoryMovements = (careData.inventoryMovements || []).filter((movement) => movement.department === type).slice(0, 100)
+  const inventoryMovements = getInventoryMovements(careData).filter((movement) => movement.department === type).slice(0, 100)
 
   const patchRecord = (recordId, changes) => {
     updateCareData((current) => isLab
@@ -738,8 +754,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
           ? { ...row, status: 'Processing', startedAt: currentTimestamp(), specimenId: row.specimenId || `SP-${Date.now().toString(36).toUpperCase()}`, specimenCollectedAt: currentTimestamp(), stockDeducted: stockItem.trackStock }
           : row),
         inventoryMovements: stockItem.trackStock
-          ? [createInventoryMovement({ item: stockItem, type: 'Lab issue', quantity: -1, balance: stockItem.onHand - 1, reference: order.id }), ...(current.inventoryMovements || [])]
-          : current.inventoryMovements || [],
+          ? [createInventoryMovement({ item: stockItem, type: 'Lab issue', quantity: -1, balance: stockItem.onHand - 1, reference: order.id }), ...getInventoryMovements(current)]
+          : getInventoryMovements(current),
       }
     })
     setStockError(problem)
