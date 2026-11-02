@@ -10,6 +10,7 @@
     "build:dev": "vite build",
     "lint": "oxlint",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "node --test",
     "preview": "vite preview",
     "electron:dev": "electron .",
     "electron:package:win": "npm run build && electron-builder --win"
