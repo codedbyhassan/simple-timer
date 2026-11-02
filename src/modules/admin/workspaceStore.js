@@ -4,6 +4,7 @@ const id = (prefix) => `${prefix}-${Date.now().toString(36)}-${Math.random().toS
 const now = () => new Date().toISOString()
 
 const seed = () => ({
+  staff: [],
   profile: {
     name: 'Ascend Demo Hospital',
     nhisProviderNo: '',
