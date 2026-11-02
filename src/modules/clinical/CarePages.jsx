@@ -66,7 +66,7 @@ function CarePageHeader({ icon: Icon, title, description, aside }) {
   )
 }
 
-function ClinicalPage() {
+function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
   const { hasPermission } = useRoleAccess()
   const canConsult = hasPermission('clinical.consult')
   const canReviewResults = hasPermission('clinical.results.review')
@@ -86,8 +86,9 @@ function ClinicalPage() {
   const clinicalVisits = useMemo(
     () => appointments
       .filter((appointment) => appointment.date === today && ['With clinician', 'In consultation'].includes(appointment.status))
+      .filter((appointment) => pageId !== 'results-inbox' || careData.labOrders.some((order) => order.appointmentId === appointment.id && order.status === 'Result ready' && !order.reviewedAt))
       .sort((left, right) => left.time.localeCompare(right.time)),
-    [appointments],
+    [appointments, careData.labOrders, pageId],
   )
   const visibleVisits = useMemo(() => {
     const term = query.trim().toLowerCase()
@@ -324,8 +325,8 @@ function ClinicalPage() {
     <section className="care-page" aria-labelledby="clinical-title">
       <CarePageHeader
         icon={Stethoscope}
-        title="Consultation"
-        description="Review patient history, make a diagnosis, order investigations, and prescribe treatment."
+        title={pageTitle}
+        description={pageId === 'results-inbox' ? 'Review verified laboratory results and update the clinical encounter.' : pageId === 'doctor-queue' ? 'Prioritise patients handed over by Nursing and open the next clinical encounter.' : 'Review patient history, make a diagnosis, order investigations, and prescribe treatment.'}
         aside={<span className="care-shift-indicator"><i /> Clinician worklist</span>}
       />
 
@@ -341,7 +342,7 @@ function ClinicalPage() {
       <div className="clinical-layout">
         <section className="content-panel clinical-queue">
           <div className="care-panel-heading">
-            <div><h2>Clinician queue</h2><p>Patients handed over by Nursing</p></div>
+            <div><h2>{pageId === 'results-inbox' ? 'Results awaiting review' : pageId === 'doctor-queue' ? 'My clinical queue' : 'Consultation queue'}</h2><p>{pageId === 'results-inbox' ? 'Only encounters with verified, unreviewed results are shown.' : 'Patients handed over by Nursing'}</p></div>
             <span>{visibleVisits.length} visits</span>
           </div>
           <label className="care-search">
@@ -584,7 +585,7 @@ function ClinicalPage() {
   )
 }
 
-function DepartmentQueuePage({ type }) {
+function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const { hasPermission } = useRoleAccess()
   const canDispense = hasPermission('pharmacy.dispense')
   const canVerifyDispensing = hasPermission('pharmacy.verify')
@@ -608,14 +609,30 @@ function DepartmentQueuePage({ type }) {
   const matchingInventory = inventory.filter((item) =>
     `${item.name} ${item.itemCode} ${item.claimCode}`.toLowerCase().includes(inventorySearch.trim().toLowerCase()),
   )
-  const visibleInventory = inventorySearch.trim() || showAllInventory
-    ? matchingInventory
-    : matchingInventory.slice(0, 24)
+  const isCatalogueView = pageId === 'test-catalogue'
+  const isSpecimenView = pageId === 'specimens'
+  const isCriticalView = pageId === 'critical-results'
+  const isLabResultsView = pageId === 'lab-results'
+  const isStockAlertsView = pageId === 'stock-alerts'
+  const isStockView = ['stock-levels', 'pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId)
+  const isMappingView = pageId === 'formulary-mapping'
+  const showInventory = isCatalogueView || isStockView || isStockAlertsView || isMappingView
+  const showWorklist = !showInventory
+  const inventoryForView = inventory.filter((item) => isStockAlertsView ? item.trackStock && item.onHand <= item.reorderLevel : isMappingView ? !item.claimCode : true)
+  const visibleInventory = (inventorySearch.trim() || showAllInventory ? matchingInventory : matchingInventory.slice(0, 24)).filter((item) => inventoryForView.some((candidate) => candidate.id === item.id))
   const term = search.trim().toLowerCase()
-  const visible = rows.filter((item) => `${item.patientName} ${item.patientId} ${isLab ? item.testName : item.medication}`.toLowerCase().includes(term))
+  const visible = rows.filter((item) => {
+    const matchesSearch = `${item.patientName} ${item.patientId} ${isLab ? item.testName : item.medication}`.toLowerCase().includes(term)
+    if (!matchesSearch) return false
+    if (isSpecimenView) return ['Requested', 'Processing'].includes(item.status)
+    if (isCriticalView) return Boolean(item.critical) && item.status === 'Result ready'
+    if (isLabResultsView) return ['Processing', 'Result entered'].includes(item.status)
+    if (pageId === 'pharmacy-queue' || pageId === 'dispensing-panel') return item.status !== 'Dispensed'
+    return true
+  })
   const pendingCount = rows.filter((item) => isLab ? item.status !== 'Result ready' : item.status !== 'Dispensed').length
   const completeCount = rows.length - pendingCount
-  const pageTitle = isLab ? 'Laboratory' : 'Pharmacy'
+  const pageTitle = requestedPageTitle || (isLab ? 'Laboratory' : 'Pharmacy')
   const selectedInventoryItem = inventory.find((item) => item.id === selectedInventoryId)
 
   const patchRecord = (recordId, changes) => {
@@ -642,6 +659,7 @@ function DepartmentQueuePage({ type }) {
     patchRecord(item.id, {
       status: 'Result entered',
       result,
+      critical: Boolean(resultForm[item.id]?.critical),
       resultNote: resultForm[item.id]?.resultNote?.trim() || '',
       enteredAt: currentTimestamp(),
     })
@@ -694,7 +712,7 @@ function DepartmentQueuePage({ type }) {
           ? { ...row, onHand: row.onHand - 1 }
           : row),
         labOrders: current.labOrders.map((row) => row.id === item.id
-          ? { ...row, status: 'Processing', startedAt: currentTimestamp(), stockDeducted: stockItem.trackStock }
+          ? { ...row, status: 'Processing', startedAt: currentTimestamp(), specimenId: row.specimenId || `SP-${Date.now().toString(36).toUpperCase()}`, specimenCollectedAt: currentTimestamp(), stockDeducted: stockItem.trackStock }
           : row),
       }
     })
@@ -909,7 +927,7 @@ function DepartmentQueuePage({ type }) {
       <CarePageHeader
         icon={isLab ? FlaskConical : Pill}
         title={pageTitle}
-        description={isLab ? 'Receive clinician requests, enter verified results, and send feedback to the ordering doctor.' : 'Review prescriptions sent by clinicians and record medication dispensing.'}
+        description={isLab ? isCatalogueView ? 'Maintain the laboratory test catalogue and linked billing codes.' : isSpecimenView ? 'Track specimen collection and processing by investigation order.' : isCriticalView ? 'Review results explicitly flagged as critical before clinical handoff.' : isLabResultsView ? 'Enter, verify and return investigation results to the ordering clinician.' : 'Receive clinician requests, process investigations and return verified results.' : isStockAlertsView ? 'Review medicines at or below their configured reorder level.' : isMappingView ? 'Resolve medicines without a CLAIM-it formulary code.' : isStockView ? 'Review stock levels, reorder thresholds and medicine catalogue details.' : 'Review prescriptions sent by clinicians and record medication dispensing.'}
         aside={<span className="care-shift-indicator"><i /> Department worklist</span>}
       />
       <section className="care-stats" aria-label={`${pageTitle} summary`}>
@@ -920,7 +938,7 @@ function DepartmentQueuePage({ type }) {
       </section>
       {stockError && !selectedInventoryId && <p className="care-form-error" role="alert">{stockError}</p>}
       {stockNotice && <div className="care-inline-notice" role="status"><CheckCircle2 size={15} />{stockNotice}</div>}
-      <section className="content-panel department-inventory">
+      {showInventory && <section className="content-panel department-inventory">
         <div className="care-panel-heading">
           <div><h2>{pageTitle} inventory</h2><p>{isLab ? 'Stock deductions occur at lab processing, and only for tracked items.' : 'Supplied NHIS tariffs are separate from synthetic test charges and verified retail prices.'}</p></div>
           <span>{inventory.length} items · {inventory.filter((item) => item.trackStock && item.onHand <= item.reorderLevel).length} low</span>
@@ -1028,8 +1046,8 @@ function DepartmentQueuePage({ type }) {
             </section>
           </div>
         )}
-      </section>
-      <section className="content-panel department-worklist">
+      </section>}
+      {showWorklist && <section className="content-panel department-worklist">
         <div className="care-panel-heading">
           <div><h2>{isLab ? 'Investigation worklist' : 'Prescription queue'}</h2><p>{isLab ? 'Result updates are visible to the requesting clinician immediately.' : 'Dispensing updates appear in the patient’s medication history.'}</p></div>
           <label className="care-search"><Search size={15} /><input type="search" aria-label={`Search ${pageTitle.toLowerCase()} worklist`} placeholder="Search patient, ID or order" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
@@ -1053,6 +1071,7 @@ function DepartmentQueuePage({ type }) {
                     <>
                       <div className="department-order-detail">
                         <div><span>Investigation</span><strong>{item.testName}</strong></div>
+                        {item.specimenId && <div><span>Specimen ID</span><strong>{item.specimenId}</strong></div>}
                         <div><span>Priority</span><strong>{item.priority}</strong></div>
                         <div><span>Requested by</span><strong>{item.orderedBy}</strong></div>
                         <div><span>Requested</span><strong>{formatDateTime(item.requestedAt)}</strong></div>
@@ -1069,6 +1088,7 @@ function DepartmentQueuePage({ type }) {
                         <form className="department-result-form" onSubmit={(event) => saveLabResult(event, item)}>
                           <label className="care-field"><span>Result / value</span><input required value={current.result || ''} onChange={(event) => setResultForm({ ...resultForm, [item.id]: { ...current, result: event.target.value, saved: false } })} placeholder="Enter verified result or qualitative finding" /></label>
                           <label className="care-field"><span>Result note <i>optional</i></span><input value={current.resultNote || ''} onChange={(event) => setResultForm({ ...resultForm, [item.id]: { ...current, resultNote: event.target.value, saved: false } })} placeholder="Units, reference range, or interpretation" /></label>
+                          <label className="department-stock-toggle"><input type="checkbox" checked={Boolean(current.critical)} onChange={(event) => setResultForm({ ...resultForm, [item.id]: { ...current, critical: event.target.checked, saved: false } })} /><span>Flag this result as critical for the critical-results inbox</span></label>
                           {canEnterLabResults && <button className="button button--primary" type="submit"><Check size={14} /> Save result for verification</button>}
                         </form>
                       )}
@@ -1117,17 +1137,17 @@ function DepartmentQueuePage({ type }) {
             <span>{rows.length ? 'Try another search.' : `New ${isLab ? 'tests requested during consultation' : 'prescriptions from consultation'} will appear here.`}</span>
           </div>
         )}
-      </section>
+      </section>}
     </section>
   )
 }
 
-export function LaboratoryPage() {
-  return <DepartmentQueuePage type="laboratory" />
+export function LaboratoryPage({ pageId = 'lab-worklist', pageTitle }) {
+  return <DepartmentQueuePage type="laboratory" pageId={pageId} pageTitle={pageTitle} />
 }
 
-export function PharmacyPage() {
-  return <DepartmentQueuePage type="pharmacy" />
+export function PharmacyPage({ pageId = 'pharmacy-queue', pageTitle }) {
+  return <DepartmentQueuePage type="pharmacy" pageId={pageId} pageTitle={pageTitle} />
 }
 
 export default ClinicalPage
