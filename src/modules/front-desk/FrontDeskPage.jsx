@@ -179,7 +179,7 @@ function FrontDeskPage({ pageId = 'reception-desk', pageTitle = 'Reception desk'
             <input aria-label="Select appointment date" type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} />
             <ChevronDown size={14} />
           </label>
-          {canManageQueue && <button className="button button--secondary" type="button" onClick={openWalkIn}>
+          {canManageQueue && pageId !== 'appointments' && <button className="button button--secondary" type="button" onClick={openWalkIn}>
             <UserRoundCheck size={15} /> Check in walk-in
           </button>}
           {canManageAppointments && <button className="button button--primary" type="button" onClick={openBooking}>
