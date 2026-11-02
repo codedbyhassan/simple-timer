@@ -451,6 +451,9 @@ function HistoryPanel({ tabId, patientId, patient }) {
     ? ['Date & time', 'Clinician', 'Department', 'Diagnosis', 'Status']
     : record.columns
 
+  const visibleColumns = columns.length > 4 ? [...columns.slice(0, 3), columns[columns.length - 1]] : columns
+  const visibleRows = rows.map((row) => row.length > 4 ? [...row.slice(0, 3), row[row.length - 1]] : row)
+
   return (
     <>
     <section className="content-panel patient-history-panel" aria-labelledby={`${tabId}-heading`}>
@@ -467,10 +470,10 @@ function HistoryPanel({ tabId, patientId, patient }) {
       <div className="patient-history-table-wrap">
         <table className="patient-history-table">
           <thead>
-            <tr>{columns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
+            <tr>{visibleColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
+            {visibleRows.map((row) => (
               <tr key={row[1]}>
                 {row.map((cell, index) => (
                   <td key={`${row[1]}-${index}`}>

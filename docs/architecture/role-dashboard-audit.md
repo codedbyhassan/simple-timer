@@ -66,13 +66,13 @@ The following eight roles supersede the earlier ten-workspace proposal. Demo sig
 | **Pharmacy** (Pharmacist + Pharmacy assistant) | Prescription queue (New, In progress, Partial, Dispensed); Dispensing panel; Stock alerts; Stock levels (view only); Formulary mapping flags; Inventory. | Dispense and verify controls require their own grants. Tracked stock decrements on dispense; untracked stock does not. Stock adjustments belong in the Admin inventory console. |
 | **Cashier / Accountant** (Cashier + Finance officer) | Pending charges; Payment panel & receipts; My till & shift; Refunds; Shift reconciliation; Price list; Billed vs claimed (view only). | Collects charges from consultation, lab, drugs, procedures, and admissions. Refund approval is separately permission-gated. |
 | **Claims Officer** | Pipeline (Not ready, Ready, Exported, Import passed/warned/failed, Submitted); Claims list/detail; Mapping queue; Export batches; Import reports; Month progress. | Claim generation, validation, and print preview only; no submit button. Upstream demographics, insurance, diagnoses, labs, drugs, and procedures populate claims. Missing data is surfaced to Reception as claim data gaps. |
-| **Hospital Administrator** (Administrator + Management viewer + Store keeper + Bed manager) | Management dashboard; Hospital profile; Departments, wards, beds; Users, roles, permissions; Service catalogue & prices; Reference mappings; Thresholds & settings; Inventory console; Audit viewer; Break-glass review; Sync conflicts; Realtime SLA monitor; Backup status. | Management tiles/trends are view-only; bed/admission tools and inventory ledger are included. Users and permissions are seeded for review and adjustment by department heads. |
+| **Hospital Administrator** (Administrator + Management viewer + Store keeper + Bed manager) | Management dashboard; Hospital profile; Departments, wards, beds; Users, roles, permissions; Service catalogue & prices; Reference mappings; Thresholds & settings; Inventory console; Audit viewer; Sync conflicts; Realtime SLA monitor; Backup status. | Management tiles/trends are view-only; bed/admission tools and inventory ledger are included. Users and permissions are seeded for review and adjustment by department heads. |
 
 Radiology, Emergency, Theatre, Maternity, HR, and Blood bank are reserved for later releases. The preview signs into one role workspace at a time. Permission grants for roles and individual actions (for example verify, dispense, refund approval, edit, and delete) are independent.
 
 ## Global interface and workflow requirements
 
-- Every role shares a top bar with global patient search, notifications, connection status, break-glass, and profile.
+- Every role shares a top bar with global patient search, notifications, connection status and profile.
 - Selecting a patient name anywhere opens Patient 360 as a page, never a modal. Navigation scrolls to the top.
 - Patient 360 remains a tabbed patient detail page. Patient directory cards remain four per row and 50 per page; cards show a status badge without an accent bar or list actions.
 - Age checks apply to every age-sensitive action, item, and rule across consultation, lab, drugs, procedures, and dispensing. An inapplicable item cannot be selected or submitted. Age limits must come from explicit, approved clinical/catalog metadata; do not infer or invent medical restrictions.
@@ -88,7 +88,7 @@ Radiology, Emergency, Theatre, Maternity, HR, and Blood bank are reserved for la
 - Derive actionable counts and charts from the same authorized persisted records that power each queue. Do not duplicate hard-coded counts in the Overview.
 - Make handoffs explicit and state-driven. Examples: checked in → triage → clinician; lab requested → processing → result ready → clinician reviewed; prescription sent → dispensed; encounter completed → claim review; service charge → invoice → payment.
 - Store actor, timestamp, prior/new state, and reason for clinically or financially significant changes in an audit trail.
-- Keep the shared shell (brand, theme, notification center, profile, global patient search, connection status, break-glass entry) but make notifications and search results respect the signed-in user’s access.
+- Keep the shared shell (brand, theme, notification center, profile, global patient search, connection status, ) but make notifications and search results respect the signed-in user’s access.
 - Preserve the explicit product boundary that generated claims are review/preview artifacts only; never imply that archiving an XML file submits it.
 
 ## Recommended implementation sequence

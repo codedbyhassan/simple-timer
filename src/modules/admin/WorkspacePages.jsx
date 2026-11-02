@@ -1,5 +1,5 @@
 import { useMemo, useState, useSyncExternalStore } from 'react'
-import { ClipboardList, Download, Plus, ShieldAlert, Trash2 } from 'lucide-react'
+import { ClipboardList, Download, Plus, Trash2 } from 'lucide-react'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { getAppointments, subscribeToAppointments } from '../front-desk/frontDeskStore.js'
 import { getCareData, subscribeToCareData } from '../clinical/careStore.js'
@@ -39,14 +39,14 @@ function Panel({ title = '', children }) {
 
 function Table({ columns, rows, empty = 'Nothing here yet.' }) {
   if (!rows.length) return <p className="role-panel-note">{empty}</p>
-  return (
-    <div className="ws-table-wrap">
-      <table className="ws-table">
-        <thead><tr>{columns.map((c) => <th key={c.label}>{c.label}</th>)}</tr></thead>
-        <tbody>{rows.map((r, i) => <tr key={r.id || i}>{columns.map((c) => <td key={c.label}>{c.render ? c.render(r) : r[c.key]}</td>)}</tr>)}</tbody>
-      </table>
-    </div>
-  )
+  const hasActionColumn = columns.length > 4 && columns[columns.length - 1].label === ''
+  const details = columns.length > 4 ? (hasActionColumn ? columns.slice(2, -1) : columns.slice(3)) : []
+  const visible = columns.length > 4
+    ? hasActionColumn
+      ? [...columns.slice(0, 2), { label: 'More', render: (row) => <details className="ws-row-details"><summary>View details</summary><dl>{details.map((column, index) => <div key={index}><dt>{column.label || 'Detail'}</dt><dd>{column.render ? column.render(row) : row[column.key]}</dd></div>)}</dl></details> }, columns[columns.length - 1]]
+      : [...columns.slice(0, 3), { label: 'More', render: (row) => <details className="ws-row-details"><summary>View details</summary><dl>{details.map((column, index) => <div key={index}><dt>{column.label || 'Detail'}</dt><dd>{column.render ? column.render(row) : row[column.key]}</dd></div>)}</dl></details> }]
+    : columns
+  return <div className="ws-table-wrap"><table className="ws-table"><thead><tr>{visible.map((c, i) => <th key={i}>{c.label}</th>)}</tr></thead><tbody>{rows.map((r, i) => <tr key={r.id || i}>{visible.map((c, j) => <td key={j}>{c.render ? c.render(r) : r[c.key]}</td>)}</tr>)}</tbody></table></div>
 }
 
 function Field({ label, children }) {
@@ -501,22 +501,6 @@ function AuditViewerPage() {
   )
 }
 
-function BreakGlassReviewPage() {
-  const ws = useWs()
-  const actor = useActor()
-  const review = (r, outcome) => patchRecord('breakGlass', r.id, { outcome, reviewedBy: actor, reviewedAt: new Date().toISOString() }, { actor, action: `Break-glass ${outcome.toLowerCase()}`, detail: r.reason })
-  return (
-    <Shell eyebrow="Administration" title="Break-glass review" description="Emergency access events raised from the header button.">
-      <Panel>
-        <Table rows={ws.breakGlass} empty="No break-glass events." columns={[
-          { label: 'When', render: (r) => fmt(r.createdAt) }, { label: 'Role', key: 'actor' }, { label: 'Patient', key: 'patientId' }, { label: 'Reason', key: 'reason' },
-          { label: 'Review', render: (r) => r.outcome ? `${r.outcome} · ${r.reviewedBy}` : <span className="ws-actions"><button type="button" className="button" onClick={() => review(r, 'Justified')}>Justified</button><button type="button" className="button" onClick={() => review(r, 'Flagged')}>Flag</button></span> },
-        ]} />
-      </Panel>
-    </Shell>
-  )
-}
-
 const storeKeys = ['patients', 'appointments', 'care', 'finance', 'inpatient', 'workspace']
 
 function SyncConflictsPage() {
@@ -622,31 +606,6 @@ function BackupStatusPage() {
   )
 }
 
-export function BreakGlassDialog({ onClose }) {
-  const actor = useActor()
-  const [patientId, setPatientId] = useState('')
-  const [reason, setReason] = useState('')
-  const submit = () => {
-    if (!patientId || reason.trim().length < 10) return
-    addRecord('breakGlass', { actor, patientId, reason: reason.trim() }, { actor, action: 'Break-glass access', detail: `${patientId}: ${reason.trim()}` })
-    onClose(patientId)
-  }
-  return (
-    <div className="ws-modal" role="dialog" aria-modal="true" aria-label="Break-glass access">
-      <div className="role-panel ws-modal-card">
-        <h2 className="ws-title"><ShieldAlert size={16} /> Emergency access</h2>
-        <p className="role-panel-note">This access is logged and reviewed by the administrator.</p>
-        <Field label="Patient"><PatientSelect value={patientId} onChange={setPatientId} /></Field>
-        <Field label="Reason (min 10 characters)"><textarea value={reason} onChange={(e) => setReason(e.target.value)} rows={3} /></Field>
-        <span className="ws-actions">
-          <button className="button button--primary" type="button" disabled={!patientId || reason.trim().length < 10} onClick={submit}>Open record</button>
-          <button className="button" type="button" onClick={() => onClose('')}>Cancel</button>
-        </span>
-      </div>
-    </div>
-  )
-}
-
 const pages = {
   documents: DocumentsPage,
   'claim-data-gaps': ClaimDataGapsPage,
@@ -660,7 +619,6 @@ const pages = {
   'reference-mappings': () => <EditableList listKey="mappings" title="Reference mappings" description="Map local service codes to G-DRG, ICD-10 or NHIS codes." fields={[{ key: 'localCode', label: 'Local code', required: true }, { key: 'system', label: 'System', required: true }, { key: 'externalCode', label: 'External code', required: true }, { key: 'note', label: 'Note' }]} />,
   'thresholds-settings': ThresholdsPage,
   'audit-viewer': AuditViewerPage,
-  'break-glass-review': BreakGlassReviewPage,
   'sync-conflicts': SyncConflictsPage,
   'realtime-sla': RealtimeSlaPage,
   'backup-status': BackupStatusPage,

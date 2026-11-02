@@ -35,7 +35,6 @@ const seed = () => ({
     defaultReorderLevel: 5,
   },
   audit: [],
-  breakGlass: [],
   tills: [],
   refunds: [],
   documents: [],

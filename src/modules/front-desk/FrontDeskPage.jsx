@@ -241,10 +241,7 @@ function FrontDeskPage() {
                   <th scope="col">Time</th>
                   <th scope="col">Patient</th>
                   <th scope="col">Visit</th>
-                  <th scope="col">Clinician</th>
-                  <th scope="col">Insurance</th>
-                  <th scope="col">Status</th>
-                  <th scope="col"><span className="sr-only">Actions</span></th>
+                  <th scope="col">Status & actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -257,14 +254,12 @@ function FrontDeskPage() {
                       <td>
                         <div className="front-desk-patient">
                           <span className="front-desk-avatar">{initials(appointment.patientName)}</span>
-                          <span><PatientLink patientId={appointment.patientId}>{appointment.patientName}</PatientLink><small>{appointment.patientId} · {patient?.phone || appointment.phone}</small></span>
+                          <span><PatientLink patientId={appointment.patientId}>{appointment.patientName}</PatientLink><small>{appointment.patientId} · {patient?.phone || appointment.phone}</small><small>{status}</small></span>
                         </div>
                       </td>
-                      <td><span className="front-desk-visit">{appointment.department}</span><small className="front-desk-visit-type">{appointment.visitType}</small></td>
-                      <td>{appointment.clinician}</td>
-                      <td><span className={`front-desk-insurance front-desk-insurance--${status.toLowerCase().replace(' ', '-')}`}>{status}</span></td>
-                      <td><span className={`front-desk-status front-desk-status--${appointment.status.toLowerCase().replace(' ', '-')}`}>{appointment.status}</span></td>
+                      <td><span className="front-desk-visit">{appointment.department}</span><small className="front-desk-visit-type">{appointment.visitType} · {appointment.clinician}</small></td>
                       <td>
+                        <span className={`front-desk-status front-desk-status--${appointment.status.toLowerCase().replace(' ', '-')}`}>{appointment.status}</span>
                         <div className="front-desk-row-actions">
                           {canManageQueue && appointment.status === 'Scheduled' && (
                             <button className="front-desk-action-button front-desk-action-button--primary" type="button" onClick={() => changeStatus(appointment.id, 'Checked in')}>

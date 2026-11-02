@@ -106,15 +106,12 @@ export default function ClaimsDashboard() {
         ) : visibleRecords.length ? (
           <div className="claims-table-wrap">
             <table className="claims-table">
-              <thead><tr><th>Claim reference</th><th>Patient</th><th>Encounter date</th><th>Generated</th><th>Lines</th><th>Est. NHIS drug cover</th><th>Actions</th></tr></thead>
+              <thead><tr><th>Claim reference</th><th>Patient</th><th>Encounter</th><th>Actions</th></tr></thead>
               <tbody>{visibleRecords.map((record) => (
                 <tr key={record.id}>
-                  <td><strong>{record.claimID}</strong><span>{record.sourcePatientId}</span></td>
+                  <td><strong>{record.claimID}</strong><span>{record.sourcePatientId} · generated {dateLabel(record.generatedAt, true)}</span></td>
                   <td>{getPatientName(record)}</td>
-                  <td>{dateLabel(record.encounterDate)}</td>
-                  <td>{dateLabel(record.generatedAt, true)}</td>
-                  <td>{record.claim.diagnosis.length + record.claim.investigation.length + record.claim.procedure.length + record.claim.medicine.length}</td>
-                  <td>{getMedicineCoverage(record) === null ? <span className="claims-coverage-unavailable">Tariff unavailable</span> : formatCurrency(getMedicineCoverage(record))}</td>
+                  <td><strong>{dateLabel(record.encounterDate)}</strong><span>{record.claim.diagnosis.length + record.claim.investigation.length + record.claim.procedure.length + record.claim.medicine.length} lines · {getMedicineCoverage(record) === null ? 'Tariff unavailable' : formatCurrency(getMedicineCoverage(record))}</span></td>
                   <td><div className="claims-row-actions">
                     <button className="button button--secondary" type="button" onClick={() => setSelectedRecord(record)}><Eye size={14} /> View sheet</button>
                     {canExportClaims && <button className="claims-icon-action" type="button" aria-label={`Download XML for ${record.claimID}`} title="Download XML" onClick={() => downloadXml(record)}><Download size={15} /></button>}

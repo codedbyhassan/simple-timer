@@ -303,12 +303,11 @@ export function InpatientPage() {
         </div>
         <div className="operations-table-wrap">
           <table className="operations-table">
-            <thead><tr><th>Patient</th><th>Reason</th><th>Requested</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Patient</th><th>Reason & status</th><th>Requested</th><th>Action</th></tr></thead>
             <tbody>{requests.map((request) => <tr key={request.id}>
               <td><strong><PatientLink patientId={request.patientId}>{request.patientName}</PatientLink></strong><span>{request.patientId}</span></td>
-              <td>{request.reason}</td>
+              <td>{request.reason}<span className="operations-subvalue">{request.status}</span></td>
               <td>{formatDateTime(request.requestedAt)}</td>
-              <td>{request.status}</td>
               <td>{canManageBeds && request.status === 'Requested' && <button className="operations-table-action" type="button" onClick={() => openRequestedAdmission(request)}>Assign bed</button>}</td>
             </tr>)}</tbody>
           </table>
@@ -354,16 +353,16 @@ export function InpatientPage() {
           </div>
           <div className="operations-table-wrap">
             <table className="operations-table">
-              <thead><tr><th>Patient</th><th>Ward / bed</th><th>Admission reason</th><th>Since</th><th>Action</th></tr></thead>
+              <thead><tr><th>Patient</th><th>Ward / bed</th><th>Since</th><th>Action</th></tr></thead>
               <tbody>{visibleAdmissions.map((admission) => (
                 <Fragment key={admission.id}>
                   <tr>
                     <td><strong><PatientLink patientId={admission.patientId}>{admission.patientName}</PatientLink></strong><span>{admission.patientId}</span></td>
-                    <td>{wards.find((ward) => ward.id === beds.find((bed) => bed.id === admission.bedId)?.ward)?.name}<strong className="operations-subvalue">{admission.bedId}</strong></td>
-                    <td>{admission.reason}</td><td>{formatClockTime(admission.since)}</td>
+                    <td>{wards.find((ward) => ward.id === beds.find((bed) => bed.id === admission.bedId)?.ward)?.name}<strong className="operations-subvalue">{admission.bedId}</strong><span className="operations-subvalue">{admission.reason}</span></td>
+                    <td>{formatClockTime(admission.since)}</td>
                     <td>{canManageBeds && <button className="operations-table-action" type="button" onClick={() => discharge(admission)} disabled={Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked)}>Discharge</button>}</td>
                   </tr>
-                  <tr><td colSpan={5}>
+                  <tr><td colSpan={4}>
                     <div className="inpatient-discharge-checklist">
                       <strong>Discharge checklist</strong>
                       {dischargeChecklistItems.map(([id, label]) => <label key={id}>
@@ -556,15 +555,14 @@ export function FinancePage() {
         </div>
         <div className="operations-table-wrap">
           <table className="operations-table finance-table">
-            <thead><tr><th>Invoice</th><th>Patient</th><th>Service</th><th>Gross</th><th>NHIS estimate</th><th>Patient due</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Invoice</th><th>Patient</th><th>Balance</th><th>Action</th></tr></thead>
             <tbody>{visibleInvoices.map((invoice) => {
               const balance = outstanding(invoice)
               const status = balance === 0 ? 'Settled' : invoice.paid > 0 ? 'Part paid' : 'Outstanding'
               return <tr key={invoice.id}>
-                <td><strong>{invoice.id}</strong><span>{new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(`${invoice.date}T00:00:00Z`))}</span></td>
+                <td><strong>{invoice.id}</strong><span>{new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(`${invoice.date}T00:00:00Z`))} · {invoice.service}</span></td>
                 <td><strong><PatientLink patientId={invoice.patientId}>{invoice.patientName}</PatientLink></strong><span>{invoice.patientId}</span></td>
-                <td>{invoice.service}</td><td>{formatMoney(invoice.total)}</td><td>{formatMoney(invoice.covered)}</td><td>{formatMoney(balance)}</td>
-                <td><span className={`finance-status finance-status--${status.toLowerCase().replace(' ', '-')}`}>{status}</span></td>
+                <td><strong>{formatMoney(balance)}</strong><span>{status} · gross {formatMoney(invoice.total)} · NHIS {formatMoney(invoice.covered)}</span></td>
                 <td>{balance > 0 && canRecordPayments ? <button className="operations-table-action" type="button" onClick={() => { setSelectedInvoiceId(invoice.id); setAmount(balance.toFixed(2)); setError('') }}>Record payment</button> : <span className="operations-muted">{balance > 0 ? 'View only' : 'Complete'}</span>}</td>
               </tr>
             })}</tbody>
@@ -664,8 +662,8 @@ export function ReportsPage() {
         </div>
         <div className="operations-table-wrap">
           <table className="operations-table">
-            <thead><tr><th>Reference</th><th>Patient</th><th>Activity</th><th>Date</th><th>Status</th></tr></thead>
-            <tbody>{rows.map((row) => <tr key={row.ref}><td><strong>{row.ref}</strong></td><td>{row.subject}</td><td>{row.type}</td><td>{row.date && !Number.isNaN(new Date(row.date).getTime()) ? formatDateTime12(row.date) : '—'}</td><td><span className="report-status">{row.status}</span></td></tr>)}</tbody>
+            <thead><tr><th>Reference</th><th>Patient</th><th>Activity</th><th>Date</th></tr></thead>
+            <tbody>{rows.map((row) => <tr key={row.ref}><td><strong>{row.ref}</strong></td><td>{row.subject}</td><td>{row.type}<span className="operations-subvalue"><span className="report-status">{row.status}</span></span></td><td>{row.date && !Number.isNaN(new Date(row.date).getTime()) ? formatDateTime12(row.date) : '—'}</td></tr>)}</tbody>
           </table>
           {!rows.length && <div className="operations-empty"><FileText size={20} /><strong>No activity in this report</strong><span>No activity has been recorded yet. Complete a patient visit or workflow to populate this report.</span></div>}
         </div>

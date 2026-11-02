@@ -9,7 +9,7 @@ Phase 2 focuses on operational workflows and restrained interface refinement. Th
 - [x] Calculates remaining balances across recorded till payments instead of treating any prior payment as full settlement.
 - [x] Adds unique receipt references and downloadable text receipts for till payments.
 - [x] Refines dashboard metric cards, patient cards, clinical and department cards, and workspace panels with simpler spacing and quieter surfaces.
-- [x] Reduces toast dimensions while preserving the current appearance and sets automatic dismissal to exactly five seconds.
+- [x] Reduces toast dimensions while preserving the current appearance and sets automatic dismissal to three seconds.
 
 ## Remaining Phase 2 workflow scope
 
