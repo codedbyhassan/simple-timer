@@ -5,7 +5,6 @@ import {
   Check,
   ChevronDown,
   CircleAlert,
-  CircleDot,
   LogOut,
   Menu,
   Moon,
