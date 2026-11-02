@@ -39,6 +39,9 @@ import NursePage from './modules/nursing/NursePage.jsx'
 import { FinancePage, InpatientPage, ReportsPage } from './modules/operations/OperationsPages.jsx'
 import PatientsPage from './modules/patients/PatientsPage.jsx'
 import { getDemoPatients, subscribeToDemoPatients } from './modules/patients/patientStore.js'
+import { getAppointments, subscribeToAppointments } from './modules/front-desk/frontDeskStore.js'
+import { getCareData, subscribeToCareData } from './modules/clinical/careStore.js'
+import { getGeneratedClaimsSnapshot, subscribeToGeneratedClaims } from './modules/clinical/claimsStore.js'
 import { ManagementDashboard, PermissionSettingsPage, RoleModulePreview } from './modules/role-workspaces/RoleWorkspacePages.jsx'
 import RoleDashboardPage from './modules/role-workspaces/RoleDashboardPage.jsx'
 import { WorkspacePage } from './modules/admin/WorkspacePages.jsx'
@@ -87,6 +90,9 @@ function App() {
   const [query, setQuery] = useState('')
   const [dialog, setDialog] = useState('')
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
+  const appointments = useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
+  const careData = useSyncExternalStore(subscribeToCareData, getCareData, getCareData)
+  const claimsArchive = useSyncExternalStore(subscribeToGeneratedClaims, getGeneratedClaimsSnapshot, getGeneratedClaimsSnapshot)
   const session = useSyncExternalStore(subscribeToPreviewSession, getPreviewSession, () => null)
   const pathname = useSyncExternalStore(subscribeToLocation, getLocationSnapshot, () => '/')
   const roleIds = useMemo(() => session?.roleIds || [], [session])
@@ -101,8 +107,26 @@ function App() {
   const patientMatches = searchTerm
     ? patients.filter((patient) =>
       `${patient.name} ${patient.id} ${patient.phone} ${patient.insuranceMemberId}`.toLowerCase().includes(searchTerm),
-    ).slice(0, 6)
+    ).slice(0, 4)
     : []
+  const appointmentMatches = searchTerm
+    ? appointments.filter((item) => `${item.patientName} ${item.patientId} ${item.department} ${item.status} ${item.id}`.toLowerCase().includes(searchTerm)).slice(0, 3)
+    : []
+  const labMatches = searchTerm
+    ? careData.labOrders.filter((item) => `${item.patientName} ${item.patientId} ${item.testName} ${item.status} ${item.specimenId || ''}`.toLowerCase().includes(searchTerm)).slice(0, 3)
+    : []
+  const prescriptionMatches = searchTerm
+    ? careData.prescriptions.filter((item) => `${item.patientName} ${item.patientId} ${item.medication} ${item.status}`.toLowerCase().includes(searchTerm)).slice(0, 3)
+    : []
+  const claimMatches = searchTerm
+    ? claimsArchive.records.filter((item) => `${item.claimID} ${item.patientName || ''} ${item.sourcePatientId}`.toLowerCase().includes(searchTerm)).slice(0, 3)
+    : []
+  const searchCount = patientMatches.length + appointmentMatches.length + labMatches.length + prescriptionMatches.length + claimMatches.length
+  const localNotifications = [
+    ...careData.labOrders.filter((item) => item.critical && item.status === 'Result ready').slice(0, 3).map((item) => ({ id: item.id, title: 'Critical laboratory result', detail: `${item.testName} · ${item.patientName}`, route: 'critical-results' })),
+    ...careData.inventory.filter((item) => item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel).slice(0, 3).map((item) => ({ id: item.id, title: 'Stock reorder alert', detail: `${item.name} · ${item.onHand} ${item.unit} remaining`, route: item.department === 'laboratory' ? 'lab-inventory' : 'stock-alerts' })),
+    ...appointments.filter((item) => item.date === new Date().toISOString().slice(0, 10) && ['Checked in', 'In triage'].includes(item.status)).slice(0, 3).map((item) => ({ id: item.id, title: 'Patient awaiting care', detail: `${item.patientName} · ${item.status}`, route: 'opd-queue' })),
+  ].slice(0, 8)
 
   const canOpenPage = useCallback((page) => page === 'not-found'
     ? true
@@ -238,6 +262,17 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const openSearchResult = (kind, record) => {
+    if (kind === 'patient') { openPatient(record.id); return }
+    const candidates = kind === 'appointment' ? ['appointments', 'doctor-queue', 'triage-queue', 'opd-queue']
+      : kind === 'lab' ? [record.critical ? 'critical-results' : record.status === 'Result entered' ? 'lab-results' : record.specimenId ? 'specimens' : 'lab-worklist', 'lab-worklist']
+        : kind === 'prescription' ? [record.status === 'Verified' ? 'dispensing-panel' : 'pharmacy-queue', 'pharmacy-queue']
+          : ['claims-list']
+    const destination = candidates.find((candidate) => pageItems.some((item) => item.id === candidate))
+    if (destination) navigate(destination)
+    else setDialog('Your current role does not have access to the matching record workspace.')
+  }
+
   const activePage = canOpenPage(requestedPage) ? requestedPage : homePage
   const currentItem = pageItems.find((item) => item.id === activePage)
   const pageTitle = activePage === 'patient-detail'
@@ -351,21 +386,21 @@ function App() {
                   <Search size={17} aria-hidden="true" />
                   <input
                     type="search"
-                    placeholder="Search patients or records"
+                    placeholder="Search patients, visits, orders or claims"
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
-                    aria-label="Search patients or records"
+                    aria-label="Search patients, visits, orders or claims"
                     aria-expanded={Boolean(searchTerm)}
                   />
                 </label>
                 {searchTerm && (
-                  <div className="global-search-results" role="listbox" aria-label="Patient search results">
-                    {patientMatches.length ? patientMatches.map((patient) => (
-                      <button type="button" role="option" key={patient.id} onClick={() => openPatient(patient.id)}>
-                        <span className="global-search-avatar">{patient.name.split(/\s+/).slice(0, 2).map((part) => part[0]).join('')}</span>
-                        <span><strong>{patient.name}</strong><small>{patient.id} · {patient.phone}</small></span>
-                      </button>
-                    )) : <p>No patient matches in the preview directory.</p>}
+                  <div className="global-search-results" role="listbox" aria-label="Patient and operational search results">
+                    {patientMatches.map((patient) => <button type="button" role="option" key={`patient-${patient.id}`} onClick={() => openSearchResult('patient', patient)}><span className="global-search-avatar">P</span><span><strong>{patient.name}</strong><small>Patient · {patient.id} · {patient.phone}</small></span></button>)}
+                    {appointmentMatches.map((item) => <button type="button" role="option" key={`visit-${item.id}`} onClick={() => openSearchResult('appointment', item)}><span className="global-search-avatar">V</span><span><strong>{item.patientName}</strong><small>Visit · {item.id} · {item.department} · {item.status}</small></span></button>)}
+                    {labMatches.map((item) => <button type="button" role="option" key={`lab-${item.id}`} onClick={() => openSearchResult('lab', item)}><span className="global-search-avatar">L</span><span><strong>{item.testName}</strong><small>Laboratory · {item.patientName} · {item.status}</small></span></button>)}
+                    {prescriptionMatches.map((item) => <button type="button" role="option" key={`rx-${item.id}`} onClick={() => openSearchResult('prescription', item)}><span className="global-search-avatar">Rx</span><span><strong>{item.medication}</strong><small>Prescription · {item.patientName} · {item.status}</small></span></button>)}
+                    {claimMatches.map((item) => <button type="button" role="option" key={`claim-${item.id}`} onClick={() => openSearchResult('claim', item)}><span className="global-search-avatar">C</span><span><strong>{item.claimID}</strong><small>Claim · {item.patientName || item.sourcePatientId}</small></span></button>)}
+                    {!searchCount && <p>No matching records in the local preview data.</p>}
                   </div>
                 )}
               </div>
@@ -373,12 +408,16 @@ function App() {
             <div className="topbar-actions">
               <div className="menu-anchor">
                 <button className="icon-button" type="button" aria-label="Notifications" aria-expanded={menu === 'notifications'} onClick={() => setMenu(menu === 'notifications' ? '' : 'notifications')}>
-                  <Bell size={18} strokeWidth={1.8} />
+                  <Bell size={18} strokeWidth={1.8} />{localNotifications.length > 0 && <span className="notification-count">{localNotifications.length > 9 ? '9+' : localNotifications.length}</span>}
                 </button>
                 {menu === 'notifications' && (
                   <div className="popover notification-popover">
                     <div className="popover-heading"><div><strong>Notifications</strong><span>Workspace updates</span></div></div>
-                    <div className="notification-empty"><Activity size={18} /><span>Live orders update across tabs in this browser. Push notifications are not configured.</span></div>
+                    {localNotifications.length ? <div className="notification-list">{localNotifications.map((item) => {
+                      const destination = pageItems.some((page) => page.id === item.route) ? item.route : homePage
+                      return <button className="notification-item" type="button" key={item.id} onClick={() => navigate(destination)}><span><strong>{item.title}</strong><small>{item.detail}</small></span><ChevronDown size={14}/></button>
+                    })}</div> : <div className="notification-empty"><Check size={18} /><span>No active local alerts.</span></div>}
+                    <p className="notification-footnote">Alerts are derived from browser-local records. Push notifications are not configured.</p>
                     <button className="text-button notification-dismiss" type="button" onClick={() => setMenu('')}>Close</button>
                   </div>
                 )}
@@ -397,9 +436,7 @@ function App() {
                       <span className="avatar avatar--profile">{session.displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()}</span>
                       <div><strong>{session.displayName}</strong><span>{selectedRoleNames.join(' · ')}</span></div>
                     </div>
-                    <button type="button" onClick={() => { setMenu(''); setDialog('Profile settings are not available in this workspace.') }}>
-                      <UserRound size={16} /> Profile
-                    </button>
+                    <div className="profile-preview-note"><UserRound size={15}/><span>Local preview session<br/><small>Account settings and password management are not connected.</small></span></div>
                     {permissions.has('admin.settings.manage') && (
                       <button type="button" onClick={() => navigate('thresholds-settings')}>
                         <Settings size={16} /> Settings
