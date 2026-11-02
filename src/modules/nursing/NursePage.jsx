@@ -44,7 +44,7 @@ function recordedTime(value) {
   return new Intl.DateTimeFormat('en', { hour: '2-digit', minute: '2-digit' }).format(new Date(value))
 }
 
-function NursePage({ pageTitle = 'Triage queue' }) {
+function NursePage({ pageId = 'triage-queue', pageTitle = 'Triage queue' }) {
   const appointments = useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
   const [query, setQuery] = useState('')
