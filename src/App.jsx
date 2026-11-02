@@ -100,7 +100,7 @@ function App() {
   const navigate = useCallback((page, { replace = false } = {}) => {
     const targetPage = page === 'home' || page === 'overview' ? homePage : page
     if (!canOpenPage(targetPage)) {
-      setDialog('This preview role does not have permission to open that workspace.')
+      setDialog('You do not have permission to open that workspace.')
       return
     }
     const path = getPageRoute(targetPage)
@@ -203,7 +203,7 @@ function App() {
 
   const openPatient = (patientId) => {
     if (!permissions.has('patient360.read')) {
-      setDialog('This preview role does not have permission to open Patient 360.')
+      setDialog('You do not have permission to open Patient 360.')
       return
     }
     const path = `/patients/${encodeURIComponent(patientId)}`
@@ -296,7 +296,7 @@ function App() {
               </div>
             ))}
           </nav>
-          <div className="sidebar-role-note"><CircleDot size={13} /> Preview role navigation</div>
+          <div className="sidebar-role-note">Departmental workspaces</div>
         </aside>
 
         <main className="main-area">
@@ -330,8 +330,8 @@ function App() {
               </div>
             </div>
             <div className="topbar-actions">
-              <span className="connection-status" title="Local demo session; updates sync only in this browser profile"><CircleDot size={13} /> Local demo</span>
-              <button className="break-glass-button" type="button" onClick={() => setDialog('Break-glass access is unavailable in this preview. Emergency access requires authenticated, audited controls.')}>
+              <span className="connection-status" title="Workspace interface ready">Workspace ready</span>
+              <button className="break-glass-button" type="button" onClick={() => setDialog('Break-glass access requires an authenticated and audited emergency workflow. Contact the system administrator.')}>
                 <ShieldAlert size={15} /> <span>Break-glass</span>
               </button>
               <div className="menu-anchor">
@@ -360,7 +360,7 @@ function App() {
                       <span className="avatar avatar--profile">{session.displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()}</span>
                       <div><strong>{session.displayName}</strong><span>{selectedRoleNames.join(' · ')}</span></div>
                     </div>
-                    <button type="button" onClick={() => { setMenu(''); setDialog('Profile details are not connected in this preview.') }}>
+                    <button type="button" onClick={() => { setMenu(''); setDialog('Profile settings are not available in this workspace.') }}>
                       <UserRound size={16} /> Profile
                     </button>
                     {permissions.has('admin.settings.manage') && (
@@ -390,8 +390,8 @@ function App() {
             <section className="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dialog-title">
               <button className="icon-button dialog-close" type="button" aria-label="Close dialog" onClick={() => setDialog('')}><X size={18} /></button>
               <span className="dialog-mark"><CircleAlert size={19} /></span>
-              <h2 id="dialog-title">Preview notice</h2>
-              <p className="dialog-stage">No live access or action was performed</p>
+              <h2 id="dialog-title">Access information</h2>
+              <p className="dialog-stage">No action was performed</p>
               <p>{dialog}</p>
               <div className="dialog-actions">
                 <button className="button button--primary" type="button" onClick={() => setDialog('')}><Check size={16} /> Close</button>

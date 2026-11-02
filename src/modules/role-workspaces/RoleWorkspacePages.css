@@ -25,8 +25,7 @@
   font-size: 15px;
 }
 
-.role-workspace-eyebrow,
-.role-preview-chip {
+.role-workspace-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;

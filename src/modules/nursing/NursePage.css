@@ -66,20 +66,6 @@
   background: var(--green);
   box-shadow: 0 0 0 3px var(--green-soft);
 }
-
-.nurse-demo-note {
-  display: flex;
-  min-height: 38px;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 11px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: var(--panel);
-  color: var(--muted-strong);
-  font-size: 13px;
-}
-
 .nurse-demo-note svg,
 .nurse-modal-hint svg {
   flex: 0 0 auto;
@@ -308,25 +294,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
-.nurse-vitals-preview {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 2px;
-  color: var(--muted-strong);
-  font-size: 12px;
-}
-
-.nurse-vitals-preview svg {
-  color: var(--blue);
-}
-
-.nurse-vitals-preview span {
-  margin-left: 4px;
-  color: var(--muted);
-}
-
 .nurse-assess-button {
   min-height: 32px;
   flex: 0 0 auto;
@@ -648,12 +615,7 @@
   .nurse-assess-button {
     margin-left: 43px;
   }
-
-  .nurse-vitals-preview {
-    flex-wrap: wrap;
-  }
-
-  .nurse-vitals-grid {
+.nurse-vitals-grid {
     grid-template-columns: minmax(0, 1fr);
   }
 

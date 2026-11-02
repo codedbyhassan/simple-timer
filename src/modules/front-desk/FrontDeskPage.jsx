@@ -183,10 +183,6 @@ function FrontDeskPage() {
 
       <div className="front-desk-date-line">{formatDay(selectedDate)} <span>·</span> Front desk operations</div>
 
-      <div className="front-desk-demo-note">
-        <ShieldAlert size={15} />
-        <span>Appointments and check-ins persist and sync across tabs in this browser profile only. SMS messages are drafts and are not sent.</span>
-      </div>
 
       <section className="front-desk-stats" aria-label="Appointment and queue summary">
         <article className="front-desk-stat">
@@ -310,7 +306,7 @@ function FrontDeskPage() {
         <article className="content-panel front-desk-queue-panel">
           <div className="front-desk-board-heading">
             <div><h2>Live check-in queue</h2><p>Patients ready for their next care step</p></div>
-            <span className="front-desk-live-indicator"><i /> Live preview</span>
+            
           </div>
           <div className="front-desk-queue">
             {datedAppointments.filter((item) => ['Checked in', 'In triage', 'With clinician'].includes(item.status)).length ? (
@@ -373,7 +369,7 @@ function FrontDeskPage() {
                 <label className="front-desk-form-field front-desk-form-field--wide"><span>Visit type</span><select value={form.visitType} onChange={(event) => setForm({ ...form, visitType: event.target.value })}><option>General consultation</option><option>Follow-up</option><option>Review</option><option>New patient</option></select></label>
               </div>
               {formError && <p className="front-desk-form-error" role="alert">{formError}</p>}
-              <div className="front-desk-form-note"><ShieldAlert size={14} /> This action is a local preview only; it will not be saved or notify the patient.</div>
+              <div className="front-desk-form-note"><ShieldAlert size={14} /> Appointment and check-in details are saved in this browser only. SMS notifications are not sent.</div>
               <div className="front-desk-modal-actions"><button className="button button--secondary" type="button" onClick={() => setModal('')}>Cancel</button><button className="button button--primary" type="submit">{modal === 'walk-in' ? <UserRoundCheck size={15} /> : <CalendarDays size={15} />}{modal === 'walk-in' ? 'Check in patient' : 'Add appointment'}</button></div>
             </form>
           </section>

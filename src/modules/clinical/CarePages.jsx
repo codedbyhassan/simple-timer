@@ -12,7 +12,6 @@ import {
   Plus,
   Save,
   Search,
-  ShieldAlert,
   Stethoscope,
   UserRound,
   X,
@@ -64,10 +63,6 @@ function CarePageHeader({ icon: Icon, title, description, aside }) {
       {aside}
     </header>
   )
-}
-
-function PreviewNotice({ children }) {
-  return <div className="care-preview-notice"><ShieldAlert size={15} /><span>{children}</span></div>
 }
 
 function ClinicalPage() {
@@ -220,7 +215,7 @@ function ClinicalPage() {
   const addLabOrder = (event) => {
     event.preventDefault()
     if (!canConsult) {
-      setError('This preview role cannot create clinical orders.')
+      setError('You do not have permission to create clinical orders.')
       return
     }
     if (!labDrafts.length || labDrafts.some((draft) =>
@@ -261,7 +256,7 @@ function ClinicalPage() {
   const prescribe = (event) => {
     event.preventDefault()
     if (!canConsult) {
-      setError('This preview role cannot prescribe medications.')
+      setError('You do not have permission to prescribe medications.')
       return
     }
     if (!prescriptionDrafts.length || prescriptionDrafts.some((draft) =>
@@ -332,7 +327,6 @@ function ClinicalPage() {
         description="Review patient history, make a diagnosis, order investigations, and prescribe treatment."
         aside={<span className="care-shift-indicator"><i /> Clinician worklist</span>}
       />
-      <PreviewNotice>Local demo consultations and orders persist and sync only within this browser profile. This is not a clinical record or shared Supabase workspace.</PreviewNotice>
 
       <section className="care-stats" aria-label="Consultation work summary">
         <article><span><UserRound size={15} /> Ready for consultation</span><strong>{clinicalVisits.length}</strong></article>
@@ -632,7 +626,7 @@ function DepartmentQueuePage({ type }) {
   const saveLabResult = (event, item) => {
     event.preventDefault()
     if (!canEnterLabResults) {
-      setStockError('This preview role cannot enter laboratory results.')
+      setStockError('You do not have permission to enter laboratory results.')
       return
     }
     const result = resultForm[item.id]?.result?.trim()
@@ -657,7 +651,7 @@ function DepartmentQueuePage({ type }) {
 
   const verifyLabResult = (item) => {
     if (!canVerifyLabResults) {
-      setStockError('This preview role cannot verify laboratory results.')
+      setStockError('You do not have permission to verify laboratory results.')
       return
     }
     if (item.status !== 'Result entered' || !item.result?.trim()) {
@@ -674,7 +668,7 @@ function DepartmentQueuePage({ type }) {
 
   const startLabProcessing = (item) => {
     if (!hasPermission('lab.specimens.manage')) {
-      setStockError('This preview role cannot start specimen processing.')
+      setStockError('You do not have permission to start specimen processing.')
       return
     }
     let problem = ''
@@ -709,7 +703,7 @@ function DepartmentQueuePage({ type }) {
 
   const verifyPrescription = (item) => {
     if (!canVerifyDispensing) {
-      setStockError('This preview role cannot verify prescriptions.')
+      setStockError('You do not have permission to verify prescriptions.')
       return
     }
     let problem = ''
@@ -746,7 +740,7 @@ function DepartmentQueuePage({ type }) {
 
   const dispensePrescription = (item) => {
     if (!canDispense) {
-      setStockError('This preview role cannot dispense prescriptions.')
+      setStockError('You do not have permission to dispense prescriptions.')
       return
     }
     let problem = ''
@@ -797,7 +791,7 @@ function DepartmentQueuePage({ type }) {
   const addInventoryItem = (event) => {
     event.preventDefault()
     if (!canManageInventory) {
-      setStockError('This preview role cannot manage inventory.')
+      setStockError('You do not have permission to manage inventory.')
       return
     }
     const openingStock = Number(inventoryForm.onHand)
@@ -853,7 +847,7 @@ function DepartmentQueuePage({ type }) {
   const saveInventoryEdits = (event) => {
     event.preventDefault()
     if (!canManageInventory) {
-      setStockError('This preview role cannot manage inventory.')
+      setStockError('You do not have permission to manage inventory.')
       return
     }
     if (!selectedInventoryItem || !inventoryEditForm) return
@@ -917,7 +911,6 @@ function DepartmentQueuePage({ type }) {
         description={isLab ? 'Receive clinician requests, enter verified results, and send feedback to the ordering doctor.' : 'Review prescriptions sent by clinicians and record medication dispensing.'}
         aside={<span className="care-shift-indicator"><i /> Department worklist</span>}
       />
-      <PreviewNotice>Local demo orders and updates persist and sync across tabs in this browser profile only; no Supabase backend is connected.</PreviewNotice>
       <section className="care-stats" aria-label={`${pageTitle} summary`}>
         <article><span>{isLab ? <FlaskConical size={15} /> : <Pill size={15} />} Total orders</span><strong>{rows.length}</strong></article>
         <article><span><Clock3 size={15} /> Awaiting action</span><strong>{pendingCount}</strong></article>

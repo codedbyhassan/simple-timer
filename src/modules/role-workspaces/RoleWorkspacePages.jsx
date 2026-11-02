@@ -9,7 +9,6 @@ import {
   FlaskConical,
   KeyRound,
   PackageSearch,
-  ShieldAlert,
   Users,
 } from 'lucide-react'
 import { permissionCatalog, roleDefinitions, useRoleAccess } from '../../access/roleAccess.js'
@@ -35,7 +34,7 @@ function ManagementDashboard() {
   const thisMonthClaims = claims.records.filter((record) => record.generatedAt.slice(0, 7) === today.slice(0, 7)).length
 
   const metrics = [
-    { label: 'Registered patients', value: patients.length, note: 'Synthetic directory', icon: Users },
+    { label: 'Registered patients', value: patients.length, note: 'Patient directory', icon: Users },
     { label: "Today's appointments", value: todayAppointments.length, note: `${waiting} awaiting triage`, icon: ClipboardList },
     { label: 'Orders in progress', value: awaitingLab + awaitingPharmacy, note: `${awaitingLab} lab · ${awaitingPharmacy} pharmacy`, icon: Activity },
     { label: 'Claims this month', value: thisMonthClaims, note: 'Saved local previews', icon: FileCheck2 },
@@ -47,9 +46,8 @@ function ManagementDashboard() {
         <div>
           <span className="role-workspace-eyebrow"><Activity size={15} /> Management</span>
           <h1 id="management-dashboard-title">Management dashboard</h1>
-          <p>Operational overview from the current local preview session.</p>
+          <p>Operational overview for this workspace.</p>
         </div>
-        <span className="role-preview-chip">Preview data · not live</span>
       </header>
       <div className="role-metric-grid">
         {metrics.map(({ label, value, note, icon: Icon }) => (
@@ -79,7 +77,7 @@ function ManagementDashboard() {
           {hasPermission('claims.pipeline.view') && <button className="role-panel-link" type="button" onClick={() => navigate('claims-pipeline')}>Open claims archive <ArrowRight size={14} /></button>}
         </section>
       </div>
-      <div className="role-preview-warning"><ShieldAlert size={15} /> Connection, audit, backup, and realtime SLA signals require a backend and are not represented as healthy in this preview.</div>
+      <p className="role-security-caption">Connection monitoring, audit trails, backups and realtime service levels are not configured in this workspace.</p>
     </section>
   )
 }
@@ -107,11 +105,10 @@ function PermissionSettingsPage() {
         <div>
           <span className="role-workspace-eyebrow"><KeyRound size={15} /> Administration</span>
           <h1 id="permissions-title">Users, roles & permissions</h1>
-          <p>Review and adjust seeded role grants in this browser preview.</p>
+          <p>Review and adjust workspace role permissions.</p>
         </div>
-        <span className="role-preview-chip">Local preview only</span>
       </header>
-      <div className="role-preview-warning"><ShieldAlert size={15} /> These local controls demonstrate menu/action gating only. They are not authentication or server-side authorization.</div>
+      <p className="role-security-caption">These controls affect workspace navigation only. They do not replace authenticated, server-side authorization.</p>
       <section className="role-panel role-permission-panel">
         <label className="role-permission-role">
           <span>Role permission seed</span>
@@ -145,14 +142,13 @@ function RoleModulePreview({ title, roleName }) {
         <div>
           <span className="role-workspace-eyebrow"><PackageSearch size={15} /> {roleName}</span>
           <h1 id="role-preview-title">{title}</h1>
-          <p>This menu is included in the approved workspace, but its operational screen is not implemented yet.</p>
+          <p>This workspace is planned but is not yet available.</p>
         </div>
-        <span className="role-preview-chip">Preview workspace</span>
       </header>
       <section className="role-panel role-module-empty">
         <span className="role-module-empty-icon"><PackageSearch size={20} /></span>
-        <h2>Workflow screen not connected</h2>
-        <p>No patient or operational action is simulated here. The underlying workflow and backend integration need to be implemented and tested before this page can be used.</p>
+        <h2>Workspace coming soon</h2>
+        <p>This workspace will be available when its operational workflows and required integrations are complete.</p>
       </section>
     </section>
   )

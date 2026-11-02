@@ -328,7 +328,7 @@ function ClaimsXmlPanel({ patient, careData }) {
           </button>}
         </div>}
       </div>
-      <p className="claim-export-disclaimer">Local preview only. Age-specific diagnosis and procedure codes are checked against age on the service date; format checks do not verify official NHIA/NHIS code-master membership or coverage. Generated claims are immutable, duplicate encounters are skipped, and nothing is submitted to CLAIM-it.</p>
+      <p className="claim-export-disclaimer">Claim validation checks formatting and age-specific codes; it does not confirm official NHIA/NHIS coverage. Generated claims are not submitted to CLAIM-it.</p>
       {selectedConsultation ? (
         <div className="patient-claim-encounter">
           <div><span>Encounter</span><strong>{new Intl.DateTimeFormat('en', { dateStyle: 'medium' }).format(new Date(selectedConsultation.updatedAt))} · {selectedConsultation.department}</strong></div>
@@ -461,7 +461,7 @@ function HistoryPanel({ tabId, patientId, patient }) {
             <p>{record.description} · {patientId}</p>
           </div>
         </div>
-        <span className="patient-history-demo-label">{hasLiveRecords ? 'Session records' : 'Example records'}</span>
+        <span className="patient-history-demo-label">{hasLiveRecords ? 'Recorded activity' : 'Illustrative history'}</span>
       </div>
       <div className="patient-history-table-wrap">
         <table className="patient-history-table">
@@ -517,7 +517,7 @@ function VitalsHistory({ patientId }) {
             <p>Nursing observations recorded for this patient · {patientId}</p>
           </div>
         </div>
-        <span className="patient-history-demo-label">Session preview</span>
+        
       </div>
 
       {records.length ? (
@@ -645,10 +645,6 @@ function PatientDetailPage({ patient, insuranceStatus, onBack, onEdit, canEdit }
         )}
       </div>
 
-      <div className="patient-detail-demo-note">
-        <ShieldAlert size={15} />
-        Synthetic preview only. Nursing vitals, consultation notes, lab requests/results and prescriptions are shared for this browser session; other patient history, procedures, payments and claims are sample records.
-      </div>
     </section>
   )
 }

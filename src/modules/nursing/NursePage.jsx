@@ -135,10 +135,6 @@ function NursePage() {
         <div className="nurse-shift"><span className="nurse-shift-dot" /> Today’s patient flow</div>
       </header>
 
-      <div className="nurse-demo-note">
-        <ShieldAlert size={15} />
-        <span>Local demo vitals and handoffs persist and sync across tabs in this browser profile only; no Supabase backend is connected.</span>
-      </div>
 
       <section className="nurse-stats" aria-label="Nursing queue summary">
         <article className="nurse-stat">

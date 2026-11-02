@@ -265,7 +265,7 @@ function PatientsPage() {
             <div>
               <span className="patients-modal-icon"><Users size={18} /></span>
               <h2 id="patient-form-title">{editingPatientId ? 'Edit patient' : 'Register a patient'}</h2>
-              <p>Update demographic and insurance details for this sample record.</p>
+              <p>Update the patient’s demographic and insurance details.</p>
             </div>
             <button className="icon-button" type="button" aria-label="Close form" onClick={() => setModal('')}><X size={18} /></button>
           </div>
@@ -352,10 +352,6 @@ function PatientsPage() {
         </button>}
       </div>
 
-      <div className="patients-demo-note">
-        <ShieldAlert size={16} />
-        <span>Sample workspace — these synthetic records and changes are kept in memory only. Do not enter real patient information.</span>
-      </div>
 
       <div className="patients-overview">
         <article className="patients-overview-card patients-overview-card--insured">

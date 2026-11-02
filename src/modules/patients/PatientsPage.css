@@ -43,25 +43,6 @@
   color: var(--muted);
   font-size: 15px;
 }
-
-.patients-demo-note {
-  display: flex;
-  min-height: 41px;
-  align-items: center;
-  gap: 9px;
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--panel);
-  color: var(--muted-strong);
-  font-size: 14px;
-}
-
-.patients-demo-note svg {
-  flex: 0 0 auto;
-  color: var(--blue);
-}
-
 .patients-overview {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -816,33 +797,11 @@
 }
 
 .patient-insurance-notice,
-.patient-detail-demo-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  padding: 10px;
-  border-radius: 7px;
-  background: var(--panel);
-  color: var(--muted-strong);
-  font-size: 12px;
-  line-height: 1.5;
-}
-
 .patient-insurance-notice {
   margin-top: 11px;
 }
 
 .patient-insurance-notice svg,
-.patient-detail-demo-note svg {
-  flex: 0 0 auto;
-  color: var(--blue);
-}
-
-.patient-detail-demo-note {
-  align-items: center;
-  border: 1px solid var(--line);
-}
-
 .patient-detail-quick-info {
   display: flex;
   align-items: center;
@@ -939,20 +898,6 @@
 .patient-history-heading .patient-detail-section-heading {
   margin: 0;
 }
-
-.patient-history-demo-label {
-  display: inline-flex;
-  min-height: 23px;
-  flex: 0 0 auto;
-  align-items: center;
-  padding: 0 8px;
-  border-radius: 12px;
-  background: var(--blue-soft);
-  color: var(--blue);
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .patient-history-table-wrap {
   overflow-x: auto;
   border: 1px solid var(--line);

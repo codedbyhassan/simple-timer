@@ -37,11 +37,11 @@ export default function AuthPage({ onSignIn }) {
         </div>
         <div className="auth-intro">
           <span className="auth-mark"><Stethoscope size={21} /></span>
-          <p className="auth-eyebrow">LOCAL DEMO SIGN-IN</p>
+          <p className="auth-eyebrow">WORKSPACE ACCESS</p>
           <h1 id="auth-title">Choose a workspace</h1>
-          <p>Select one demo role to open its workspace.</p>
+          <p>Choose a department or role to open its workspace.</p>
         </div>
-        <div className="auth-role-list" role="radiogroup" aria-label="Choose a demo role">
+        <div className="auth-role-list" role="radiogroup" aria-label="Choose a workspace">
           {roleDefinitions.map((role) => {
             const selected = selectedRole === role.id
             return (
@@ -61,11 +61,11 @@ export default function AuthPage({ onSignIn }) {
         </div>
         {error && <p className="auth-error" role="alert"><ShieldAlert size={15} />{error}</p>}
         <button className="button button--primary auth-submit" type="button" onClick={submit}>
-          <LogIn size={16} /> Sign in to demo dashboard
+          <LogIn size={16} /> Continue to workspace
         </button>
         <div className="auth-preview-note">
           <ShieldAlert size={14} />
-          <span>Preview accounts have no password and do not authenticate a real user. Changes sync only between tabs in this browser profile.</span>
+          <span>Training access only. This workspace does not authenticate staff accounts; changes are stored in this browser profile.</span>
         </div>
       </section>
     </main>

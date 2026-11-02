@@ -88,25 +88,6 @@
   padding: 0 4px;
   color: var(--line-strong);
 }
-
-.front-desk-demo-note {
-  display: flex;
-  min-height: 38px;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 11px;
-  border: 1px solid var(--line);
-  border-radius: 7px;
-  background: var(--panel);
-  color: var(--muted-strong);
-  font-size: 13px;
-}
-
-.front-desk-demo-note svg {
-  flex: 0 0 auto;
-  color: var(--blue);
-}
-
 .front-desk-stats {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -178,14 +159,6 @@
 }
 
 .front-desk-board-count,
-.front-desk-live-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted-strong);
-  font-size: 12px;
-}
-
 .front-desk-controls {
   justify-content: flex-start;
   margin: 13px 0;
@@ -463,18 +436,6 @@
   min-width: 0;
   padding: 15px 16px;
 }
-
-.front-desk-live-indicator {
-  color: var(--green);
-}
-
-.front-desk-live-indicator i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
 .front-desk-queue {
   margin-top: 12px;
 }

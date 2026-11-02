@@ -71,7 +71,6 @@
   box-shadow: 0 0 0 3px var(--green-soft);
 }
 
-.care-preview-notice,
 .care-inline-notice {
   display: flex;
   min-height: 38px;
@@ -85,7 +84,6 @@
   font-size: 13px;
 }
 
-.care-preview-notice svg,
 .care-inline-notice svg {
   flex: 0 0 auto;
   color: var(--blue);

@@ -14,7 +14,6 @@ import {
   HeartPulse,
   Plus,
   Search,
-  ShieldAlert,
   Users,
   Wallet,
   X,
@@ -73,10 +72,6 @@ function PageHeading({ icon: Icon, eyebrow, title, description, aside }) {
   )
 }
 
-function PreviewNotice({ children }) {
-  return <div className="operations-notice"><ShieldAlert size={15} /><span>{children}</span></div>
-}
-
 function MetricCard({ label, value, note, icon: Icon, tone = '' }) {
   return (
     <article className={`operations-metric ${tone ? `operations-metric--${tone}` : ''}`}>
@@ -128,7 +123,7 @@ function initialAdmissions(patients) {
   return assignments.map((item, index) => ({
     id: `ADM-DEMO-${index + 1}`,
     ...item,
-    patientName: patients.find((patient) => patient.id === item.patientId)?.name || 'Sample patient',
+    patientName: patients.find((patient) => patient.id === item.patientId)?.name || 'Patient record',
     status: 'Admitted',
     checklist: emptyDischargeChecklist(),
   }))
@@ -176,7 +171,7 @@ export function InpatientPage() {
   const admitPatient = (event) => {
     event.preventDefault()
     if (!canManageBeds) {
-      setFormError('This preview role cannot assign beds.')
+      setFormError('You do not have permission to assign beds.')
       return
     }
     const patient = patients.find((item) => item.id === selectedPatientId)
@@ -216,7 +211,7 @@ export function InpatientPage() {
 
   const discharge = (admission) => {
     if (!canManageBeds) {
-      setNotice('This preview role cannot discharge patients.')
+      setNotice('You do not have permission to discharge patients.')
       return
     }
     const currentAdmission = inpatientStore.getSnapshot().admissions.find((item) => item.id === admission.id)
@@ -234,7 +229,7 @@ export function InpatientPage() {
   const requestAdmission = (event) => {
     event.preventDefault()
     if (!canRequestAdmission) {
-      setFormError('This preview role cannot request an admission.')
+      setFormError('You do not have permission to request an admission.')
       return
     }
     const patient = requestablePatients.find((item) => item.id === selectedPatientId)
@@ -291,7 +286,6 @@ export function InpatientPage() {
           ? <button className="button button--primary" type="button" onClick={() => { setSelectedPatientId(''); setSelectedRequestId(''); setReason(''); setAdmitOpen(true); setFormError(''); setNotice('') }} disabled={!availablePatients.length || !available}><Plus size={15} /> Admit patient</button>
           : canRequestAdmission && <button className="button button--primary" type="button" onClick={() => { setSelectedPatientId(''); setReason(''); setRequestOpen(true); setFormError(''); setNotice('') }} disabled={!requestablePatients.length}><Plus size={15} /> Request admission</button>}
       />
-      <PreviewNotice>Local demo data persists and syncs across tabs in this browser profile only. It is not shared across staff devices or saved to Supabase.</PreviewNotice>
 
       <div className="operations-metrics operations-metrics--four">
         <MetricCard label="Active admissions" value={activeAdmissions.length} note="Across all wards" icon={Users} />
@@ -429,7 +423,7 @@ function buildInvoices(patients) {
     return {
       ...invoice,
       patientId: patients[invoice.patientIndex]?.id || `HMS-${10482 + invoice.patientIndex}`,
-      patientName: patients[invoice.patientIndex]?.name || 'Sample patient',
+      patientName: patients[invoice.patientIndex]?.name || 'Patient record',
       date: date.toISOString().slice(0, 10),
     }
   })
@@ -504,7 +498,7 @@ export function FinancePage() {
     event.preventDefault()
     const payment = Number(amount)
     if (!canRecordPayments) {
-      setError('This preview role cannot record payments.')
+      setError('You do not have permission to record payments.')
       return
     }
     if (!selectedInvoice || !Number.isFinite(payment) || payment <= 0) {
@@ -533,15 +527,14 @@ export function FinancePage() {
 
   return (
     <section className="operations-page" aria-labelledby="finance-title">
-      <PageHeading icon={Wallet} eyebrow="Revenue cycle" title="Finance" description="Review sample invoices, dispensed medication charges, patient balances and NHIS estimates." aside={<span className="operations-date-badge"><CalendarDays size={14} /> {todayLabel}</span>} />
-      <PreviewNotice>Illustrative finance ledger only. Payment updates persist and sync across tabs in this browser profile, but do not post to a live account. Archived claim coverage is an estimate based on saved NHIS medicine tariffs only.</PreviewNotice>
+      <PageHeading icon={Wallet} eyebrow="Revenue cycle" title="Finance" description="Review invoices, dispensed medication charges, patient balances and NHIS estimates." aside={<span className="operations-date-badge"><CalendarDays size={14} /> {todayLabel}</span>} />
       {claims.error && <div className="operations-error" role="alert">{claims.error}</div>}
 
       <div className="operations-metrics operations-metrics--four">
-        <MetricCard label="Gross billed" value={formatMoney(totals.billed)} note={`${invoices.length} sample invoices`} icon={FileText} />
-        <MetricCard label="NHIS tariff amounts" value={formatMoney(totals.covered)} note="Illustrative invoice allocations" icon={FileCheck2} tone="blue" />
-        <MetricCard label="Collected" value={formatMoney(totals.collected)} note="Sample payments recorded" icon={CheckCircle2} tone="green" />
-        <MetricCard label="Patient balances" value={formatMoney(totals.due)} note="Outstanding sample balances" icon={Wallet} tone="amber" />
+        <MetricCard label="Gross billed" value={formatMoney(totals.billed)} note={`${invoices.length} invoices in this workspace`} icon={FileText} />
+        <MetricCard label="NHIS tariff amounts" value={formatMoney(totals.covered)} note="Tariff-based allocations" icon={FileCheck2} tone="blue" />
+        <MetricCard label="Collected" value={formatMoney(totals.collected)} note="Payments recorded in this workspace" icon={CheckCircle2} tone="green" />
+        <MetricCard label="Patient balances" value={formatMoney(totals.due)} note="Outstanding balances" icon={Wallet} tone="amber" />
       </div>
 
       {notice && <p className="operations-status" role="status"><CheckCircle2 size={14} />{notice}</p>}
@@ -554,7 +547,7 @@ export function FinancePage() {
 
       <section className="content-panel finance-ledger">
         <div className="operations-section-heading">
-          <div><h2>Invoice ledger</h2><p>Dispensed medication charges plus illustrative sample transactions · GH₵.</p></div>
+          <div><h2>Invoice ledger</h2><p>Dispensed medication charges and invoice transactions · GH₵.</p></div>
           <label className="operations-search"><Search size={14} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Patient, service or invoice" aria-label="Search invoice ledger" /></label>
         </div>
         <div className="operations-filter-row">
@@ -635,11 +628,10 @@ export function ReportsPage() {
   return (
     <section className="operations-page" aria-labelledby="reports-title">
       <PageHeading icon={Activity} eyebrow="Insights & analytics" title="Reports" description="Review patient access, clinical activity and generated claims for this session." aside={<button className="button button--secondary" type="button" onClick={downloadReport}><Download size={15} /> Export CSV</button>} />
-      <PreviewNotice>Reports use synthetic patient data and local preview workflows that sync only within this browser profile. Exported files are not audited or production reports.</PreviewNotice>
       {claims.error && <div className="operations-error" role="alert">{claims.error}</div>}
 
       <div className="operations-metrics operations-metrics--four">
-        <MetricCard label="Registered patients" value={patients.length} note="Synthetic directory" icon={Users} />
+        <MetricCard label="Registered patients" value={patients.length} note="Patient directory" icon={Users} />
         <MetricCard label="Appointments today" value={appointments.filter((item) => item.date === today).length} note={`${activeVisits.length} active in care flow`} icon={CalendarDays} tone="blue" />
         <MetricCard label="Completed consultations" value={completedConsultations} note={`${pendingLabs} lab requests still processing`} icon={HeartPulse} tone="green" />
         <MetricCard label="Claims archived" value={readyClaims} note={`${dispensed} prescriptions dispensed this session`} icon={FileCheck2} tone="amber" />
@@ -651,7 +643,7 @@ export function ReportsPage() {
           <div className="reports-bars" role="img" aria-label={`Appointment activity for the last seven days, ${lastSevenDays.map((item) => `${item.label}: ${item.count}`).join(', ')}.`}>
             {lastSevenDays.map((item) => <div className="reports-bar-column" key={item.date}><span>{item.count}</span><div className="reports-bar-track"><i style={{ height: `${(item.count / maxVisits) * 100}%` }} /></div><small>{item.label}</small></div>)}
           </div>
-          <div className="reports-chart-caption"><i /> Appointments in the synthetic front-desk schedule</div>
+          <div className="reports-chart-caption"><i /> Appointments in the front-desk schedule</div>
         </section>
 
         <section className="content-panel reports-snapshot">
@@ -674,7 +666,7 @@ export function ReportsPage() {
             <thead><tr><th>Reference</th><th>Patient</th><th>Activity</th><th>Date</th><th>Status</th></tr></thead>
             <tbody>{rows.map((row) => <tr key={row.ref}><td><strong>{row.ref}</strong></td><td>{row.subject}</td><td>{row.type}</td><td>{row.date && !Number.isNaN(new Date(row.date).getTime()) ? new Intl.DateTimeFormat('en', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(row.date)) : '—'}</td><td><span className="report-status">{row.status}</span></td></tr>)}</tbody>
           </table>
-          {!rows.length && <div className="operations-empty"><FileText size={20} /><strong>No activity in this report</strong><span>Workflow activity will appear here as synthetic preview records are created.</span></div>}
+          {!rows.length && <div className="operations-empty"><FileText size={20} /><strong>No activity in this report</strong><span>No activity has been recorded yet. Complete a patient visit or workflow to populate this report.</span></div>}
         </div>
       </section>
     </section>
