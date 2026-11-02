@@ -590,6 +590,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const canDispense = hasPermission('pharmacy.dispense')
   const canVerifyDispensing = hasPermission('pharmacy.verify')
   const canManageInventory = hasPermission('inventory.manage')
+  const canEditInventory = canManageInventory || (isLab && pageId === 'test-catalogue' && hasPermission('lab.catalogue.manage'))
   const canEnterLabResults = hasPermission('lab.results.enter')
   const canVerifyLabResults = hasPermission('lab.results.verify')
   const careData = useCareSnapshot()
@@ -618,7 +619,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const isMappingView = pageId === 'formulary-mapping'
   const showInventory = isCatalogueView || isStockView || isStockAlertsView || isMappingView
   const showWorklist = !showInventory
-  const inventoryForView = inventory.filter((item) => isStockAlertsView ? item.trackStock && item.onHand <= item.reorderLevel : isMappingView ? !item.claimCode : true)
+  const inventoryForView = inventory.filter((item) => isStockAlertsView ? item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel : isMappingView ? !item.claimCode : true)
   const visibleInventory = (inventorySearch.trim() || showAllInventory ? matchingInventory : matchingInventory.slice(0, 24)).filter((item) => inventoryForView.some((candidate) => candidate.id === item.id))
   const term = search.trim().toLowerCase()
   const visible = rows.filter((item) => {
@@ -809,7 +810,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
 
   const addInventoryItem = (event) => {
     event.preventDefault()
-    if (!canManageInventory) {
+    if (!canEditInventory) {
       setStockError('You do not have permission to manage inventory.')
       return
     }
@@ -951,7 +952,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
         )}
         <div className="department-inventory-grid">
           {visibleInventory.map((item) => (
-            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`${canManageInventory ? 'Edit' : 'View'} ${item.name} inventory`} disabled={!canManageInventory}>
+            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`${canEditInventory ? 'Edit' : 'View'} ${item.name} inventory`} disabled={!canEditInventory}>
               <span className="department-inventory-card-heading">
                 <span><strong>{item.name}</strong><small>{item.itemCode}</small></span>
                 <span className={`department-inventory-indicator${item.trackStock && item.onHand <= item.reorderLevel ? ' department-inventory-indicator--low' : ''}`} aria-hidden="true" />
