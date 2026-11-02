@@ -84,11 +84,12 @@ function MetricCard({ label, value, note, icon: Icon, tone = '' }) {
   )
 }
 
-const wards = [
+const defaultWards = [
   { id: 'medical', name: 'Medical ward', prefix: 'MW', total: 8 },
   { id: 'surgical', name: 'Surgical ward', prefix: 'SW', total: 6 },
   { id: 'paediatric', name: 'Paediatric ward', prefix: 'PW', total: 6 },
 ]
+const defaultDepartments = ['General practice', 'Outpatient', 'Paediatrics', 'Cardiology', 'Dental']
 const dischargeChecklistItems = [
   ['medicationReview', 'Medication reconciliation'],
   ['followUp', 'Follow-up plan'],
@@ -101,7 +102,7 @@ function emptyDischargeChecklist() {
 }
 
 function initialBeds() {
-  return wards.flatMap((ward) => Array.from({ length: ward.total }, (_, index) => {
+  return defaultWards.flatMap((ward) => Array.from({ length: ward.total }, (_, index) => {
     const id = `${ward.prefix}-${String(index + 1).padStart(2, '0')}`
     const occupied = ['MW-01', 'MW-03', 'SW-02', 'PW-01'].includes(id)
     const cleaning = id === 'SW-01'
@@ -132,7 +133,7 @@ function initialAdmissions(patients) {
 
 const inpatientStore = createBrowserStore({
   key: 'inpatient',
-  seed: () => ({ beds: initialBeds(), admissions: initialAdmissions(getDemoPatients()), requests: [] }),
+  seed: () => ({ departments: defaultDepartments, wards: defaultWards, beds: initialBeds(), admissions: initialAdmissions(getDemoPatients()), requests: [] }),
   validate: (value) => value && typeof value === 'object'
     && Array.isArray(value.beds)
     && Array.isArray(value.admissions),
@@ -146,6 +147,8 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
   const canCompleteDischargeChecklist = hasPermission('discharge.checklist')
   const inpatientData = useSyncExternalStore(inpatientStore.subscribe, inpatientStore.getSnapshot, inpatientStore.getSnapshot)
   const { beds, admissions, requests = [] } = inpatientData
+  const facilityWards = inpatientData.wards || defaultWards
+  const facilityDepartments = inpatientData.departments || defaultDepartments
   const [wardFilter, setWardFilter] = useState('all')
   const [query, setQuery] = useState('')
   const [admitOpen, setAdmitOpen] = useState(false)
@@ -156,6 +159,10 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
   const [reason, setReason] = useState('')
   const [formError, setFormError] = useState('')
   const [notice, setNotice] = useState('')
+  const [departmentName, setDepartmentName] = useState('')
+  const [wardName, setWardName] = useState('')
+  const [wardPrefix, setWardPrefix] = useState('')
+  const [wardBedCount, setWardBedCount] = useState('4')
 
   const activeAdmissions = admissions.filter((admission) => admission.status === 'Admitted')
   const availablePatients = patients.filter((patient) => !activeAdmissions.some((admission) => admission.patientId === patient.id))
@@ -168,6 +175,29 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
   const occupied = beds.filter((bed) => bed.status === 'occupied').length
   const available = beds.filter((bed) => bed.status === 'available').length
   const cleaning = beds.filter((bed) => bed.status === 'cleaning').length
+
+  const addDepartment = (event) => {
+    event.preventDefault()
+    const name = departmentName.trim()
+    if (!canManageBeds || !name) return
+    if (facilityDepartments.some((item) => item.toLowerCase() === name.toLowerCase())) { setFormError('This department already exists.'); return }
+    inpatientStore.update((current) => ({ ...current, departments: [...(current.departments || defaultDepartments), name] }))
+    setDepartmentName(''); setFormError(''); setNotice(`${name} department added.`)
+  }
+
+  const addWard = (event) => {
+    event.preventDefault()
+    const name = wardName.trim()
+    const prefix = wardPrefix.trim().toUpperCase().replaceAll(/[^A-Z0-9]/g, '').slice(0, 5)
+    const total = Number(wardBedCount)
+    if (!canManageBeds || !name || !prefix || !Number.isInteger(total) || total < 1 || total > 100) { setFormError('Enter a ward name, a short alphanumeric prefix and 1–100 beds.'); return }
+    if (facilityWards.some((ward) => ward.prefix === prefix || ward.name.toLowerCase() === name.toLowerCase())) { setFormError('A ward with this name or bed prefix already exists.'); return }
+    const wardId = `ward-${Date.now().toString(36)}`
+    const newWard = { id: wardId, name, prefix, total }
+    const newBeds = Array.from({ length: total }, (_, index) => ({ id: `${prefix}-${String(index + 1).padStart(2, '0')}`, ward: wardId, status: 'available', patientId: '' }))
+    inpatientStore.update((current) => ({ ...current, wards: [...(current.wards || defaultWards), newWard], beds: [...current.beds, ...newBeds] }))
+    setWardName(''); setWardPrefix(''); setWardBedCount('4'); setFormError(''); setNotice(`${name} added with ${total} available beds.`)
+  }
 
   const admitPatient = (event) => {
     event.preventDefault()
@@ -297,6 +327,18 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
 
       {notice && <p className="operations-status" role="status"><CheckCircle2 size={14} />{notice}</p>}
 
+      {pageId === 'departments-wards' && canManageBeds && <section className="content-panel facility-configuration">
+        <div className="operations-section-heading"><div><h2>Facility configuration</h2><p>Manage departments, wards and initial bed capacity in this browser.</p></div><BedDouble size={17}/></div>
+        <div className="facility-config-grid">
+          <form onSubmit={addDepartment}><h3>Add department</h3><label><span>Department name</span><input required value={departmentName} onChange={(event) => setDepartmentName(event.target.value)} placeholder="e.g. Dermatology"/></label><button className="button button--secondary" type="submit"><Plus size={14}/> Add department</button></form>
+          <form onSubmit={addWard}><h3>Add ward and beds</h3><label><span>Ward name</span><input required value={wardName} onChange={(event) => setWardName(event.target.value)} placeholder="e.g. Maternity ward"/></label><div className="facility-config-inline"><label><span>Bed prefix</span><input required maxLength={5} value={wardPrefix} onChange={(event) => setWardPrefix(event.target.value)} placeholder="MAT"/></label><label><span>Initial beds</span><input required type="number" min="1" max="100" value={wardBedCount} onChange={(event) => setWardBedCount(event.target.value)}/></label></div><button className="button button--primary" type="submit"><Plus size={14}/> Add ward</button></form>
+        </div>
+        {formError && <p className="operations-form-error" role="alert">{formError}</p>}
+        <div className="facility-config-summary"><div><strong>{facilityDepartments.length}</strong><span>Departments</span></div><div><strong>{facilityWards.length}</strong><span>Wards</span></div><div><strong>{beds.length}</strong><span>Configured beds</span></div></div>
+        <div className="facility-config-departments">{facilityDepartments.map((department) => <span key={department}>{department}</span>)}</div>
+        <div className="facility-config-wards">{facilityWards.map((ward) => <div key={ward.id}><strong>{ward.name}</strong><span>{ward.prefix} · {beds.filter((bed) => bed.ward === ward.id).length} beds</span></div>)}</div>
+      </section>}
+
       {(pageId === 'admission-requests' || (pageId === 'departments-wards' && requests.length > 0)) && <section className="content-panel inpatient-admissions">
         <div className="operations-section-heading">
           <div><h2>Admission requests</h2><p>{requests.filter((request) => request.status === 'Requested').length} awaiting bed assignment</p></div>
@@ -321,12 +363,12 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
             <div><h2>Ward capacity</h2><p>Select a ward to filter beds and admissions.</p></div>
             <select aria-label="Filter by ward" value={wardFilter} onChange={(event) => setWardFilter(event.target.value)}>
               <option value="all">All wards</option>
-              {wards.map((ward) => <option key={ward.id} value={ward.id}>{ward.name}</option>)}
+              {facilityWards.map((ward) => <option key={ward.id} value={ward.id}>{ward.name}</option>)}
             </select>
           </div>
           <div className="ward-bed-grid">
             {filteredBeds.map((bed) => {
-              const ward = wards.find((item) => item.id === bed.ward)
+              const ward = facilityWards.find((item) => item.id === bed.ward)
               const patient = patients.find((item) => item.id === bed.patientId)
               return (
                 <article className={`ward-bed ward-bed--${bed.status}`} key={bed.id}>
@@ -350,7 +392,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
           </div>
           <div className="operations-filter-row">
             <button type="button" className={wardFilter === 'all' ? 'operations-filter operations-filter--active' : 'operations-filter'} onClick={() => setWardFilter('all')}>All wards</button>
-            {wards.map((ward) => <button type="button" key={ward.id} className={wardFilter === ward.id ? 'operations-filter operations-filter--active' : 'operations-filter'} onClick={() => setWardFilter(ward.id)}>{ward.name}</button>)}
+            {facilityWards.map((ward) => <button type="button" key={ward.id} className={wardFilter === ward.id ? 'operations-filter operations-filter--active' : 'operations-filter'} onClick={() => setWardFilter(ward.id)}>{ward.name}</button>)}
           </div>
           <div className="operations-table-wrap">
             <table className="operations-table">
@@ -359,7 +401,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
                 <Fragment key={admission.id}>
                   <tr>
                     <td><strong><PatientLink patientId={admission.patientId}>{admission.patientName}</PatientLink></strong><span>{admission.patientId}</span></td>
-                    <td>{wards.find((ward) => ward.id === beds.find((bed) => bed.id === admission.bedId)?.ward)?.name}<strong className="operations-subvalue">{admission.bedId}</strong><span className="operations-subvalue">{admission.reason}</span></td>
+                    <td>{facilityWards.find((ward) => ward.id === beds.find((bed) => bed.id === admission.bedId)?.ward)?.name}<strong className="operations-subvalue">{admission.bedId}</strong><span className="operations-subvalue">{admission.reason}</span></td>
                     <td>{formatClockTime(admission.since)}</td>
                     <td>{canManageBeds && <button className="operations-table-action" type="button" onClick={() => discharge(admission)} disabled={Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked)}>Discharge</button>}</td>
                   </tr>
@@ -386,7 +428,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
           <div className="operations-modal-heading"><div><span><BedDouble size={14} /> Inpatient intake</span><h2 id="admit-modal-title">Admit patient</h2><p>{selectedRequestId ? 'Assign a bed to the selected admission request.' : 'Assign a patient to an available bed.'}</p></div><button className="icon-button" aria-label="Close admission dialog" type="button" onClick={() => setAdmitOpen(false)}><X size={17} /></button></div>
           <form onSubmit={admitPatient} className="operations-form">
             <label><span>Patient</span><select required value={selectedPatientId} onChange={(event) => setSelectedPatientId(event.target.value)}><option value="">Select patient</option>{availablePatients.map((patient) => <option value={patient.id} key={patient.id}>{patient.name} · {patient.id}</option>)}</select></label>
-            <label><span>Available ward bed</span><select required value={selectedBedId} onChange={(event) => setSelectedBedId(event.target.value)}><option value="">Select bed</option>{beds.filter((bed) => bed.status === 'available').map((bed) => <option value={bed.id} key={bed.id}>{wards.find((ward) => ward.id === bed.ward)?.name} · {bed.id}</option>)}</select></label>
+            <label><span>Available ward bed</span><select required value={selectedBedId} onChange={(event) => setSelectedBedId(event.target.value)}><option value="">Select bed</option>{beds.filter((bed) => bed.status === 'available').map((bed) => <option value={bed.id} key={bed.id}>{facilityWards.find((ward) => ward.id === bed.ward)?.name} · {bed.id}</option>)}</select></label>
             <label className="operations-form-wide"><span>Admission note</span><input value={reason} onChange={(event) => setReason(event.target.value)} placeholder="Reason for admission (optional)" /></label>
             {formError && <p className="operations-form-error" role="alert">{formError}</p>}
             <div className="operations-modal-actions"><button className="button button--secondary" type="button" onClick={() => setAdmitOpen(false)}>Cancel</button><button className="button button--primary" type="submit"><Check size={14} /> Confirm admission</button></div>
