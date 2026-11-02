@@ -13,6 +13,7 @@ import {
   FileText,
   HeartPulse,
   Plus,
+  ReceiptText,
   Search,
   Users,
   Wallet,
