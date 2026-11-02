@@ -23,9 +23,10 @@ import PatientLink from '../patients/PatientLink.jsx'
 import TimeInput, { formatClockTime } from '../shared/TimeInput.jsx'
 import { getAppointments, subscribeToAppointments, updateAppointments } from './frontDeskStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
+import { getWorkspace, subscribeWorkspace } from '../admin/workspaceStore.js'
 import './FrontDeskPage.css'
 
-const departments = ['General practice', 'Outpatient', 'Paediatrics', 'Cardiology', 'Dental']
+const defaultDepartments = ['General practice', 'Outpatient', 'Paediatrics', 'Cardiology', 'Dental']
 const clinicians = ['Dr. K. Mensah', 'Dr. A. Owusu', 'Dr. E. Addo', 'Dr. M. Tetteh']
 const appointmentStatuses = ['All statuses', 'Scheduled', 'Checked in', 'In triage', 'With clinician', 'Completed', 'Cancelled']
 const initialSelectedDate = new Date().toISOString().slice(0, 10)
@@ -52,6 +53,8 @@ function FrontDeskPage({ pageId = 'reception-desk', pageTitle = 'Reception desk'
   const canManageQueue = hasPermission('opd.queue.manage')
   const canDraftMessages = hasPermission('messages.draft')
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
+  const workspace = useSyncExternalStore(subscribeWorkspace, getWorkspace, getWorkspace)
+  const departments = workspace.departments || defaultDepartments
   const appointments = useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
   const [selectedDate, setSelectedDate] = useState(initialSelectedDate)
   const [statusFilter, setStatusFilter] = useState('All statuses')
