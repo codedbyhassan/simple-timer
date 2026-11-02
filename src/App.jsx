@@ -26,6 +26,7 @@ import {
   getRoleNames,
   getVisibleNavigation,
   mergePermissions,
+  permissionCatalog,
   roleAccessContext,
   roleDefinitions,
 } from './access/roleAccess.js'
@@ -54,17 +55,18 @@ function getLocationSnapshot() {
 }
 
 function readRoleGrants() {
+  const knownPermissions = new Set(permissionCatalog.map((permission) => permission.id))
   try {
     const saved = JSON.parse(localStorage.getItem(GRANTS_STORAGE_KEY) || 'null')
     const grants = Object.fromEntries(roleDefinitions.map((role) => [
       role.id,
       Array.isArray(saved?.[role.id])
-        ? saved[role.id].filter((permission) => typeof permission === 'string')
+        ? saved[role.id].filter((permission) => typeof permission === 'string' && knownPermissions.has(permission))
         : [...(defaultRolePermissions[role.id] || [])],
     ]))
-    if (localStorage.getItem(GRANTS_SCHEMA_KEY) !== '2') {
+    if (localStorage.getItem(GRANTS_SCHEMA_KEY) !== '3') {
       grants['hospital-admin'] = [...new Set([...(grants['hospital-admin'] || []), 'cashier.refund.approve'])]
-      localStorage.setItem(GRANTS_SCHEMA_KEY, '2')
+      localStorage.setItem(GRANTS_SCHEMA_KEY, '3')
     }
     return grants
   } catch (error) {
