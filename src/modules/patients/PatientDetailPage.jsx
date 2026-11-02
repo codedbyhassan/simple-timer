@@ -445,7 +445,7 @@ function HistoryPanel({ tabId, patientId, patient }) {
               item.billing?.status || 'Pricing unavailable',
             ])
         : []
-  const rows = liveRows.length ? liveRows : record.rows
+  const rows = liveRows
   const hasLiveRecords = liveRows.length > 0
   const columns = hasLiveRecords && tabId === 'consultations'
     ? ['Date & time', 'Clinician', 'Department', 'Diagnosis', 'Status']
@@ -474,7 +474,7 @@ function HistoryPanel({ tabId, patientId, patient }) {
             <p>{record.description} · {patientId}</p>
           </div>
         </div>
-        <span className="patient-history-demo-label">{hasLiveRecords ? 'Recorded activity' : 'Illustrative history'}</span>
+        <span className="patient-history-demo-label">{hasLiveRecords ? 'Recorded activity' : 'No records'}</span>
       </div>
       <div className="patient-history-table-wrap">
         <table className="patient-history-table">
@@ -482,6 +482,7 @@ function HistoryPanel({ tabId, patientId, patient }) {
             <tr>{visibleColumns.map((column) => <th scope="col" key={column}>{column}</th>)}</tr>
           </thead>
           <tbody>
+            {!visibleRows.length && <tr><td className="patient-history-empty-cell" colSpan={visibleColumns.length}>No {record.title.toLowerCase()} have been recorded for this patient in the available preview data.</td></tr>}
             {visibleRows.map((row) => (
               <tr key={row[1]}>
                 {row.map((cell, index) => (
@@ -500,7 +501,7 @@ function HistoryPanel({ tabId, patientId, patient }) {
         <CheckCircle2 size={14} />
         {hasLiveRecords
           ? `${record.title} are linked to this patient’s visit and available for this browser session only.`
-          : `This panel previews the planned ${record.title.toLowerCase()} workflow. The rows shown are synthetic design examples, not clinical or financial records.`}
+          : `No ${record.title.toLowerCase()} are currently recorded for this patient. No sample clinical or financial entries are substituted.`}
       </div>
     </section>
     </>
