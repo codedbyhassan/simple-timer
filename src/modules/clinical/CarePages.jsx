@@ -596,12 +596,12 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const canDispense = hasPermission('pharmacy.dispense')
   const canVerifyDispensing = hasPermission('pharmacy.verify')
   const canManageInventory = hasPermission('inventory.manage')
+  const isLab = type === 'laboratory'
   const canEditInventory = canManageInventory || (isLab && pageId === 'test-catalogue' && hasPermission('lab.catalogue.manage'))
   const canEnterLabResults = hasPermission('lab.results.enter')
   const canVerifyLabResults = hasPermission('lab.results.verify')
   const careData = useCareSnapshot()
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
-  const isLab = type === 'laboratory'
   const [resultForm, setResultForm] = useState({})
   const [search, setSearch] = useState('')
   const [inventoryForm, setInventoryForm] = useState(initialInventoryForm)
