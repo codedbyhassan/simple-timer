@@ -33,7 +33,7 @@ export default function RoleDashboardPage({ roleId }) {
   const criticalResults = care.labOrders.filter((item) => item.critical && item.status === 'Result ready')
   const openPrescriptions = care.prescriptions.filter((item) => item.status !== 'Dispensed')
   const stockDepartment = roleId === 'lab' ? 'laboratory' : 'pharmacy'
-  const lowStock = care.inventory.filter((item) => item.department === stockDepartment && item.trackStock && item.onHand <= item.reorderLevel)
+  const lowStock = care.inventory.filter((item) => item.department === stockDepartment && item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel)
   const missingMappings = care.inventory.filter((item) => item.department === 'pharmacy' && !item.claimCode)
   const monthClaims = claims.records.filter((item) => item.generatedAt.slice(0, 7) === today.slice(0, 7))
 
