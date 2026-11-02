@@ -188,6 +188,21 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
     setDepartmentName(''); setFormError(''); setNotice(`${name} department added.`)
   }
 
+  const addBedToWard = (ward) => {
+    if (!canManageBeds) return
+    const wardBeds = beds.filter((bed) => bed.ward === ward.id)
+    const nextNumber = wardBeds.reduce((max, bed) => Math.max(max, Number(bed.id.slice(ward.prefix.length + 1)) || 0), 0) + 1
+    if (nextNumber > 100) { setFormError('This ward has reached the 100-bed preview limit.'); return }
+    const bed = { id: `${ward.prefix}-${String(nextNumber).padStart(2, '0')}`, ward: ward.id, status: 'available', patientId: '' }
+    inpatientStore.update((current) => ({
+      ...current,
+      beds: [...current.beds, bed],
+      wards: (current.wards || defaultWards).map((item) => item.id === ward.id ? { ...item, total: wardBeds.length + 1 } : item),
+    }))
+    setNotice(`${bed.id} added to ${ward.name}.`)
+    setFormError('')
+  }
+
   const addWard = (event) => {
     event.preventDefault()
     const name = wardName.trim()
@@ -339,7 +354,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
         {formError && <p className="operations-form-error" role="alert">{formError}</p>}
         <div className="facility-config-summary"><div><strong>{facilityDepartments.length}</strong><span>Departments</span></div><div><strong>{facilityWards.length}</strong><span>Wards</span></div><div><strong>{beds.length}</strong><span>Configured beds</span></div></div>
         <div className="facility-config-departments">{facilityDepartments.map((department) => <span key={department}>{department}</span>)}</div>
-        <div className="facility-config-wards">{facilityWards.map((ward) => <div key={ward.id}><strong>{ward.name}</strong><span>{ward.prefix} · {beds.filter((bed) => bed.ward === ward.id).length} beds</span></div>)}</div>
+        <div className="facility-config-wards">{facilityWards.map((ward) => <div key={ward.id}><strong>{ward.name}</strong><span>{ward.prefix} · {beds.filter((bed) => bed.ward === ward.id).length} beds</span><button type="button" className="operations-table-action" onClick={() => addBedToWard(ward)}>Add bed</button></div>)}</div>
       </section>}
 
       {(pageId === 'admission-requests' || (pageId === 'departments-wards' && requests.length > 0)) && <section className="content-panel inpatient-admissions">
@@ -408,7 +423,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
                     <td>{formatClockTime(admission.since)}</td>
                     <td>{canManageBeds && <button className="operations-table-action" type="button" onClick={() => discharge(admission)} disabled={Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked)}>Discharge</button>}</td>
                   </tr>
-                  <tr><td colSpan={4}>
+                  {pageId !== 'my-admissions' && <tr><td colSpan={4}>
                     <div className="inpatient-discharge-checklist">
                       <strong>Discharge checklist</strong>
                       {dischargeChecklistItems.map(([id, label]) => <label key={id}>
@@ -417,7 +432,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
                       </label>)}
                       {canManageBeds && Object.values(admission.checklist || emptyDischargeChecklist()).some((checked) => !checked) && <small>Checklist must be complete before discharge.</small>}
                     </div>
-                  </td></tr>
+                  </td></tr>}
                 </Fragment>
               ))}</tbody>
             </table>
