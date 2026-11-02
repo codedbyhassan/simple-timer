@@ -748,7 +748,7 @@ p {
   margin-bottom: 15px;
 }
 
-.metric-panel {
+.app-shell .metric-panel {
   display: flex;
   min-height: 100px;
   flex-direction: column;
@@ -780,7 +780,7 @@ p {
   gap: 13px;
 }
 
-.content-panel {
+.app-shell .content-panel {
   min-width: 0;
   padding: 16px;
   border-radius: 9px;
@@ -1339,7 +1339,7 @@ p {
     grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr);
   }
 
-  .metric-panel {
+  .app-shell .metric-panel {
     padding-right: 11px;
     padding-left: 11px;
   }
@@ -1601,7 +1601,7 @@ p {
     margin-bottom: 10px;
   }
 
-  .metric-panel {
+  .app-shell .metric-panel {
     min-height: 92px;
     padding: 11px 10px;
     border-radius: 8px;
@@ -1619,7 +1619,7 @@ p {
     gap: 9px;
   }
 
-  .content-panel {
+  .app-shell .content-panel {
     padding: 13px;
     border-radius: 8px;
   }
@@ -1712,18 +1712,18 @@ p {
 
 
 /* Phase 2 card refinement: quieter surfaces, consistent rhythm, same design language. */
-.metric-panel, .content-panel, .operations-metric, .claims-dashboard-stats article,
-.front-desk-stat, .care-stats article, .nurse-stat, .patient-card,
-.patients-overview-card, .patient-detail-panel, .patient-insurance-panel,
-.patient-insurance-card, .clinical-data-card, .department-order-card,
-.department-inventory-card, .role-panel.ws-panel {
+.app-shell .metric-panel, .app-shell .content-panel, .app-shell .operations-metric, .app-shell .claims-dashboard-stats article,
+.app-shell .front-desk-stat, .app-shell .care-stats article, .app-shell .nurse-stat, .app-shell .patient-card,
+.app-shell .patients-overview-card, .app-shell .patient-detail-panel, .app-shell .patient-insurance-panel,
+.app-shell .patient-insurance-card, .app-shell .clinical-data-card, .app-shell .department-order-card,
+.app-shell .department-inventory-card, .app-shell .role-panel.ws-panel {
   border-radius: 11px;
   box-shadow: none;
 }
-.metric-panel { min-height: 94px; padding: 12px 14px; }
-.content-panel { padding: 15px; }
-.operations-metric { min-height: 100px; padding: 12px 13px; }
-.claims-dashboard-stats article { min-height: 66px; padding: 10px 12px; }
-.front-desk-stat, .care-stats article, .nurse-stat { min-height: 76px; padding: 11px 13px; }
-.patient-card { min-height: 182px; padding: 12px; }
-.patient-card:hover { transform: translateY(-1px); }
+.app-shell .metric-panel { min-height: 94px; padding: 12px 14px; }
+.app-shell .content-panel { padding: 15px; }
+.app-shell .operations-metric { min-height: 100px; padding: 12px 13px; }
+.app-shell .claims-dashboard-stats article { min-height: 66px; padding: 10px 12px; }
+.app-shell .front-desk-stat, .app-shell .care-stats article, .app-shell .nurse-stat { min-height: 76px; padding: 11px 13px; }
+.app-shell .patient-card { min-height: 182px; padding: 12px; }
+.app-shell .app-shell .patient-card:hover { transform: translateY(-1px); }
