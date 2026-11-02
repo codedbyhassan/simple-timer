@@ -634,7 +634,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const isCriticalView = pageId === 'critical-results'
   const isLabResultsView = pageId === 'lab-results'
   const isStockAlertsView = pageId === 'stock-alerts'
-  const isStockView = ['stock-levels', 'pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId)
+  const isStockView = ['pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId)
   const isMappingView = pageId === 'formulary-mapping'
   const showInventory = isCatalogueView || isStockView || isStockAlertsView || isMappingView
   const showWorklist = !showInventory
