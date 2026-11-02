@@ -8,6 +8,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "lint": "oxlint",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "preview": "vite preview",
     "electron:dev": "electron .",
     "electron:package:win": "npm run build && electron-builder --win"
@@ -24,6 +25,7 @@
     "electron": "^45.2.1",
     "electron-builder": "^26.18.0",
     "oxlint": "^1.89.0",
+    "typescript": "^5.9.3",
     "vite": "^8.3.5"
   },
   "build": {

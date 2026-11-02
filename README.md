@@ -41,6 +41,7 @@ SMS can be drafted in the UI but is not sent; Arkesel and Supabase are not conne
 
 ```powershell
 npm run lint
+npm run typecheck
 npm run build
 npm run preview
 ```
