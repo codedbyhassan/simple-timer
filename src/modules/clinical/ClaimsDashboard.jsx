@@ -44,7 +44,7 @@ function formatCurrency(value) {
   return new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(value)
 }
 
-export default function ClaimsDashboard({ pageTitle = 'Claims' }) {
+export default function ClaimsDashboard({ pageId = 'claims-list', pageTitle = 'Claims' }) {
   const { hasPermission } = useRoleAccess()
   const canViewClaims = hasPermission('claims.view')
   const canExportClaims = hasPermission('claims.export')
