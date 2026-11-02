@@ -122,7 +122,7 @@ function App() {
     : []
   const searchCount = patientMatches.length + appointmentMatches.length + labMatches.length + prescriptionMatches.length + claimMatches.length
   const localNotifications = [
-    ...careData.labOrders.filter((item) => item.critical && item.status === 'Result ready').slice(0, 3).map((item) => ({ id: item.id, title: 'Critical laboratory result', detail: `${item.testName} · ${item.patientName}`, route: 'critical-results' })),
+    ...careData.labOrders.filter((item) => item.critical && item.status === 'Result ready' && !item.reviewedAt).slice(0, 3).map((item) => ({ id: item.id, title: 'Critical laboratory result', detail: `${item.testName} · ${item.patientName}`, route: 'critical-results' })),
     ...careData.inventory.filter((item) => item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel).slice(0, 3).map((item) => ({ id: item.id, title: 'Stock reorder alert', detail: `${item.name} · ${item.onHand} ${item.unit} remaining`, route: item.department === 'laboratory' ? 'lab-inventory' : 'stock-alerts' })),
     ...appointments.filter((item) => item.date === new Date().toISOString().slice(0, 10) && ['Checked in', 'In triage'].includes(item.status)).slice(0, 3).map((item) => ({ id: item.id, title: 'Patient awaiting care', detail: `${item.patientName} · ${item.status}`, route: 'opd-queue' })),
   ].slice(0, 8)
