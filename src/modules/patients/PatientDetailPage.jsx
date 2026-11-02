@@ -53,9 +53,9 @@ const historyContent = {
     description: 'Consultation history and clinical encounters',
     columns: ['Date & time', 'Clinician', 'Department', 'Visit type', 'Outcome'],
     rows: [
-      ['28 Oct 2026 · 10:30', 'Dr. K. Mensah', 'General practice', 'Follow-up', 'Completed'],
-      ['12 Oct 2026 · 09:15', 'Dr. A. Owusu', 'Outpatient', 'New visit', 'Completed'],
-      ['30 Sep 2026 · 14:00', 'Dr. E. Addo', 'General practice', 'Review', 'Completed'],
+      ['28 Oct 2026 · 10:30 AM', 'Dr. K. Mensah', 'General practice', 'Follow-up', 'Completed'],
+      ['12 Oct 2026 · 09:15 AM', 'Dr. A. Owusu', 'Outpatient', 'New visit', 'Completed'],
+      ['30 Sep 2026 · 02:00 PM', 'Dr. E. Addo', 'General practice', 'Review', 'Completed'],
     ],
   },
   labs: {
