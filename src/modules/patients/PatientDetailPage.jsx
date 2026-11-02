@@ -451,8 +451,17 @@ function HistoryPanel({ tabId, patientId, patient }) {
     ? ['Date & time', 'Clinician', 'Department', 'Diagnosis', 'Status']
     : record.columns
 
-  const visibleColumns = columns.length > 4 ? [...columns.slice(0, 3), columns[columns.length - 1]] : columns
-  const visibleRows = rows.map((row) => row.length > 4 ? [...row.slice(0, 3), row[row.length - 1]] : row)
+  const preferredColumns = {
+    consultations: [0, 1, 3, 4],
+    labs: [0, 1, 3, 4],
+    drugs: [0, 1, 2, 4],
+    procedures: [0, 1, 2, 4],
+    billing: [0, 1, 3, 4],
+    claims: [0, 1, 3, 4],
+  }
+  const visibleIndexes = columns.length > 4 ? (preferredColumns[tabId] || [0, 1, 2, columns.length - 1]) : columns.map((_, index) => index)
+  const visibleColumns = visibleIndexes.map((index) => columns[index])
+  const visibleRows = rows.map((row) => visibleIndexes.map((index) => row[index]))
 
   return (
     <>
