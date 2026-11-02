@@ -540,7 +540,7 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
   }), { billed: 0, covered: 0, collected: 0, due: 0 })
   const visibleInvoices = invoices.filter((invoice) => {
     const balance = outstanding(invoice)
-    if (['pending-charges', 'payment-status'].includes(pageId) && balance <= 0) return false
+    if (pageId === 'pending-charges' && balance <= 0) return false
     if (pageId === 'payments-receipts' && invoice.paid <= 0) return false
     const status = balance === 0 ? 'settled' : invoice.paid > 0 ? 'partial' : 'due'
     return (filter === 'all' || filter === status)
@@ -549,6 +549,26 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
   const selectedInvoice = invoices.find((invoice) => invoice.id === selectedInvoiceId)
   const estimatedDrugCoverage = claims.records.reduce((sum, record) => sum + (record.claim.medicine || []).reduce((value, medicine) => value + (Number.isFinite(medicine.nhisCovered) ? medicine.nhisCovered : 0), 0), 0)
   const claimsMissingTariffs = claims.records.filter((record) => (record.claim.medicine || []).some((medicine) => !Number.isFinite(medicine.nhisCovered))).length
+
+  const downloadReceipt = (receipt) => {
+    const content = [
+      'ASCEND HMS · PAYMENT RECEIPT',
+      'Receipt: ' + receipt.id,
+      'Invoice: ' + receipt.invoiceId,
+      'Patient: ' + receipt.patientName + ' · ' + receipt.patientId,
+      'Amount: ' + formatMoney(receipt.amount),
+      'Method: ' + receipt.method,
+      'Issued: ' + formatDateTime(receipt.issuedAt),
+      '',
+      'Preview receipt. Verify against the hospital payment ledger.',
+    ].join('\\n')
+    const url = URL.createObjectURL(new Blob([content], { type: 'text/plain;charset=utf-8' }))
+    const link = document.createElement('a')
+    link.href = url
+    link.download = receipt.id + '.txt'
+    link.click()
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
 
   const recordPayment = (event) => {
     event.preventDefault()
@@ -612,9 +632,18 @@ export function FinancePage({ pageId = 'pending-charges', pageTitle = 'Finance' 
         <span className="finance-estimate-label">Estimate only</span>
       </section>
 
+      {pageId === 'billed-vs-claimed' && <section className="content-panel finance-ledger">
+        <div className="operations-section-heading"><div><h2>Invoice and claim comparison</h2><p>Medicine tariff coverage is an estimate only. Diagnosis and investigation G-DRG values are not configured.</p></div></div>
+        <div className="operations-table-wrap"><table className="operations-table"><thead><tr><th>Invoice / patient</th><th>Billed</th><th>Known medicine estimate</th><th>Review</th></tr></thead><tbody>{invoices.map((invoice) => {
+          const patientClaims = claims.records.filter((record) => record.sourcePatientId === invoice.patientId)
+          const hasMissing = patientClaims.some((record) => (record.claim.medicine || []).some((medicine) => !Number.isFinite(medicine.nhisCovered)))
+          const estimate = patientClaims.reduce((sum, record) => sum + (record.claim.medicine || []).reduce((value, medicine) => value + (Number.isFinite(medicine.nhisCovered) ? medicine.nhisCovered : 0), 0), 0)
+          return <tr key={invoice.id}><td><strong>{invoice.id}</strong><span>{invoice.patientName} · {invoice.patientId}</span></td><td>{formatMoney(invoice.total)}</td><td>{formatMoney(estimate)}</td><td>{!patientClaims.length ? 'No generated claim' : hasMissing ? 'Tariff review needed' : 'Medicine estimate available'}</td></tr>
+        })}</tbody></table>{!invoices.length && <div className="operations-empty"><FileText size={20}/><strong>No invoices to compare</strong><span>Invoices will appear as clinical services are billed.</span></div>}</div>
+      </section>}
       {pageId === 'payments-receipts' && <section className="content-panel finance-ledger">
         <div className="operations-section-heading"><div><h2>Receipt register</h2><p>{receipts.length} receipts issued in this browser.</p></div></div>
-        <div className="operations-table-wrap"><table className="operations-table"><thead><tr><th>Receipt</th><th>Invoice / patient</th><th>Amount / method</th><th>Issued</th></tr></thead><tbody>{receipts.map((receipt) => <tr key={receipt.id}><td><strong>{receipt.id}</strong></td><td>{receipt.invoiceId}<span>{receipt.patientName} · {receipt.patientId}</span></td><td><strong>{formatMoney(receipt.amount)}</strong><span>{receipt.method}</span></td><td>{formatDateTime(receipt.issuedAt)}</td></tr>)}</tbody></table>{!receipts.length && <div className="operations-empty"><ReceiptText size={20}/><strong>No receipts issued yet</strong><span>Recorded payments will create receipt references here.</span></div>}</div>
+        <div className="operations-table-wrap"><table className="operations-table"><thead><tr><th>Receipt</th><th>Invoice / patient</th><th>Amount / method</th><th>Issued</th></tr></thead><tbody>{receipts.map((receipt) => <tr key={receipt.id}><td><strong>{receipt.id}</strong></td><td>{receipt.invoiceId}<span>{receipt.patientName} · {receipt.patientId}</span></td><td><strong>{formatMoney(receipt.amount)}</strong><span>{receipt.method}</span></td><td><span>{formatDateTime(receipt.issuedAt)}</span><button className="text-button" type="button" onClick={() => downloadReceipt(receipt)}><Download size={13}/> Download receipt</button></td></tr>)}</tbody></table>{!receipts.length && <div className="operations-empty"><ReceiptText size={20}/><strong>No receipts issued yet</strong><span>Recorded payments will create receipt references here.</span></div>}</div>
       </section>}
       <section className="content-panel finance-ledger">
         <div className="operations-section-heading">
