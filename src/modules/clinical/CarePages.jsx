@@ -634,7 +634,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   const isCriticalView = pageId === 'critical-results'
   const isLabResultsView = pageId === 'lab-results'
   const isStockAlertsView = pageId === 'stock-alerts'
-  const isStockView = ['pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId)
+  const isStockView = ['stock-levels', 'pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId)
   const isMappingView = pageId === 'formulary-mapping'
   const showInventory = isCatalogueView || isStockView || isStockAlertsView || isMappingView
   const showWorklist = !showInventory
@@ -1088,7 +1088,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
           </div>
         )}
       </section>}
-      {showInventory && ['stock-levels', 'pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId) && <section className="content-panel department-worklist">
+      {showInventory && ['pharmacy-inventory', 'lab-inventory', 'inventory-console'].includes(pageId) && <section className="content-panel department-worklist">
         <div className="care-panel-heading"><div><h2>Stock movement ledger</h2><p>Receipts, adjustments and issues recorded in this browser.</p></div><span>{inventoryMovements.length} recent movements</span></div>
         <div className="department-inventory-movement-table"><table><thead><tr><th>When</th><th>Item</th><th>Movement</th><th>Balance</th></tr></thead><tbody>{inventoryMovements.map((movement) => <tr key={movement.id}><td>{formatDateTime(movement.createdAt)}</td><td><strong>{movement.itemName}</strong><small>{movement.itemCode}</small></td><td><strong>{movement.type}</strong><small>{movement.quantity > 0 ? '+' : ''}{movement.quantity} {movement.unit} {movement.reference ? '· ' + movement.reference : ''}</small></td><td>{movement.balance} {movement.unit}</td></tr>)}</tbody></table>{!inventoryMovements.length && <p className="clinical-empty-note">No stock movements have been recorded yet. Future receipts, lab issues and dispensing activity will appear here.</p>}</div>
       </section>}
