@@ -1709,3 +1709,21 @@ p {
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Phase 2 card refinement: quieter surfaces, consistent rhythm, same design language. */
+.metric-panel, .content-panel, .operations-metric, .claims-dashboard-stats article,
+.front-desk-stat, .care-stats article, .nurse-stat, .patient-card,
+.patients-overview-card, .patient-detail-panel, .patient-insurance-panel,
+.patient-insurance-card, .clinical-data-card, .department-order-card,
+.department-inventory-card, .role-panel.ws-panel {
+  border-radius: 11px;
+  box-shadow: none;
+}
+.metric-panel { min-height: 94px; padding: 12px 14px; }
+.content-panel { padding: 15px; }
+.operations-metric { min-height: 100px; padding: 12px 13px; }
+.claims-dashboard-stats article { min-height: 66px; padding: 10px 12px; }
+.front-desk-stat, .care-stats article, .nurse-stat { min-height: 76px; padding: 11px 13px; }
+.patient-card { min-height: 182px; padding: 12px; }
+.patient-card:hover { transform: translateY(-1px); }

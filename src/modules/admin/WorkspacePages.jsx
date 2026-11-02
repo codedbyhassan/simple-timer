@@ -231,6 +231,29 @@ function useServiceCharges() {
   }, [care, ws.catalogue])
 }
 
+function downloadTillReceipt(payment, actor) {
+  const lines = [
+    'ASCEND HMS · PAYMENT RECEIPT',
+    '--------------------------------',
+    `Receipt: ${payment.receiptNo || payment.id}`,
+    `Date: ${fmt(payment.at)}`,
+    `Cashier: ${actor}`,
+    `Patient: ${payment.patientName} (${payment.patientId || '—'})`,
+    `Service: ${payment.service}`,
+    `Method: ${payment.method}`,
+    `Amount: ${money(payment.amount)}`,
+    '--------------------------------',
+    'Preview receipt only · verify against the hospital finance system.',
+  ]
+  const blob = new Blob([lines.join('\\n')], { type: 'text/plain;charset=utf-8' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = `receipt-${payment.receiptNo || payment.id}.txt`
+  link.click()
+  window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
 function TillShiftPage() {
   const ws = useWs()
   const actor = useActor()
@@ -239,8 +262,15 @@ function TillShiftPage() {
   const [pay, setPay, bindPay] = useForm({ chargeId: '', method: 'Cash', amount: '' })
   const [error, setError] = useState('')
   const open = ws.tills.find((t) => t.status === 'Open' && t.actor === actor)
-  const paidIds = new Set(ws.tills.flatMap((t) => t.payments || []).map((p) => p.chargeId))
-  const unpaid = charges.filter((c) => !paidIds.has(c.id))
+  const paidByCharge = new Map()
+  ws.tills.flatMap((t) => t.payments || []).forEach((payment) => {
+    paidByCharge.set(payment.chargeId, (paidByCharge.get(payment.chargeId) || 0) + Number(payment.amount || 0))
+  })
+  const unpaid = charges.map((charge) => ({
+    ...charge,
+    paid: paidByCharge.get(charge.id) || 0,
+    remaining: Math.max(0, charge.amount - (paidByCharge.get(charge.id) || 0)),
+  })).filter((charge) => charge.remaining > 0)
   const openTill = () => {
     const n = Number(float)
     if (!Number.isFinite(n) || n < 0) return setError('Enter a valid opening float.')
@@ -248,19 +278,31 @@ function TillShiftPage() {
     setFloat(''); setError('')
   }
   const record = () => {
-    const charge = charges.find((c) => c.id === pay.chargeId)
-    const amount = Number(pay.amount || charge?.amount)
-    if (!charge || !Number.isFinite(amount) || amount <= 0) return setError('Pick a charge and amount.')
-    patchRecord('tills', open.id, { payments: [...open.payments, { id: `PAY-${Date.now()}`, chargeId: charge.id, patientName: charge.patientName, service: charge.service, method: pay.method, amount, at: new Date().toISOString() }] },
-      { actor, action: 'Payment recorded', detail: `${money(amount)} ${pay.method} · ${charge.service}` })
+    const charge = unpaid.find((c) => c.id === pay.chargeId)
+    const amount = Number(pay.amount || charge?.remaining)
+    if (!charge || !Number.isFinite(amount) || amount <= 0) return setError('Pick an outstanding charge and enter a valid amount.')
+    if (amount > charge.remaining) return setError(`Payment exceeds the remaining balance of ${money(charge.remaining)}.`)
+    const payment = {
+      id: `PAY-${Date.now()}`,
+      receiptNo: `RCT-${Date.now().toString().slice(-8)}`,
+      chargeId: charge.id,
+      patientId: charge.patientId,
+      patientName: charge.patientName,
+      service: charge.service,
+      method: pay.method,
+      amount,
+      at: new Date().toISOString(),
+    }
+    patchRecord('tills', open.id, { payments: [...open.payments, payment] },
+      { actor, action: 'Payment recorded', detail: `${money(amount)} ${pay.method} · ${charge.service} · ${payment.receiptNo}` })
     setPay({ chargeId: '', method: 'Cash', amount: '' }); setError('')
   }
   const total = (open?.payments || []).reduce((s, p) => s + p.amount, 0)
   return (
-    <Shell eyebrow="Cashier" title="My till & shift" description="Open a till, take payments for consultations and lab services, then close for reconciliation.">
+    <Shell eyebrow="Cashier" title="My till & shift" description="Open a till, record full or part payments, issue receipts, then close for reconciliation.">
       {!open ? (
         <Panel title="Open till">
-          <div className="ws-form"><Field label="Opening float (GH₵)"><input type="number" value={float} onChange={(e) => setFloat(e.target.value)} /></Field></div>
+          <div className="ws-form"><Field label="Opening float (GH₵)"><input type="number" min="0" step="0.01" value={float} onChange={(e) => setFloat(e.target.value)} /></Field></div>
           {error && <p className="role-panel-error">{error}</p>}
           <button className="button button--primary" type="button" onClick={openTill}>Open till</button>
         </Panel>
@@ -268,9 +310,9 @@ function TillShiftPage() {
         <>
           <Panel title={`Till open since ${fmt(open.openedAt)} · float ${money(open.openingFloat)} · taken ${money(total)}`}>
             <div className="ws-form">
-              <Field label="Charge"><select {...bindPay('chargeId')}><option value="">Select…</option>{unpaid.map((c) => <option key={c.id} value={c.id}>{c.patientName} · {c.service} · {money(c.amount)}</option>)}</select></Field>
+              <Field label="Charge"><select {...bindPay('chargeId')}><option value="">Select…</option>{unpaid.map((c) => <option key={c.id} value={c.id}>{c.patientName} · {c.service} · balance {money(c.remaining)}</option>)}</select></Field>
               <Field label="Method"><select {...bindPay('method')}>{['Cash', 'Mobile money', 'Card'].map((m) => <option key={m}>{m}</option>)}</select></Field>
-              <Field label="Amount (blank = full)"><input {...bindPay('amount', 'number')} /></Field>
+              <Field label="Amount (blank = balance)"><input {...bindPay('amount', 'number')} min="0.01" step="0.01" /></Field>
             </div>
             {error && <p className="role-panel-error">{error}</p>}
             <span className="ws-actions">
@@ -279,17 +321,27 @@ function TillShiftPage() {
             </span>
           </Panel>
           <Panel title="Payments this shift">
-            <Table rows={open.payments} columns={[{ label: 'Time', render: (r) => fmt(r.at) }, { label: 'Patient', key: 'patientName' }, { label: 'Service', key: 'service' }, { label: 'Method', key: 'method' }, { label: 'Amount', render: (r) => money(r.amount) }]} />
+            <Table rows={open.payments} empty="No payments recorded in this shift." columns={[
+              { label: 'Receipt', render: (r) => r.receiptNo || r.id },
+              { label: 'Time', render: (r) => fmt(r.at) },
+              { label: 'Patient', key: 'patientName' },
+              { label: 'Service', key: 'service' },
+              { label: 'Method', key: 'method' },
+              { label: 'Amount', render: (r) => money(r.amount) },
+              { label: '', render: (r) => <button type="button" className="ws-link" onClick={() => downloadTillReceipt(r, actor)}>Download receipt</button> },
+            ]} />
           </Panel>
         </>
       )}
       <Panel title={`Outstanding service charges (${unpaid.length})`}>
-        <Table rows={unpaid} empty="No outstanding charges from consultations or lab." columns={[{ label: 'Patient', key: 'patientName' }, { label: 'Service', key: 'service' }, { label: 'Date', key: 'date' }, { label: 'Amount', render: (r) => money(r.amount) }]} />
+        <Table rows={unpaid} empty="No outstanding charges from consultations or lab." columns={[
+          { label: 'Patient', key: 'patientName' }, { label: 'Service', key: 'service' }, { label: 'Date', key: 'date' },
+          { label: 'Total', render: (r) => money(r.amount) }, { label: 'Paid', render: (r) => money(r.paid) }, { label: 'Balance', render: (r) => money(r.remaining) },
+        ]} />
       </Panel>
     </Shell>
   )
 }
-
 function ShiftReconciliationPage() {
   const ws = useWs()
   const actor = useActor()

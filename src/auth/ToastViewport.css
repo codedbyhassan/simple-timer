@@ -123,3 +123,13 @@
     width: calc(100vw - 24px);
   }
 }
+
+
+/* Phase 2: compact notifications; retain the existing colour and motion language. */
+.app-toast { min-height: 64px; gap: 10px; padding: 10px 12px; border-radius: 13px; }
+.app-toast-icon { width: 22px; flex-basis: 22px; }
+.app-toast-copy { gap: 3px; }
+.app-toast-copy strong { font-size: 14px; }
+.app-toast-copy > span { font-size: 12px; line-height: 1.35; }
+.app-toast-action, .app-toast-close { min-height: 30px; font-size: 12px; }
+.app-toast-close { width: 28px; }

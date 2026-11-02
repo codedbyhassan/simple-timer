@@ -13,9 +13,9 @@ function ToastCard({ toast, onDismiss }) {
   const Icon = config.icon
 
   useEffect(() => {
-    const timer = window.setTimeout(() => onDismiss(toast.id), toast.duration || 5600)
+    const timer = window.setTimeout(() => onDismiss(toast.id), 5000)
     return () => window.clearTimeout(timer)
-  }, [toast.duration, toast.id, onDismiss])
+  }, [toast.id, onDismiss])
 
   return (
     <article className={`app-toast app-toast--${toast.type || 'info'}`} role={toast.type === 'error' ? 'alert' : 'status'}>
