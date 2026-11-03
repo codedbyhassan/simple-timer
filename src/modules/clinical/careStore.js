@@ -1,10 +1,6 @@
 import nhisMedicineCatalog from './nhisMedicineCatalog.json' with { type: 'json' }
 import { createBrowserStore } from '../shared/browserStore.js'
 
-function randomTestTopUp() {
-  return Math.floor(Math.random() * 26) + 5
-}
-
 const initialCareData = () => ({
   consultations: [],
   labOrders: [],
@@ -15,25 +11,21 @@ const initialCareData = () => ({
     { id: 'lab-stock-glucose', department: 'laboratory', itemCode: 'LAB-FBG', name: 'Fasting blood glucose', unit: 'tests', onHand: 22, reorderLevel: 6, trackStock: true, claimCode: '' },
     { id: 'lab-stock-urinalysis', department: 'laboratory', itemCode: 'LAB-URINALYSIS', name: 'Urinalysis', unit: 'tests', onHand: 0, reorderLevel: 0, trackStock: false, claimCode: '' },
     { id: 'lab-stock-malaria', department: 'laboratory', itemCode: 'LAB-MALARIA-RDT', name: 'Malaria RDT', unit: 'tests', onHand: 14, reorderLevel: 4, trackStock: true, claimCode: '' },
-    ...nhisMedicineCatalog.map((medicine) => {
-      const testTopUpCedis = randomTestTopUp()
-      return {
-        id: `pharmacy-stock-${medicine.code.toLowerCase()}`,
-        department: 'pharmacy',
-        itemCode: medicine.code,
-        name: medicine.description,
-        unit: medicine.pack,
-        onHand: 0,
-        reorderLevel: 0,
-        trackStock: true,
-        claimCode: medicine.code,
-        nhisPrice: medicine.nhisPrice,
-        nhisCategory: medicine.category,
-        testTopUpCedis,
-        retailPrice: medicine.nhisPrice + testTopUpCedis,
-        pricingMode: 'synthetic-test',
-      }
-    }),
+    ...nhisMedicineCatalog.map((medicine) => ({
+      id: `pharmacy-stock-${medicine.code.toLowerCase()}`,
+      department: 'pharmacy',
+      itemCode: medicine.code,
+      name: medicine.description,
+      unit: medicine.pack,
+      onHand: 0,
+      reorderLevel: 0,
+      trackStock: true,
+      claimCode: medicine.code,
+      nhisPrice: medicine.nhisPrice,
+      nhisCategory: medicine.category,
+      retailPrice: null,
+      pricingMode: 'unconfigured',
+    })),
   ],
 })
 
@@ -86,19 +78,14 @@ export function calculatePrescriptionBilling({ prescription, patient, serviceDat
     ? Math.min(retailPrice, nhisPrice) * quantity
     : 0
   const patientDue = Math.max(0, total - nhisCovered)
-  const isSyntheticTestPrice = prescription.pricingMode === 'synthetic-test'
-  const testTopUpCedis = isSyntheticTestPrice
-    ? Number(prescription.testTopUpCedis || 0) * quantity
-    : 0
 
   return {
-    status: isSyntheticTestPrice
-      ? hasActiveNhis ? 'Test-only NHIS top-up' : 'Test-only patient charge'
-      : hasActiveNhis ? patientDue > 0 ? 'NHIS top-up due' : 'NHIS covered' : 'Patient charge due',
+    status: hasActiveNhis
+      ? patientDue > 0 ? 'NHIS top-up due' : 'NHIS covered'
+      : 'Patient charge due',
     retailTotal: total,
     nhisCovered,
     patientDue,
-    testTopUpCedis,
-    pricingMode: isSyntheticTestPrice ? 'synthetic-test' : 'verified-retail',
+    pricingMode: 'verified-retail',
   }
 }
