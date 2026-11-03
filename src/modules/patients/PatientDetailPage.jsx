@@ -34,6 +34,7 @@ import ClaimFormSheet from '../clinical/ClaimFormSheet.jsx'
 import { getGeneratedClaimsSnapshot, saveGeneratedClaim, subscribeToGeneratedClaims } from '../clinical/claimsStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { formatDateTime12 } from '../shared/TimeInput.jsx'
+import './PatientDetailPage.css'
 
 const tabs = [
   { id: 'personal', label: 'Personal info', icon: UserRound },
