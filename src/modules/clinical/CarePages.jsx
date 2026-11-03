@@ -424,6 +424,7 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
         <section className="content-panel clinical-workspace" aria-labelledby="clinical-workspace-title">
           {selectedAppointment ? (
             <>
+              <div className="clinical-patient-context">
               <div className="clinical-workspace-heading">
                 <div>
                   <span className="care-section-kicker"><Stethoscope size={13} /> Active consultation</span>
@@ -453,6 +454,7 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
                 <span>{careData.prescriptions.filter((item) => item.patientId === selectedAppointment.patientId).length} prescriptions</span>
                 <button type="button" onClick={openPatientRecord}>View chart</button>
               </div>
+              </div>
 
               {canConsult && <div className="clinical-editor">
                 <label className="care-field">
@@ -473,13 +475,13 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
                 </label>
               </div>}
 
-              {canConsult && <section className="clinical-inline-form clinical-data-section">
+              {canConsult && <section className="clinical-inline-form clinical-data-section clinical-diagnosis-section">
                 <div className="clinical-subheading"><h3><Stethoscope size={15} /> Diagnoses</h3><span>Each row carries ICD-10 and GDRG claim fields</span></div>
                 <div className="clinical-data-grid">
                   {(form.diagnoses || []).map((diagnosis, index) => {
                     const catalogMatch = diagnosisCatalog.find((item) => item.icd10 === diagnosis.icd10)
                     return (
-                      <article className="clinical-data-card" key={diagnosis.id || `${diagnosis.icd10}-${index}`}>
+                      <article className="clinical-data-card clinical-diagnosis-card" key={diagnosis.id || `${diagnosis.icd10}-${index}`}>
                         <div className="clinical-data-card-heading"><strong>Diagnosis {index + 1}</strong><button className="clinical-remove-button" type="button" onClick={() => setForm({ ...form, diagnoses: form.diagnoses.filter((_, rowIndex) => rowIndex !== index) })}>Remove</button></div>
                         <label className="care-field"><span>Diagnosis catalog</span><select value={catalogMatch ? diagnosis.icd10 : diagnosis.diagnosis ? 'other' : ''} onChange={(event) => {
                           const selected = diagnosisCatalog.find((item) => item.icd10 === event.target.value)
@@ -999,12 +1001,10 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
           <div><h2>{pageTitle} inventory</h2><p>{isLab ? 'Stock deductions occur at lab processing, and only for tracked items.' : 'Browse the medicine catalogue and review NHIS tariffs and full retail prices.'}</p></div>
           <span>{inventory.length} items · {inventory.filter((item) => item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel).length} low</span>
         </div>
-        {!isLab && (
-          <label className="care-search department-inventory-search">
-            <Search size={15} />
-            <input type="search" aria-label="Search pharmacy inventory" placeholder="Search medicines by name or code" value={inventorySearch} onChange={(event) => { setInventorySearch(event.target.value); setShowAllInventory(false) }} />
-          </label>
-        )}
+        <label className="care-search department-inventory-search">
+          <Search size={15} />
+          <input type="search" aria-label={isLab ? 'Search laboratory catalogue' : 'Search pharmacy inventory'} placeholder={isLab ? 'Search tests by name or code' : 'Search medicines by name or code'} value={inventorySearch} onChange={(event) => { setInventorySearch(event.target.value); setShowAllInventory(false) }} />
+        </label>
         <div className="department-inventory-grid">
           {visibleInventory.map((item) => (
             <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`View ${item.name} details`}>
@@ -1013,7 +1013,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                 <span className="department-inventory-card-code">{item.itemCode || item.id}</span>
               </span>
               <span className="department-inventory-card-nhis">
-                <small>NHIS tariff</small>
+                <small>{isLab ? 'GDRG tariff' : 'NHIS tariff'}</small>
                 <strong>{item.nhisPrice != null ? formatCurrency(item.nhisPrice) : 'Not mapped'}</strong>
               </span>
               <span className="department-inventory-card-price">
@@ -1024,8 +1024,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
           ))}
           {!visibleInventory.length && <p className="clinical-empty-note">No matching inventory items. Adjust the search or add an item below.</p>}
         </div>
-        {!isLab && !inventorySearch.trim() && !showAllInventory && matchingInventory.length > visibleInventory.length && (
-          <button className="clinical-add-button" type="button" onClick={() => setShowAllInventory(true)}>Show all {matchingInventory.length} medicines</button>
+        {!inventorySearch.trim() && !showAllInventory && matchingInventory.length > visibleInventory.length && (
+          <button className="clinical-add-button" type="button" onClick={() => setShowAllInventory(true)}>Show all {matchingInventory.length} {isLab ? 'tests' : 'medicines'}</button>
         )}
         {canEditInventory && <form className="department-inventory-form" onSubmit={addInventoryItem}>
           <div className="clinical-subheading"><h3><Plus size={14} /> Add inventory item</h3><span>{isLab ? 'Tests become selectable in Consultation' : 'Medications become selectable in Consultation'}</span></div>
