@@ -997,7 +997,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
       {stockNotice && <div className="care-inline-notice" role="status"><CheckCircle2 size={15} />{stockNotice}</div>}
       {showInventory && <section className="content-panel department-inventory">
         <div className="care-panel-heading">
-          <div><h2>{pageTitle} inventory</h2><p>{isLab ? 'Stock deductions occur at lab processing, and only for tracked items.' : 'Supplied NHIS tariffs are separate from synthetic test charges and verified retail prices.'}</p></div>
+          <div><h2>{pageTitle} inventory</h2><p>{isLab ? 'Stock deductions occur at lab processing, and only for tracked items.' : 'Browse the medicine catalogue and review NHIS tariffs and full retail prices.'}</p></div>
           <span>{inventory.length} items · {inventory.filter((item) => item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel).length} low</span>
         </div>
         {!isLab && (
@@ -1008,27 +1008,19 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
         )}
         <div className="department-inventory-grid">
           {visibleInventory.map((item) => (
-            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`${canEditInventory ? 'Edit' : 'View'} ${item.name} inventory`} disabled={!canEditInventory}>
+            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`View or edit ${item.name}`} disabled={!canEditInventory}>
               <span className="department-inventory-card-heading">
-                <span><strong>{item.name}</strong><small>{item.itemCode}</small></span>
-                <span className={`department-inventory-indicator${item.trackStock && item.reorderLevel > 0 && item.onHand <= item.reorderLevel ? ' department-inventory-indicator--low' : ''}`} aria-hidden="true" />
+                <strong>{item.name}</strong>
+                <span className="department-inventory-card-code">{item.itemCode || item.id}</span>
               </span>
-              <span className="department-inventory-card-stock">
-                <strong>{item.trackStock ? `${item.onHand} ${item.unit}` : 'Not tracked'}</strong>
-                <small>{item.trackStock ? item.reorderLevel > 0 && item.onHand <= item.reorderLevel ? 'Reorder needed' : `Reorder at ${item.reorderLevel}` : 'Dispenses without stock deduction'}</small>
+              <span className="department-inventory-card-nhis">
+                <small>NHIS tariff</small>
+                <strong>{item.nhisPrice != null ? formatCurrency(item.nhisPrice) : 'Not mapped'}</strong>
               </span>
-              {item.nhisPrice != null && <span className="department-inventory-card-meta">NHIS {formatCurrency(item.nhisPrice)} · {item.nhisCategory}</span>}
-              <span className={item.claimCode ? 'department-inventory-card-meta' : 'department-inventory-card-meta clinical-claim-warning'}>
-                {item.claimCode ? `${isLab ? 'GDRG' : 'Medicine'} code ${item.claimCode}` : 'Claim code not mapped'}
+              <span className="department-inventory-card-price">
+                <small>Full price</small>
+                <strong>{item.retailPrice != null ? formatCurrency(item.retailPrice) : 'Not set'}</strong>
               </span>
-              {!isLab && <span className={item.pricingMode === 'synthetic-test' ? 'department-inventory-card-meta clinical-claim-warning' : 'department-inventory-card-meta'}>
-                {item.pricingMode === 'synthetic-test'
-                  ? `TEST ONLY · +${formatCurrency(item.testTopUpCedis)} per unit`
-                  : item.retailPrice == null
-                    ? 'Retail price not set'
-                    : `Retail ${formatCurrency(item.retailPrice)}`}
-              </span>}
-              {canEditInventory && <span className="department-inventory-card-action">Click to edit <ArrowRight size={13} /></span>}
             </button>
           ))}
           {!visibleInventory.length && <p className="clinical-empty-note">No matching inventory items. Adjust the search or add an item below.</p>}
@@ -1060,17 +1052,22 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
               setStockError('')
             }
           }}>
-            <section className="department-inventory-modal" role="dialog" aria-modal="true" aria-labelledby="inventory-edit-title">
+            <section className="department-inventory-modal department-inventory-modal--storefront" role="dialog" aria-modal="true" aria-labelledby="inventory-edit-title">
               <div className="department-inventory-modal-heading">
                 <div>
-                  <span className="department-inventory-modal-eyebrow">{isLab ? <FlaskConical size={14} /> : <Pill size={14} />} {pageTitle} inventory</span>
-                  <h2 id="inventory-edit-title">Edit {selectedInventoryItem.name}</h2>
-                  <p>{selectedInventoryItem.itemCode} · Update stock, claim mapping{isLab ? '' : ' and pricing'}.</p>
+                  <span className="department-inventory-modal-eyebrow">{isLab ? <FlaskConical size={14} /> : <Pill size={14} />} PRODUCT DETAILS</span>
+                  <h2 id="inventory-edit-title">{selectedInventoryItem.name}</h2>
+                  <p className="department-inventory-modal-code">{selectedInventoryItem.itemCode || selectedInventoryItem.id}{selectedInventoryItem.claimCode ? ` · ${selectedInventoryItem.claimCode}` : ''}</p>
                 </div>
                 <button className="icon-button" type="button" aria-label="Close inventory editor" onClick={() => { setSelectedInventoryId(''); setInventoryEditForm(null); setStockError('') }}>
                   <X size={18} />
                 </button>
               </div>
+              {!isLab && <div className="department-inventory-modal-pricing">
+                <div><span>Full price</span><strong>{selectedInventoryItem.retailPrice != null ? formatCurrency(selectedInventoryItem.retailPrice) : 'Not set'}</strong></div>
+                <div><span>NHIS tariff</span><strong>{selectedInventoryItem.nhisPrice != null ? formatCurrency(selectedInventoryItem.nhisPrice) : 'Not mapped'}</strong></div>
+              </div>}
+              <div className="department-inventory-modal-section-heading"><span>Product & inventory details</span><small>Update catalogue information</small></div>
               <form className="department-inventory-edit-form" onSubmit={saveInventoryEdits}>
                 <div className="department-inventory-edit-grid">
                   <label className="care-field"><span>{isLab ? 'Test / item name' : 'Medication name'}</span><input required value={inventoryEditForm.name} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, name: event.target.value })} /></label>
@@ -1090,9 +1087,6 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                     <strong>NHIS tariff: {formatCurrency(selectedInventoryItem.nhisPrice)}</strong>
                     <span>{selectedInventoryItem.nhisCategory} · tariff is read-only and stays separate from retail pricing.</span>
                   </div>
-                )}
-                {!isLab && selectedInventoryItem.pricingMode === 'synthetic-test' && (
-                  <p className="department-inventory-test-note">TEST ONLY: {formatCurrency(selectedInventoryItem.testTopUpCedis)} randomly generated add-on per unit. It is not an authoritative retail price and is excluded from CLAIM-it XML. Entering a retail price replaces this estimate.</p>
                 )}
                 {stockError && <p className="care-form-error" role="alert">{stockError}</p>}
                 <div className="department-inventory-modal-actions">
