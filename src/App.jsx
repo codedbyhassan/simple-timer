@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import {
-  Activity,
   Bell,
   Check,
   ChevronDown,
   CircleAlert,
   LogOut,
   Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
   Moon,
   Search,
   Settings,
@@ -86,6 +87,12 @@ function App() {
   const [toasts, setToasts] = useState([])
   const [menu, setMenu] = useState('')
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    try { return localStorage.getItem('ascend-hms-sidebar-collapsed') === '1' } catch { return false }
+  })
+  useEffect(() => {
+    try { localStorage.setItem('ascend-hms-sidebar-collapsed', sidebarCollapsed ? '1' : '0') } catch { /* ignore */ }
+  }, [sidebarCollapsed])
   const [query, setQuery] = useState('')
   const [dialog, setDialog] = useState('')
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
@@ -336,14 +343,14 @@ function App() {
 
   return (
     <roleAccessContext.Provider value={roleContextValue}>
-      <div className="app-shell">
+      <div className={`app-shell ${sidebarCollapsed ? 'app-shell--collapsed' : ''}`}>
         {mobileNavOpen && (
           <button className="mobile-backdrop" type="button" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)} />
         )}
 
         <aside className={`sidebar ${mobileNavOpen ? 'sidebar--open' : ''}`} aria-label="Main navigation">
           <div className="brand-lockup">
-            <img className="brand-mark" src="/brand/hms-icon.png" alt="" />
+            <img className="brand-mark" src="/brand/hms-icon.png" alt="Ascend HMS" />
             <span className="brand-wordmark" role="img" aria-label="Ascend HMS by Ascend Technologies">
               <img className="brand-wordmark-image brand-wordmark-image--light" src="/brand/ascend-hms-light.png" alt="" />
               <img className="brand-wordmark-image brand-wordmark-image--dark" src="/brand/ascend-hms-dark.png" alt="" />
@@ -361,17 +368,21 @@ function App() {
                     type="button"
                     className={`nav-link ${activePage === id ? 'nav-link--active' : ''}`}
                     key={id}
+                    title={sidebarCollapsed ? label : undefined}
                     onClick={() => navigate(id)}
                     aria-current={activePage === id ? 'page' : undefined}
                   >
-                    <Icon size={17} strokeWidth={1.7} aria-hidden="true" />
+                    <Icon size={17} strokeWidth={1.8} aria-hidden="true" />
                     <span>{label}</span>
                   </button>
                 ))}
               </div>
             ))}
           </nav>
-          <div className="sidebar-role-note">Departmental workspaces</div>
+          <button className="sidebar-collapse" type="button" aria-label={sidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={() => setSidebarCollapsed((value) => !value)}>
+            {sidebarCollapsed ? <PanelLeftOpen size={17} /> : <PanelLeftClose size={17} />}
+            <span>Collapse menu</span>
+          </button>
         </aside>
 
         <main className="main-area">
@@ -451,7 +462,7 @@ function App() {
             </div>
           </header>
 
-          <div className="page-content">
+          <div className="page-content page-transition" key={activePage}>
             {activePage === 'patient-detail' && permissions.has('patient360.read')
               ? <PatientsPage />
               : pageContent}

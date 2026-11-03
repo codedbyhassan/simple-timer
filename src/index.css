@@ -1,5 +1,6 @@
 :root {
-  --font-sans: 'Segoe UI Variable', 'Inter', 'Segoe UI', Arial, sans-serif;
+  --font-sans: 'Manrope', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Manrope', 'Segoe UI', sans-serif;
   --font-mono: 'Cascadia Code', 'SFMono-Regular', Consolas, monospace;
   --text-xs: 12px;
   --text-sm: 13px;
@@ -8,9 +9,9 @@
   --text-lg: 16px;
   --text-xl: 20px;
   --text-2xl: 26px;
-  --radius-control: 8px;
-  --radius-card: 12px;
-  --radius-section: 16px;
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-section: 22px;
   --radius-pill: 999px;
   --space-1: 4px;
   --space-2: 8px;
@@ -36,9 +37,9 @@
   --ink-soft: #3e4a5d;
   --muted: #7c8695;
   --muted-strong: #606b7a;
-  --blue: #264b7f;
-  --blue-hover: #1d3e6e;
-  --blue-soft: #edf2f8;
+  --blue: #1f6bff;
+  --blue-hover: #0f56e6;
+  --blue-soft: #eaf1ff;
   --green: #27754f;
   --green-soft: #eaf5ee;
   --amber: #92610f;
@@ -65,9 +66,9 @@
   --ink-soft: #c3cad4;
   --muted: #8892a0;
   --muted-strong: #a7b0bc;
-  --blue: #8db4eb;
-  --blue-hover: #a9c8f2;
-  --blue-soft: #1b2b40;
+  --blue: #4d8dff;
+  --blue-hover: #6ea2ff;
+  --blue-soft: #14254a;
   --green: #83c89d;
   --green-soft: #193126;
   --amber: #e2bd72;
@@ -114,3 +115,26 @@ input:focus-visible {
   color: var(--ink);
   background: var(--blue-soft);
 }
+
+h1, h2, h3, h4, .nav-link, .nav-group-label, .button, .page-heading, .metric-value, strong {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+button, input, select, textarea { font-family: inherit; }
+
+input, select, textarea { border-radius: var(--radius-control); }
+
+.content-panel, .metric-panel, .operations-page .content-panel, .dialog-card, .popover {
+  border-radius: var(--radius-card) !important;
+}
+
+.button { border-radius: var(--radius-pill) !important; transition: background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease; }
+.button:active { transform: scale(0.97); }
+.button--primary { box-shadow: 0 6px 16px -6px rgb(31 107 255 / 55%); }
+
+@keyframes page-enter { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes pop-enter { from { opacity: 0; transform: translateY(-4px) scale(0.98); } to { opacity: 1; transform: none; } }
+.page-transition { animation: page-enter 260ms cubic-bezier(0.16, 1, 0.3, 1); }
+.popover, .global-search-results { animation: pop-enter 180ms cubic-bezier(0.16, 1, 0.3, 1); transform-origin: top right; }
+@media (prefers-reduced-motion: reduce) { .page-transition, .popover, .global-search-results { animation: none; } }
