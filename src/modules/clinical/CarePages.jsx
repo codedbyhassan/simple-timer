@@ -149,27 +149,41 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
     careData.consultations.find((item) => item.id === order.consultationId)?.status !== 'Completed',
   ).length
 
+  const reviewLabResult = (orderId) => {
+    if (!canReviewResults) return
+    const reviewedAt = currentTimestamp()
+    updateCareData((current) => {
+      const labOrders = current.labOrders.map((order) =>
+        order.id === orderId && order.status === 'Result ready' && !order.reviewedAt
+          ? { ...order, reviewedAt }
+          : order,
+      )
+      const reviewedOrder = current.labOrders.find((order) => order.id === orderId)
+      if (!reviewedOrder) return current
+      const hasOutstandingResults = labOrders.some((order) =>
+        order.appointmentId === reviewedOrder.appointmentId
+        && (order.status !== 'Result ready' || !order.reviewedAt),
+      )
+      return {
+        ...current,
+        labOrders,
+        consultations: hasOutstandingResults
+          ? current.consultations
+          : current.consultations.map((item) =>
+            item.appointmentId === reviewedOrder.appointmentId && item.status === 'Awaiting results'
+              ? { ...item, status: 'In progress', updatedAt: reviewedAt }
+              : item,
+          ),
+      }
+    })
+    setNotice('Laboratory result marked as reviewed.')
+  }
+
   const openVisit = (appointment) => {
     if (!canConsult && !canReviewResults) return
     const currentConsultation = careData.consultations.find((item) => item.appointmentId === appointment.id)
-    if (canReviewResults) {
-      const now = currentTimestamp()
-      updateCareData((current) => ({
-        ...current,
-        consultations: current.consultations.map((item) =>
-          item.appointmentId === appointment.id &&
-          item.status === 'Awaiting results' &&
-          !current.labOrders.some((order) => order.appointmentId === appointment.id && order.status !== 'Result ready')
-            ? { ...item, status: 'In progress', updatedAt: now }
-            : item,
-        ),
-        labOrders: current.labOrders.map((order) =>
-          order.appointmentId === appointment.id && order.status === 'Result ready' && !order.reviewedAt
-            ? { ...order, reviewedAt: now }
-            : order,
-        ),
-      }))
-    }
+    // Opening a visit is read-only. Result review is recorded only through
+    // the explicit per-result action in the encounter workspace.
     setSelectedAppointmentId(appointment.id)
     setForm({ ...initialForm, ...(currentConsultation || {}) })
     setError('')
@@ -524,7 +538,14 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
                   {relatedLabs.map((order) => (
                     <div className="clinical-order-row" key={order.id}>
                       <div><strong>{order.testName}</strong><span>{order.priority} · {formatDateTime(order.requestedAt)}</span><small className={order.claimGdrgCode ? '' : 'clinical-claim-warning'}>{order.claimGdrgCode ? `GDRG ${order.claimGdrgCode}` : 'Claims GDRG mapping required'}</small>{order.result && <p>{order.result}{order.resultNote ? ` — ${order.resultNote}` : ''}</p>}</div>
-                      <span className={`care-status care-status--${order.status.toLowerCase().replaceAll(' ', '-')}`}>{order.status}</span>
+                      <div className="clinical-order-row-actions">
+                        <span className={`care-status care-status--${order.status.toLowerCase().replaceAll(' ', '-')}`}>{order.status}</span>
+                        {order.status === 'Result ready' && (
+                          order.reviewedAt
+                            ? <span className="clinical-result-reviewed"><CheckCircle2 size={13} /> Reviewed</span>
+                            : canReviewResults && <button className="clinical-add-button" type="button" onClick={() => reviewLabResult(order.id)}>Mark reviewed</button>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </section>
