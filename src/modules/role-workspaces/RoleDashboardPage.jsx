@@ -103,9 +103,9 @@ export default function RoleDashboardPage({ roleId }) {
         <span className="role-preview-chip">Local preview data</span>
       </header>
       <div className="role-metric-grid">
-        {stats.map(([label, value, note, Icon]) => (
+        {stats.map(([label, value, , Icon]) => (
           <article className="role-metric-card" key={label}>
-            <span><Icon size={15} /> {label}</span><strong>{value}</strong><small>{note}</small>
+            <span><Icon size={15} /> {label}</span><strong>{value}</strong>
           </article>
         ))}
       </div>
