@@ -220,6 +220,7 @@ export const permissionCatalog = [
   { id: 'cashier.charges.view', label: 'View pending charges' },
   { id: 'cashier.payment.record', label: 'Record payments and receipts' },
   { id: 'cashier.shift.view', label: 'View own till and shift' },
+  { id: 'cashier.shift.manage', label: 'Open and close own till shifts' },
   { id: 'cashier.refund.request', label: 'Request refunds' },
   { id: 'cashier.refund.approve', label: 'Approve refunds' },
   { id: 'cashier.reconcile', label: 'Reconcile shifts' },
@@ -268,7 +269,7 @@ export const defaultRolePermissions = {
     'inventory.read',
   ],
   cashier: [
-    'patient360.read', 'cashier.charges.view', 'cashier.payment.record', 'cashier.shift.view',
+    'patient360.read', 'cashier.charges.view', 'cashier.payment.record', 'cashier.shift.view', 'cashier.shift.manage',
     'cashier.refund.request', 'cashier.reconcile', 'prices.view', 'claims.summary.view',
   ],
   claims: [
