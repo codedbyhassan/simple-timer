@@ -56,6 +56,15 @@ export function createCareId(prefix) {
 }
 
 export function calculatePrescriptionBilling({ prescription, patient, serviceDate }) {
+  if (prescription.pricingMode === 'synthetic-test') {
+    return {
+      status: 'Synthetic test pricing disabled',
+      retailTotal: null,
+      nhisCovered: 0,
+      patientDue: null,
+    }
+  }
+
   const quantity = Number(prescription.dispensedQty ?? prescription.quantity)
   const retailPrice = prescription.retailPrice
   const nhisPrice = prescription.nhisPrice
