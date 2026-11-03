@@ -45,3 +45,11 @@ test('every non-administrator role lands on its own overview destination', () =>
     assert.ok(role.groups.flatMap((group) => group.items).some((item) => item.id === home && item.page === 'role-dashboard'))
   }
 })
+
+
+test('cashier shift management is an explicit permission separate from viewing', () => {
+  assert.ok(defaultRolePermissions.cashier.includes('cashier.shift.view'))
+  assert.ok(defaultRolePermissions.cashier.includes('cashier.shift.manage'))
+  assert.ok(!defaultRolePermissions.reception.includes('cashier.shift.manage'))
+  assert.ok(!defaultRolePermissions.nurse.includes('cashier.shift.manage'))
+})
