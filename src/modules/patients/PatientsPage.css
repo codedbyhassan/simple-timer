@@ -1403,3 +1403,35 @@
   .patients-insurance-status { min-height: 21px; padding-inline: 6px; font-size: 10px; }
 }
 @media (max-width: 390px) { .patients-card-grid { grid-template-columns: minmax(0, 1fr); } }
+
+
+/* Guided patient registration */
+.patients-modal--guided { width: min(650px, 100%); }
+.patients-form-stepper { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:4px 0 22px; }
+.patients-form-step { display:flex; min-width:0; align-items:center; gap:9px; padding:10px 11px; border:1px solid var(--line); border-radius:10px; background:var(--page); color:var(--muted); text-align:left; cursor:pointer; }
+.patients-form-step--active { border-color:var(--blue); background:var(--blue-soft); color:var(--blue); }
+.patients-form-step--complete .patients-form-step-number { background:var(--green-soft); color:var(--green); }
+.patients-form-step-number { display:grid; width:27px; height:27px; flex:0 0 27px; place-items:center; border-radius:50%; background:var(--panel-strong); color:var(--muted-strong); font-size:12px; font-weight:700; }
+.patients-form-step > span:last-child { display:flex; min-width:0; flex-direction:column; gap:2px; }
+.patients-form-step strong { color:inherit; font-size:12px; font-weight:650; }
+.patients-form-step small { color:var(--muted); font-size:10px; }
+.patients-form-section { min-height:220px; padding:17px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+.patients-form-section-heading { display:flex; align-items:flex-start; gap:11px; margin-bottom:19px; }
+.patients-form-section-heading > span { display:grid; width:32px; height:32px; flex:0 0 32px; place-items:center; border-radius:9px; background:var(--blue-soft); color:var(--blue); font-size:11px; font-weight:700; }
+.patients-form-section-heading h3 { margin:0; color:var(--ink); font-size:15px; font-weight:650; }
+.patients-form-section-heading p { margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.45; }
+.patients-form-section .patients-form-grid { gap:16px 13px; }
+.patients-modal-actions--guided { align-items:center; }
+.patients-modal-actions--guided > div { display:flex; gap:8px; }
+.patients-modal-actions--guided .button { display:inline-flex; align-items:center; gap:6px; }
+@media(max-width:560px) {
+ .patients-form-stepper { gap:5px; }
+ .patients-form-step { flex-direction:column; align-items:flex-start; padding:8px; gap:6px; }
+ .patients-form-step strong { font-size:11px; }
+ .patients-form-step small { display:none; }
+ .patients-form-section { min-height:0; padding:13px; }
+ .patients-form-section .patients-form-grid { grid-template-columns:minmax(0,1fr); }
+ .patients-form-section .patients-form-field--wide { grid-column:auto; }
+ .patients-modal-actions--guided { align-items:stretch; flex-wrap:wrap; }
+ .patients-modal-actions--guided > div { flex:1; justify-content:flex-end; }
+}
