@@ -1,0 +1,317 @@
+/* Patient 360 owns its presentation; selectors are scoped to prevent module bleed. */
+.patient-detail-page {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  flex-direction: column;
+  gap: 18px;
+  color: var(--ink);
+}
+.patient-detail-page,
+.patient-detail-page * { box-sizing: border-box; }
+.patient-detail-page button,
+.patient-detail-page input,
+.patient-detail-page select { font: inherit; }
+.patient-detail-page .patient-detail-back {
+  display: inline-flex; width: fit-content; max-width: 100%; min-height: 36px;
+  align-items: center; gap: 8px; padding: 6px 12px;
+  border: 1px solid var(--line); border-radius: 999px;
+  background: var(--panel); color: var(--muted-strong); cursor: pointer;
+  font-size: 12px; font-weight: 600;
+}
+.patient-detail-page .patient-detail-back:hover { border-color: var(--line-strong); color: var(--blue); }
+.patient-detail-page .patient-detail-breadcrumb-chevron { color: var(--muted); }
+.patient-detail-page .patient-detail-banner {
+  display: flex; min-width: 0; min-height: 138px; align-items: center;
+  justify-content: space-between; gap: 22px; padding: 24px;
+  border: 1px solid var(--line); border-radius: 18px;
+  background: linear-gradient(135deg, var(--panel), var(--page));
+}
+.patient-detail-page .patient-detail-identity { display: flex; min-width: 0; align-items: center; gap: 17px; }
+.patient-detail-page .patient-detail-avatar {
+  display: grid; width: 66px; height: 66px; flex: 0 0 66px; place-items: center;
+  border: 3px solid var(--page); border-radius: 19px;
+  background: var(--blue-soft); color: var(--blue); font-size: 21px; font-weight: 700;
+}
+.patient-detail-page .patient-detail-identity > div { min-width: 0; }
+.patient-detail-page .patients-eyebrow { margin: 0 0 6px; font-size: 11px; letter-spacing: .04em; }
+.patient-detail-page .patient-detail-banner h1 {
+  margin: 0; color: var(--ink); font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700; letter-spacing: -.035em; line-height: 1.15; overflow-wrap: anywhere;
+}
+.patient-detail-page .patient-detail-identity > div > p {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  margin: 8px 0 0; color: var(--muted); font-size: 12px;
+}
+.patient-detail-page .patient-detail-identity > div > p i {
+  width: 4px; height: 4px; flex: 0 0 4px; border-radius: 50%; background: var(--line-strong);
+}
+.patient-detail-page .patient-detail-actions {
+  display: flex; min-width: 0; align-items: center; justify-content: flex-end;
+  flex-wrap: wrap; gap: 10px;
+}
+.patient-detail-page .patient-detail-actions .patients-insurance-status {
+  min-height: 28px; padding: 0 10px; border-radius: 999px; font-size: 11px;
+}
+.patient-detail-page .patient-detail-quick-info {
+  display: grid; min-width: 0; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px; margin: 0; color: var(--muted-strong); font-size: 12px;
+}
+.patient-detail-page .patient-detail-quick-info > span {
+  display: flex; min-width: 0; min-height: 54px; align-items: center;
+  gap: 9px; padding: 12px 14px; overflow-wrap: anywhere;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--panel);
+}
+.patient-detail-page .patient-detail-quick-info svg { flex: 0 0 auto; color: var(--blue); }
+.patient-detail-page .patient-detail-tabs {
+  display: flex; min-width: 0; align-items: stretch; gap: 5px;
+  overflow-x: auto; padding: 6px; border: 1px solid var(--line);
+  border-radius: 13px; background: var(--panel); scrollbar-width: thin;
+}
+.patient-detail-page .patient-detail-tab {
+  position: relative; display: inline-flex; min-height: 39px; flex: 0 0 auto;
+  align-items: center; justify-content: center; gap: 7px; padding: 0 12px;
+  border: 0; border-radius: 9px; background: transparent; color: var(--muted-strong);
+  cursor: pointer; font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+.patient-detail-page .patient-detail-tab:hover { background: var(--panel-strong); color: var(--ink); }
+.patient-detail-page .patient-detail-tab--active {
+  background: var(--blue); color: #fff; box-shadow: 0 4px 12px rgb(20 35 55 / 13%);
+}
+.patient-detail-page .patient-detail-tab--active:hover { background: var(--blue); color: #fff; }
+.patient-detail-page .patient-detail-tab:focus-visible,
+.patient-detail-page .patient-detail-back:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+.patient-detail-page .patient-detail-tab-panel { min-width: 0; outline: 0; }
+.patient-detail-page .patient-detail-content-grid {
+  display: grid; min-width: 0; grid-template-columns: minmax(0, 1.15fr) minmax(280px, .85fr);
+  align-items: start; gap: 14px;
+}
+.patient-detail-page .patient-detail-panel,
+.patient-detail-page .patient-insurance-panel,
+.patient-detail-page .patient-history-panel {
+  min-width: 0; padding: 20px; border: 1px solid var(--line);
+  border-radius: 15px; background: var(--panel);
+}
+.patient-detail-page .patient-detail-section-heading {
+  display: flex; min-width: 0; align-items: center; gap: 11px; margin: 0 0 17px;
+}
+.patient-detail-page .patient-detail-section-icon {
+  display: grid; width: 36px; height: 36px; flex: 0 0 36px; place-items: center;
+  border-radius: 11px; background: var(--blue-soft); color: var(--blue);
+}
+.patient-detail-page .patient-detail-section-heading > div { min-width: 0; }
+.patient-detail-page .patient-detail-section-heading h2 {
+  margin: 0; color: var(--ink); font-size: 15px; font-weight: 700; line-height: 1.35;
+}
+.patient-detail-page .patient-detail-section-heading p {
+  margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.45;
+}
+.patient-detail-page .patient-detail-fields,
+.patient-detail-page .patient-insurance-fields {
+  display: grid; min-width: 0; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px; overflow: hidden; border: 1px solid var(--line);
+  border-radius: 11px; background: var(--line);
+}
+.patient-detail-page .patient-detail-fields > div,
+.patient-detail-page .patient-insurance-fields > div {
+  display: flex; min-width: 0; min-height: 72px; flex-direction: column;
+  justify-content: center; gap: 7px; padding: 12px 13px;
+  border: 0; background: var(--page);
+}
+.patient-detail-page .patient-detail-fields > div > span,
+.patient-detail-page .patient-insurance-fields > div > span {
+  color: var(--muted); font-size: 11px; font-weight: 500;
+}
+.patient-detail-page .patient-detail-fields > div > strong,
+.patient-detail-page .patient-insurance-fields > div > strong {
+  display: flex; min-width: 0; align-items: center; gap: 7px;
+  color: var(--ink-soft); font-size: 12px; font-weight: 600;
+  overflow-wrap: anywhere; word-break: break-word;
+}
+.patient-detail-page .patient-detail-fields > div > strong svg { flex: 0 0 auto; color: var(--muted); }
+.patient-detail-page .patient-insurance-card {
+  display: flex; min-height: 142px; flex-direction: column; justify-content: space-between;
+  gap: 12px; margin: 0 0 13px; padding: 16px;
+  border-radius: 13px; background: linear-gradient(125deg, var(--blue), #42658f); color: #fff;
+}
+.patient-detail-page .patient-insurance-panel--non-insured .patient-insurance-card {
+  background: var(--panel-strong); color: var(--ink-soft);
+}
+.patient-detail-page .patient-insurance-panel--near-expiry .patient-insurance-card {
+  background: var(--amber-soft); color: var(--amber);
+}
+.patient-detail-page .patient-insurance-card-top {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em;
+}
+.patient-detail-page .patient-insurance-card > strong { font-size: 21px; font-weight: 700; }
+.patient-detail-page .patient-insurance-card > span { overflow-wrap: anywhere; font-size: 12px; opacity: .9; }
+.patient-detail-page .patient-insurance-notice {
+  display: flex; align-items: flex-start; gap: 8px; margin-top: 12px;
+  color: var(--muted-strong); font-size: 11px; line-height: 1.5;
+}
+.patient-detail-page .patient-insurance-notice svg { flex: 0 0 auto; margin-top: 1px; color: var(--amber); }
+.patient-detail-page .patient-insurance-text--insured { color: var(--green) !important; }
+.patient-detail-page .patient-insurance-text--near-expiry { color: var(--amber) !important; }
+.patient-detail-page .patient-insurance-text--non-insured { color: var(--muted-strong) !important; }
+.patient-detail-page .patient-history-heading {
+  display: flex; min-width: 0; align-items: flex-start; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px; margin: 0 0 16px;
+}
+.patient-detail-page .patient-history-heading .patient-detail-section-heading { margin: 0; }
+.patient-detail-page .patient-history-demo-label {
+  flex: 0 0 auto; padding: 5px 9px; border-radius: 999px;
+  background: var(--panel-strong); color: var(--muted-strong); font-size: 10px; font-weight: 700;
+}
+.patient-detail-page .patient-history-table-wrap {
+  width: 100%; max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain;
+  border: 1px solid var(--line); border-radius: 11px; background: var(--page);
+}
+.patient-detail-page .patient-history-table { width: 100%; min-width: 600px; border-collapse: collapse; text-align: left; }
+.patient-detail-page .patient-history-table th {
+  height: 42px; padding: 0 13px; background: var(--panel-strong);
+  color: var(--muted); font-size: 10px; font-weight: 700; white-space: nowrap;
+}
+.patient-detail-page .patient-history-table td {
+  min-height: 48px; padding: 12px 13px; border-top: 1px solid var(--line);
+  color: var(--ink-soft); font-size: 11px; line-height: 1.45; vertical-align: middle;
+}
+.patient-detail-page .patient-history-table td:first-child { color: var(--muted-strong); white-space: nowrap; }
+.patient-detail-page .patient-history-empty-cell { padding: 25px 15px !important; color: var(--muted) !important; text-align: center; white-space: normal; }
+.patient-detail-page .patient-record-status {
+  display: inline-flex; min-height: 23px; align-items: center; padding: 0 9px;
+  border-radius: 999px; background: var(--green-soft); color: var(--green);
+  font-size: 10px; font-weight: 700; white-space: nowrap;
+}
+.patient-detail-page .patient-record-status--part-paid,
+.patient-detail-page .patient-record-status--submitted { background: var(--amber-soft); color: var(--amber); }
+.patient-detail-page .patient-history-footnote {
+  display: flex; align-items: flex-start; gap: 8px; margin: 13px 0 0;
+  color: var(--muted); font-size: 11px; line-height: 1.55;
+}
+.patient-detail-page .patient-history-footnote svg { flex: 0 0 auto; margin-top: 1px; color: var(--blue); }
+.patient-detail-page .patient-vitals-record-list { display: flex; flex-direction: column; gap: 12px; }
+.patient-detail-page .patient-vitals-record {
+  min-width: 0; padding: 17px; border: 1px solid var(--line);
+  border-radius: 13px; background: var(--page);
+}
+.patient-detail-page .patient-vitals-record-heading {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--line);
+}
+.patient-detail-page .patient-vitals-record-heading > div { display: flex; min-width: 0; flex-direction: column; gap: 5px; }
+.patient-detail-page .patient-vitals-record-heading strong { color: var(--ink); font-size: 13px; }
+.patient-detail-page .patient-vitals-record-heading span,
+.patient-detail-page .patient-vitals-record-heading time { color: var(--muted); font-size: 11px; }
+.patient-detail-page .patient-vitals-record-heading time { flex: 0 0 auto; text-align: right; }
+.patient-detail-page .patient-vitals-grid {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 15px;
+  padding-top: 14px;
+}
+.patient-detail-page .patient-vitals-grid > div { display: flex; min-width: 0; flex-direction: column; gap: 7px; }
+.patient-detail-page .patient-vitals-grid > div > span { display: flex; align-items: center; gap: 5px; color: var(--muted); font-size: 10px; }
+.patient-detail-page .patient-vitals-grid > div > span svg { flex: 0 0 auto; color: var(--blue); }
+.patient-detail-page .patient-vitals-grid > div > strong { color: var(--ink-soft); font-size: 13px; font-weight: 700; overflow-wrap: anywhere; }
+.patient-detail-page .patient-vitals-notes { margin-top: 14px; padding: 12px; border-radius: 10px; background: var(--panel-strong); }
+.patient-detail-page .patient-vitals-notes > span { color: var(--muted); font-size: 10px; font-weight: 700; }
+.patient-detail-page .patient-vitals-notes p { margin: 5px 0 0; color: var(--ink-soft); font-size: 12px; line-height: 1.55; white-space: pre-wrap; }
+.patient-detail-page .patient-vitals-empty {
+  display: flex; min-height: 190px; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px; color: var(--muted); font-size: 12px; text-align: center;
+}
+.patient-detail-page .patient-vitals-empty svg { color: var(--blue); }
+.patient-detail-page .patient-vitals-empty strong { color: var(--ink-soft); font-size: 14px; }
+.patient-detail-page .patient-claim-export { margin-bottom: 0; }
+.patient-detail-page .claim-export-disclaimer { margin: -3px 0 14px; color: var(--muted); font-size: 11px; line-height: 1.55; }
+.patient-detail-page .patient-claim-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 7px; }
+.patient-detail-page .patient-claim-actions .button { min-height: 34px; padding: 0 11px; font-size: 11px; white-space: nowrap; }
+.patient-detail-page .patient-claim-encounter {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding: 13px;
+  border: 1px solid var(--line); border-radius: 11px; background: var(--page);
+}
+.patient-detail-page .patient-claim-encounter > div { display: flex; min-width: 120px; flex: 1 1 150px; flex-direction: column; gap: 5px; }
+.patient-detail-page .patient-claim-encounter > div > span { color: var(--muted); font-size: 10px; }
+.patient-detail-page .patient-claim-encounter > div > strong { color: var(--ink-soft); font-size: 11px; overflow-wrap: anywhere; }
+.patient-detail-page .patient-claim-state { margin-left: auto; padding: 5px 9px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); font-size: 10px; font-weight: 700; }
+.patient-detail-page .patient-claim-state--saved { background: var(--green-soft); color: var(--green); }
+.patient-detail-page .patient-claim-archive-list { display: flex; flex-direction: column; gap: 8px; padding-top: 13px; border-top: 1px solid var(--line); }
+.patient-detail-page .patient-claim-archive-list > strong { color: var(--ink-soft); font-size: 11px; }
+.patient-detail-page .patient-claim-archive-list > div { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 9px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted-strong); font-size: 11px; }
+.patient-detail-page .patient-claim-archive-list button { display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--page); color: var(--blue); cursor: pointer; font-size: 10px; }
+.patient-detail-page .claim-validation { margin-top: 13px; padding: 12px; border-radius: 10px; font-size: 11px; line-height: 1.5; }
+.patient-detail-page .claim-validation > strong { font-size: 12px; }
+.patient-detail-page .patient-claim-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100; display: grid; place-items: center;
+  overflow-y: auto; padding: 18px; background: rgb(8 14 24 / 58%);
+}
+.patient-detail-page .patient-claim-modal,
+.patient-detail-page .patient-claim-preview-modal {
+  width: min(760px, 100%); max-height: min(92vh, 900px); overflow: auto;
+  padding: 20px; border: 1px solid var(--line); border-radius: 16px;
+  background: var(--page); box-shadow: 0 24px 80px rgb(0 0 0 / 28%);
+}
+.patient-detail-page .patient-claim-modal-heading,
+.patient-detail-page .patient-claim-preview-heading {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 17px;
+}
+.patient-detail-page .patient-claim-modal-heading > div > span,
+.patient-detail-page .patient-claim-preview-heading > div:first-child > span {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 6px; color: var(--blue); font-size: 11px; font-weight: 700;
+}
+.patient-detail-page .patient-claim-modal-heading h3,
+.patient-detail-page .patient-claim-preview-heading h3 { margin: 0; color: var(--ink); font-size: 19px; font-weight: 700; }
+.patient-detail-page .patient-claim-modal-heading p { margin: 6px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.patient-detail-page .claim-export-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.patient-detail-page .patient-claim-field-wide { grid-column: 1 / -1; }
+.patient-detail-page .patient-claim-modal-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+.patient-detail-page .patient-claim-preview-backdrop { padding: 12px; }
+.patient-detail-page .patient-claim-preview-modal {
+  display: flex; width: min(1180px, 100%); max-height: 96vh; flex-direction: column;
+  overflow: hidden; padding: 0;
+}
+.patient-detail-page .patient-claim-preview-heading {
+  flex: 0 0 auto; align-items: center; margin: 0; padding: 12px 15px; border-bottom: 1px solid var(--line);
+}
+.patient-detail-page .patient-claim-preview-heading > div:last-child { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: 7px; }
+.patient-detail-page .patient-claim-preview-heading .button { min-height: 32px; padding: 0 9px; font-size: 10px; }
+.patient-detail-page .patient-claim-preview-modal .claim-paper-viewport { min-height: 0; flex: 1; overflow: auto; }
+
+@media (max-width: 1050px) {
+  .patient-detail-page .patient-detail-content-grid { grid-template-columns: minmax(0, 1fr); }
+  .patient-detail-page .patient-detail-panel,
+  .patient-detail-page .patient-insurance-panel { width: 100%; }
+}
+@media (max-width: 760px) {
+  .patient-detail-page { gap: 13px; }
+  .patient-detail-page .patient-detail-banner { align-items: flex-start; flex-direction: column; gap: 17px; padding: 18px; }
+  .patient-detail-page .patient-detail-actions { width: 100%; justify-content: flex-start; }
+  .patient-detail-page .patient-detail-quick-info { grid-template-columns: minmax(0, 1fr); gap: 7px; }
+  .patient-detail-page .patient-detail-quick-info > span { min-height: 45px; padding: 10px 12px; }
+  .patient-detail-page .patient-detail-tabs { margin-right: -2px; }
+  .patient-detail-page .patient-detail-panel,
+  .patient-detail-page .patient-insurance-panel,
+  .patient-detail-page .patient-history-panel { padding: 15px; border-radius: 12px; }
+  .patient-detail-page .patient-detail-fields,
+  .patient-detail-page .patient-insurance-fields { grid-template-columns: minmax(0, 1fr); }
+  .patient-detail-page .patient-detail-fields > div,
+  .patient-detail-page .patient-insurance-fields > div { min-height: 60px; padding: 10px 12px; }
+  .patient-detail-page .patient-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+  .patient-detail-page .patient-history-heading { flex-direction: column; }
+  .patient-detail-page .patient-claim-actions { justify-content: flex-start; }
+}
+@media (max-width: 480px) {
+  .patient-detail-page .patient-detail-identity { align-items: flex-start; gap: 12px; }
+  .patient-detail-page .patient-detail-avatar { width: 52px; height: 52px; flex-basis: 52px; border-radius: 15px; font-size: 17px; }
+  .patient-detail-page .patient-detail-banner { padding: 15px; }
+  .patient-detail-page .patient-detail-banner h1 { font-size: 22px; }
+  .patient-detail-page .patient-detail-tabs { gap: 3px; padding: 4px; }
+  .patient-detail-page .patient-detail-tab { min-height: 36px; padding: 0 9px; font-size: 11px; }
+  .patient-detail-page .patient-vitals-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .patient-detail-page .patient-vitals-record-heading { flex-direction: column; }
+  .patient-detail-page .patient-vitals-record-heading time { text-align: left; }
+  .patient-detail-page .patient-claim-modal-backdrop { padding: 8px; }
+  .patient-detail-page .patient-claim-modal { padding: 14px; }
+  .patient-detail-page .claim-export-fields { grid-template-columns: minmax(0, 1fr); }
+  .patient-detail-page .patient-claim-preview-heading { align-items: flex-start; flex-direction: column; }
+  .patient-detail-page .patient-claim-preview-heading > div:last-child { width: 100%; justify-content: flex-start; }
+}
