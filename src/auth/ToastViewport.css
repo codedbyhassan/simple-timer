@@ -133,3 +133,18 @@
 .app-toast-copy > span { font-size: 12px; line-height: 1.35; }
 .app-toast-action, .app-toast-close { min-height: 30px; font-size: 12px; }
 .app-toast-close { width: 28px; }
+
+/* Phase 1 refinement: dark glass, circular icons, tactile actions */
+.app-toast, .app-toast--info, .app-toast--error, .app-toast--success {
+  border-radius: 20px;
+  background: rgb(22 24 30 / 88%);
+  backdrop-filter: blur(16px);
+  font-family: var(--font-sans);
+}
+.app-toast-icon { width: 36px; height: 36px; flex-basis: 36px; border-radius: 999px; }
+.app-toast--info .app-toast-icon { background: rgb(31 107 255 / 22%); color: #6ea2ff; }
+.app-toast--error .app-toast-icon { background: rgb(255 90 99 / 18%); }
+.app-toast--success .app-toast-icon { background: rgb(164 255 100 / 14%); }
+.app-toast-copy strong { font-family: var(--font-display); }
+.app-toast-action { border-radius: 999px !important; transition: transform 150ms ease; }
+.app-toast-action:active { transform: scale(0.95); }
