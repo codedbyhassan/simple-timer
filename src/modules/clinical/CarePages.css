@@ -1469,3 +1469,54 @@
   .department-inventory-modal-section-heading { margin-inline: 17px; }
   .department-inventory-modal--storefront .department-inventory-edit-form { padding: 14px 17px 19px; }
 }
+
+
+/* Patient-first consultation and diagnosis workspace */
+.clinical-patient-context { display:flex; flex-direction:column; gap:12px; margin-bottom:18px; padding:16px; border:1px solid var(--line); border-radius:13px; background:var(--panel); }
+.clinical-patient-context .clinical-workspace-heading { margin:0; }
+.clinical-patient-context .care-patient-record-link { align-self:flex-start; }
+.clinical-patient-context .clinical-vitals-strip { margin:0; padding:11px 12px; border:1px solid var(--line); border-radius:9px; background:var(--page); }
+.clinical-patient-context .clinical-history-strip { margin:0; padding:10px 0 0; border-top:1px solid var(--line); }
+.clinical-diagnosis-section { margin-top:18px; padding:17px; border:1px solid var(--line); border-radius:13px; background:var(--panel); }
+.clinical-diagnosis-section .clinical-subheading { align-items:flex-start; margin-bottom:15px; }
+.clinical-diagnosis-section .clinical-subheading h3 { font-size:15px; }
+.clinical-diagnosis-section .clinical-subheading > span { max-width:48%; text-align:right; line-height:1.45; }
+.clinical-diagnosis-section .clinical-data-grid { grid-template-columns:minmax(0,1fr); gap:12px; }
+.clinical-diagnosis-card { gap:13px; padding:15px; border-color:var(--line); border-radius:11px; background:var(--page); }
+.clinical-diagnosis-card .clinical-data-card-heading { padding-bottom:10px; border-bottom:1px solid var(--line); }
+.clinical-diagnosis-card .clinical-data-card-heading > strong { color:var(--ink); font-size:13px; }
+.clinical-diagnosis-card .care-field > span { font-size:12px; }
+.clinical-diagnosis-card .care-field input,
+.clinical-diagnosis-card .care-field select { min-height:40px; border-radius:8px; font-size:13px; }
+.clinical-diagnosis-card .clinical-form-row { grid-template-columns:minmax(0,1.6fr) minmax(110px,.7fr) minmax(140px,.8fr); gap:12px; }
+.clinical-diagnosis-card .clinical-code-note { align-items:center; gap:9px; padding:10px 12px; border-radius:8px; background:var(--blue-soft); color:var(--muted-strong); font-size:12px; }
+.clinical-diagnosis-card .clinical-code-note strong { color:var(--blue); }
+.clinical-diagnosis-section > .clinical-add-button { min-height:36px; margin-top:13px; padding:0 13px; border-radius:8px; }
+.clinical-editor { gap:13px; margin-top:18px; padding:17px; border:1px solid var(--line); border-radius:13px; background:var(--panel); }
+.clinical-editor .care-field input,
+.clinical-editor .care-field textarea { min-height:40px; border-radius:8px; font-size:13px; }
+.clinical-editor .care-field textarea { min-height:84px; }
+.department-inventory-grid { grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; }
+.department-inventory-card { min-height:142px; justify-content:space-between; padding:15px; border-radius:12px; background:var(--panel); }
+.department-inventory-card-heading { flex-direction:column; gap:7px; }
+.department-inventory-card-heading strong { font-size:14px; line-height:1.4; }
+.department-inventory-card-code { color:var(--muted); font-size:11px; }
+.department-inventory-card-nhis,
+.department-inventory-card-price { display:flex; align-items:center; justify-content:space-between; gap:10px; padding-top:9px; border-top:1px solid var(--line); }
+.department-inventory-card-nhis small,
+.department-inventory-card-price small { color:var(--muted); font-size:11px; }
+.department-inventory-card-nhis strong,
+.department-inventory-card-price strong { color:var(--ink); font-size:13px; font-weight:650; text-align:right; }
+@media(max-width:760px) {
+ .clinical-patient-context { padding:12px; }
+ .clinical-diagnosis-section { padding:12px; }
+ .clinical-diagnosis-section .clinical-subheading { flex-direction:column; gap:5px; }
+ .clinical-diagnosis-section .clinical-subheading > span { max-width:none; text-align:left; }
+ .clinical-diagnosis-card .clinical-form-row { grid-template-columns:minmax(0,1fr); }
+ .clinical-editor { grid-template-columns:minmax(0,1fr); padding:12px; }
+ .clinical-editor > .care-field:nth-child(n + 2) { grid-column:auto; }
+ .department-inventory-grid { grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); }
+}
+@media(max-width:440px) {
+ .department-inventory-grid { grid-template-columns:minmax(0,1fr); }
+}
