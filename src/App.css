@@ -1795,3 +1795,14 @@ p {
   .sidebar-collapse { display: none; }
   .topbar { margin: 8px 8px 0; }
 }
+
+
+/* Stat-card content is intentionally limited to its label and primary value. */
+.app-shell .metric-panel > p,
+.app-shell .metric-panel > small,
+.app-shell .operations-metric > small,
+.app-shell .claims-dashboard-stats article > small,
+.app-shell .front-desk-stat > small,
+.app-shell .care-stats article > small,
+.app-shell .nurse-stat > small,
+.app-shell .role-metric-card > small { display:none !important; }
