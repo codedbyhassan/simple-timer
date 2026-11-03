@@ -366,8 +366,9 @@ function PatientsPage() {
       insuranceExpires: form.insuranceProvider ? form.insuranceExpires : '',
     }
     const normalizedPhone = patientForm.phone.replace(/\D/g, '')
-    if (!patientForm.name) {
-      setFormError('Enter the patient’s full name.')
+    if (!patientForm.name || !patientForm.sex || !patientForm.dob) {
+      setFormError('Patient name, sex and date of birth are required.')
+      setFormStep(0)
       return
     }
     if (normalizedPhone && normalizedPhone.length < 7) {
