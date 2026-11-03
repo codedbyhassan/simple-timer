@@ -258,6 +258,9 @@ function downloadTillReceipt(payment, actor) {
 function TillShiftPage() {
   const ws = useWs()
   const actor = useActor()
+  const { hasPermission } = useRoleAccess()
+  const canManageShift = hasPermission('cashier.shift.manage')
+  const canRecordPayments = hasPermission('cashier.payment.record')
   const charges = useServiceCharges()
   const [float, setFloat] = useState('')
   const [pay, setPay, bindPay] = useForm({ chargeId: '', method: 'Cash', amount: '' })
@@ -273,12 +276,15 @@ function TillShiftPage() {
     remaining: Math.max(0, charge.amount - (paidByCharge.get(charge.id) || 0)),
   })).filter((charge) => charge.remaining > 0)
   const openTill = () => {
+    if (!canManageShift) return setError('You do not have permission to open a till.')
     const n = Number(float)
     if (!Number.isFinite(n) || n < 0) return setError('Enter a valid opening float.')
     addRecord('tills', { actor, status: 'Open', openingFloat: n, openedAt: new Date().toISOString(), payments: [] }, { actor, action: 'Till opened', detail: money(n) })
     setFloat(''); setError('')
   }
   const record = () => {
+    if (!canRecordPayments) return setError('You do not have permission to record payments.')
+    if (!open) return setError('Open a till before recording a payment.')
     const charge = unpaid.find((c) => c.id === pay.chargeId)
     const amount = Number(pay.amount || charge?.remaining)
     if (!charge || !Number.isFinite(amount) || amount <= 0) return setError('Pick an outstanding charge and enter a valid amount.')
@@ -299,13 +305,19 @@ function TillShiftPage() {
     setPay({ chargeId: '', method: 'Cash', amount: '' }); setError('')
   }
   const total = (open?.payments || []).reduce((s, p) => s + p.amount, 0)
+  const closeTill = () => {
+    if (!canManageShift || !open) return
+    patchRecord('tills', open.id, { status: 'Closed', closedAt: new Date().toISOString() }, { actor, action: 'Till closed', detail: money(total) })
+  }
   return (
     <Shell eyebrow="Cashier" title="My till & shift" description="Open a till, record full or part payments, issue receipts, then close for reconciliation.">
       {!open ? (
         <Panel title="Open till">
           <div className="ws-form"><Field label="Opening float (GH₵)"><input type="number" min="0" step="0.01" value={float} onChange={(e) => setFloat(e.target.value)} /></Field></div>
           {error && <p className="role-panel-error">{error}</p>}
-          <button className="button button--primary" type="button" onClick={openTill}>Open till</button>
+          {canManageShift
+            ? <button className="button button--primary" type="button" onClick={openTill}>Open till</button>
+            : <p className="role-panel-note">You can view this till workspace, but you do not have permission to open a shift.</p>}
         </Panel>
       ) : (
         <>
@@ -317,8 +329,8 @@ function TillShiftPage() {
             </div>
             {error && <p className="role-panel-error">{error}</p>}
             <span className="ws-actions">
-              <button className="button button--primary" type="button" onClick={record}>Record payment</button>
-              <button className="button" type="button" onClick={() => patchRecord('tills', open.id, { status: 'Closed', closedAt: new Date().toISOString() }, { actor, action: 'Till closed', detail: money(total) })}>Close till</button>
+              {canRecordPayments && <button className="button button--primary" type="button" onClick={record}>Record payment</button>}
+              {canManageShift && <button className="button" type="button" onClick={closeTill}>Close till</button>}
             </span>
           </Panel>
           <Panel title="Payments this shift">
@@ -373,25 +385,30 @@ function RefundsPage() {
   const ws = useWs()
   const actor = useActor()
   const { hasPermission } = useRoleAccess()
+  const canRequest = hasPermission('cashier.refund.request')
+  const canApprove = hasPermission('cashier.refund.approve')
   const [form, setForm, bind] = useForm({ patientId: '', amount: '', reason: '' })
   const submit = () => {
+    if (!canRequest) return
     const amount = Number(form.amount)
-    if (!form.patientId || !(amount > 0) || !form.reason.trim()) return
+    if (!form.patientId || !(amount > 0) || !Number.isFinite(amount) || !form.reason.trim()) return
     addRecord('refunds', { ...form, amount, status: 'Requested', requestedBy: actor }, { actor, action: 'Refund requested', detail: money(amount) })
     setForm({ patientId: '', amount: '', reason: '' })
   }
-  const decide = (r, status) => patchRecord('refunds', r.id, { status, decidedBy: actor, decidedAt: new Date().toISOString() }, { actor, action: `Refund ${status.toLowerCase()}`, detail: money(r.amount) })
-  const canApprove = hasPermission('cashier.refund.approve')
+  const decide = (r, status) => {
+    if (!canApprove || r.status !== 'Requested' || !['Approved', 'Rejected'].includes(status)) return
+    patchRecord('refunds', r.id, { status, decidedBy: actor, decidedAt: new Date().toISOString() }, { actor, action: `Refund ${status.toLowerCase()}`, detail: money(r.amount) })
+  }
   return (
     <Shell eyebrow="Cashier" title="Refunds" description="Request refunds and record supervisor approval.">
-      <Panel title="New refund request">
+      {canRequest && <Panel title="New refund request">
         <div className="ws-form">
           <Field label="Patient"><PatientSelect value={form.patientId} onChange={(v) => setForm((f) => ({ ...f, patientId: v }))} /></Field>
-          <Field label="Amount (GH₵)"><input {...bind('amount', 'number')} /></Field>
+          <Field label="Amount (GH₵)"><input {...bind('amount', 'number')} min="0.01" step="0.01" /></Field>
           <Field label="Reason"><input {...bind('reason')} /></Field>
         </div>
         <button className="button button--primary" type="button" onClick={submit}>Submit request</button>
-      </Panel>
+      </Panel>}
       <Panel title="Requests">
         <Table rows={ws.refunds} columns={[
           { label: 'Patient', key: 'patientId' }, { label: 'Amount', render: (r) => money(r.amount) }, { label: 'Reason', key: 'reason' },
