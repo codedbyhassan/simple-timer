@@ -1369,3 +1369,74 @@
   white-space: nowrap;
   clip-path: inset(50%);
 }
+
+
+/* Patient directory storefront cards and Patient 360 detail surface */
+.patients-directory { padding: 22px 22px 0; border-radius: 16px; }
+.patients-card-grid { grid-template-columns: repeat(auto-fill, minmax(218px, 1fr)); gap: 14px; }
+.patient-card {
+  min-height: 218px; padding: 16px; border-radius: 14px; background: var(--panel);
+  box-shadow: 0 2px 9px rgb(20 35 55 / 4%);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.patient-card:hover { transform: translateY(-3px); border-color: var(--blue); box-shadow: 0 12px 28px rgb(20 35 55 / 10%); }
+.patient-card-top { gap: 10px; }
+.patients-avatar { width: 42px; height: 42px; flex-basis: 42px; border-radius: 13px; font-size: 14px; }
+.patient-card-name { margin-top: 14px; font-size: 15px; letter-spacing: -.015em; }
+.patient-card-id { margin-top: 5px; font-size: 11px; letter-spacing: .035em; }
+.patient-card-contact { margin-top: 11px; font-size: 12px; }
+.patient-card-insurance { margin-top: 12px; padding-top: 10px; }
+.patient-card-insurance > span { font-size: 11px; }
+.patient-card-insurance > strong { font-size: 12px; }
+.patient-card-open { padding-top: 12px; font-size: 11px; }
+
+.patient-detail-page { gap: 18px; }
+.patient-detail-back { min-height: 34px; padding: 5px 10px; border-radius: 999px; background: var(--panel); }
+.patient-detail-banner {
+  align-items: center; padding: 25px; border: 1px solid var(--line); border-radius: 18px;
+  background: linear-gradient(135deg, var(--panel), var(--page)); box-shadow: 0 5px 20px rgb(20 35 55 / 4%);
+}
+.patient-detail-avatar { width: 64px; height: 64px; border-radius: 19px; font-size: 21px; }
+.patient-detail-banner h1 { font-size: clamp(23px, 3vw, 31px); letter-spacing: -.04em; }
+.patient-detail-identity > div > p { margin-top: 8px; font-size: 12px; }
+.patient-detail-quick-info { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.patient-detail-quick-info > span {
+  min-width: 0; min-height: 52px; padding: 12px 14px; border: 1px solid var(--line);
+  border-radius: 12px; background: var(--panel); font-size: 12px;
+}
+.patient-detail-tabs {
+  gap: 5px; padding: 6px; border: 1px solid var(--line); border-radius: 13px; background: var(--panel);
+}
+.patient-detail-tab { min-height: 39px; padding: 0 13px; border-radius: 9px; font-size: 12px; }
+.patient-detail-tab--active { background: var(--blue); color: white; box-shadow: 0 4px 12px rgb(20 35 55 / 13%); }
+.patient-detail-tab-panel { min-width: 0; }
+.patient-detail-content-grid { gap: 14px; }
+.patient-detail-panel, .patient-insurance-panel, .patient-history-panel {
+  padding: 20px; border-radius: 15px;
+}
+.patient-detail-section-heading { margin-bottom: 17px; }
+.patient-detail-section-icon { width: 35px; height: 35px; border-radius: 11px; }
+.patient-detail-fields > div, .patient-insurance-fields > div {
+  padding: 12px 0; border-bottom: 1px solid var(--line);
+}
+.patient-insurance-card { border-radius: 13px; padding: 17px; }
+.patient-history-table-wrap { border-radius: 11px; }
+.patient-vitals-record { border-radius: 13px; padding: 17px; }
+@media (max-width: 900px) {
+  .patients-card-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .patient-detail-quick-info { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+  .patients-directory { padding: 15px 13px 0; }
+  .patients-card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .patient-card { min-height: 208px; padding: 12px; }
+  .patients-insurance-status { min-height: 21px; padding-inline: 6px; font-size: 10px; }
+  .patient-detail-banner { align-items: flex-start; flex-direction: column; padding: 17px; }
+  .patient-detail-actions { width: 100%; justify-content: space-between; }
+  .patient-detail-tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .patient-detail-tab { flex: 0 0 auto; }
+  .patient-detail-panel, .patient-insurance-panel, .patient-history-panel { padding: 15px; }
+}
+@media (max-width: 390px) {
+  .patients-card-grid { grid-template-columns: minmax(0, 1fr); }
+}
