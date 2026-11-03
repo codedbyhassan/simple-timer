@@ -69,11 +69,21 @@
 
 .primary-nav {
   display: flex;
+  min-height: 0;
   flex: 1;
   flex-direction: column;
   gap: 24px;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   margin-top: 21px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.primary-nav::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .nav-group {
