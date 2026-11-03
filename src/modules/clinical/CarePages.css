@@ -10,6 +10,23 @@
 .clinical-queue-item-top,
 .clinical-queue-item-bottom,
 .clinical-subheading,
+.clinical-order-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.clinical-result-reviewed {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--success, #26734d);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .clinical-order-row,
 .clinical-actions,
 .department-order-heading,
