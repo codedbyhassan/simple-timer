@@ -82,7 +82,7 @@ function MetricCard({ label, value, note, icon: Icon, tone = '' }) {
       <span className="operations-metric-icon"><Icon size={16} /></span>
       <span className="operations-metric-label">{label}</span>
       <strong>{value}</strong>
-      {note && <small>{note}</small>}
+
     </article>
   )
 }
