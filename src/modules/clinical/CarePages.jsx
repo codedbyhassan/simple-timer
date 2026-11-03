@@ -898,7 +898,6 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
   }
 
   const openInventoryEditor = (item) => {
-    if (!canEditInventory) return
     setSelectedInventoryId(item.id)
     setInventoryEditForm({
       name: item.name,
@@ -1008,7 +1007,7 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
         )}
         <div className="department-inventory-grid">
           {visibleInventory.map((item) => (
-            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`View or edit ${item.name}`} disabled={!canEditInventory}>
+            <button className="department-inventory-card" key={item.id} type="button" onClick={() => openInventoryEditor(item)} aria-label={`View ${item.name} details`}>
               <span className="department-inventory-card-heading">
                 <strong>{item.name}</strong>
                 <span className="department-inventory-card-code">{item.itemCode || item.id}</span>
@@ -1067,19 +1066,19 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                 <div><span>Full price</span><strong>{selectedInventoryItem.retailPrice != null ? formatCurrency(selectedInventoryItem.retailPrice) : 'Not set'}</strong></div>
                 <div><span>NHIS tariff</span><strong>{selectedInventoryItem.nhisPrice != null ? formatCurrency(selectedInventoryItem.nhisPrice) : 'Not mapped'}</strong></div>
               </div>}
-              <div className="department-inventory-modal-section-heading"><span>Product & inventory details</span><small>Update catalogue information</small></div>
+              <div className="department-inventory-modal-section-heading"><span>Product & inventory details</span><small>{canEditInventory ? "Catalogue information" : "Read-only product information"}</small></div>
               <form className="department-inventory-edit-form" onSubmit={saveInventoryEdits}>
                 <div className="department-inventory-edit-grid">
-                  <label className="care-field"><span>{isLab ? 'Test / item name' : 'Medication name'}</span><input required value={inventoryEditForm.name} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, name: event.target.value })} /></label>
-                  <label className="care-field"><span>Unit</span><input required value={inventoryEditForm.unit} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, unit: event.target.value })} /></label>
-                  <label className="care-field"><span>Current stock <i>whole number</i></span><input type="number" min="0" step="1" disabled={!inventoryEditForm.trackStock} value={inventoryEditForm.onHand} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, onHand: event.target.value })} /></label>
-                  <label className="care-field"><span>Reorder level <i>whole number</i></span><input type="number" min="0" step="1" value={inventoryEditForm.reorderLevel} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, reorderLevel: event.target.value })} /></label>
-                  <label className="care-field"><span>Receive stock <i>optional · whole number</i></span><input type="number" min="0" step="1" disabled={!inventoryEditForm.trackStock} value={inventoryEditForm.receivedStock} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, receivedStock: event.target.value })} placeholder="0" /></label>
-                  <label className="care-field department-inventory-edit-code"><span>{isLab ? 'CLAIM-it GDRG code' : 'CLAIM-it medicine code'} <i>verify against current official master</i></span><input value={inventoryEditForm.claimCode} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, claimCode: event.target.value })} /></label>
-                  {!isLab && <label className="care-field department-inventory-edit-price"><span>Full retail price <i>GH₵ · blank if unverified</i></span><input type="number" min="0" step="0.01" value={inventoryEditForm.retailPrice} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, retailPrice: event.target.value, retailPriceEdited: true })} placeholder="Not set" /></label>}
+                  <label className="care-field"><span>{isLab ? 'Test / item name' : 'Medication name'}</span><input required disabled={!canEditInventory} value={inventoryEditForm.name} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, name: event.target.value })} /></label>
+                  <label className="care-field"><span>Unit</span><input required disabled={!canEditInventory} value={inventoryEditForm.unit} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, unit: event.target.value })} /></label>
+                  <label className="care-field"><span>Current stock <i>whole number</i></span><input type="number" min="0" step="1" disabled={!inventoryEditForm.trackStock} value={inventoryEditForm.onHand} disabled={!canEditInventory || !inventoryEditForm.trackStock} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, onHand: event.target.value })} /></label>
+                  <label className="care-field"><span>Reorder level <i>whole number</i></span><input type="number" min="0" step="1" value={inventoryEditForm.reorderLevel} disabled={!canEditInventory} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, reorderLevel: event.target.value })} /></label>
+                  <label className="care-field"><span>Receive stock <i>optional · whole number</i></span><input type="number" min="0" step="1" disabled={!inventoryEditForm.trackStock} value={inventoryEditForm.receivedStock} disabled={!canEditInventory || !inventoryEditForm.trackStock} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, receivedStock: event.target.value })} placeholder="0" /></label>
+                  <label className="care-field department-inventory-edit-code"><span>{isLab ? 'CLAIM-it GDRG code' : 'CLAIM-it medicine code'} <i>verify against current official master</i></span><input value={inventoryEditForm.claimCode} disabled={!canEditInventory} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, claimCode: event.target.value })} /></label>
+                  {!isLab && <label className="care-field department-inventory-edit-price"><span>Full retail price <i>GH₵ · blank if unverified</i></span><input type="number" min="0" step="0.01" value={inventoryEditForm.retailPrice} disabled={!canEditInventory} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, retailPrice: event.target.value, retailPriceEdited: true })} placeholder="Not set" /></label>}
                 </div>
                 <label className="department-stock-toggle department-inventory-edit-toggle">
-                  <input type="checkbox" checked={inventoryEditForm.trackStock} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, trackStock: event.target.checked })} />
+                  <input type="checkbox" checked={inventoryEditForm.trackStock} disabled={!canEditInventory} onChange={(event) => setInventoryEditForm({ ...inventoryEditForm, trackStock: event.target.checked })} />
                   <span>Track stock and block processing / dispensing when insufficient</span>
                 </label>
                 {selectedInventoryItem.nhisPrice != null && (
@@ -1090,8 +1089,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                 )}
                 {stockError && <p className="care-form-error" role="alert">{stockError}</p>}
                 <div className="department-inventory-modal-actions">
-                  <button className="button button--secondary" type="button" onClick={() => { setSelectedInventoryId(''); setInventoryEditForm(null); setStockError('') }}>Cancel</button>
-                  <button className="button button--primary" type="submit"><Check size={14} /> Save changes</button>
+                  <button className="button button--secondary" type="button" onClick={() => { setSelectedInventoryId(""); setInventoryEditForm(null); setStockError("") }}>{canEditInventory ? "Cancel" : "Close"}</button>
+                  {canEditInventory && <button className="button button--primary" type="submit"><Check size={14} /> Save changes</button>}
                 </div>
               </form>
             </section>
