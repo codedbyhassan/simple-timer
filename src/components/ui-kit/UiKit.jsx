@@ -11,6 +11,7 @@ const pillTones = {
   expired: { icon: Clock3, tone: 'grey' },
 }
 
+/** @type {[RegExp, string][]} */
 const statusMap = [
   [/(paid|dispensed|verified|completed|success|accepted|covered|available|ready|saved|generated)/i, 'success'],
   [/(fail|reject|error|critical|cancel|overdue)/i, 'failed'],
@@ -24,7 +25,7 @@ export function statusVariant(label = '') {
   return statusMap.find(([pattern]) => pattern.test(label))?.[1] || 'pending'
 }
 
-export function StatusPill({ label, variant }) {
+export function StatusPill({ label, variant = undefined }) {
   const key = variant || statusVariant(label)
   const { icon: Icon, tone } = pillTones[key] || pillTones.pending
   return (
