@@ -1013,8 +1013,8 @@ function DepartmentQueuePage({ type, pageId, pageTitle: requestedPageTitle }) {
                 <span className="department-inventory-card-code">{item.itemCode || item.id}</span>
               </span>
               <span className="department-inventory-card-nhis">
-                <small>{isLab ? 'GDRG tariff' : 'NHIS tariff'}</small>
-                <strong>{item.nhisPrice != null ? formatCurrency(item.nhisPrice) : 'Not mapped'}</strong>
+                <small>{isLab ? 'GDRG code' : 'NHIS tariff'}</small>
+                <strong>{isLab ? (item.claimCode || 'Not mapped') : item.nhisPrice != null ? formatCurrency(item.nhisPrice) : 'Not mapped'}</strong>
               </span>
               <span className="department-inventory-card-price">
                 <small>Full price</small>
