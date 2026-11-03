@@ -114,7 +114,9 @@ function ClinicalPage({ pageId = 'consultation', pageTitle = 'Consultation' }) {
 
   const clinicalVisits = useMemo(
     () => appointments
-      .filter((appointment) => appointment.date === today && ['With clinician', 'In consultation'].includes(appointment.status))
+      // Active encounters must remain visible after midnight until they are
+      // clinically resolved; appointment date is not an encounter expiry date.
+      .filter((appointment) => ['With clinician', 'In consultation'].includes(appointment.status))
       .filter((appointment) => pageId === 'results-inbox'
         ? careData.labOrders.some((order) => order.appointmentId === appointment.id && order.status === 'Result ready' && !order.reviewedAt)
         : pageId === 'doctor-queue'
