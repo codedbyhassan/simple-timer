@@ -1301,3 +1301,171 @@
 }
 
 .department-inventory-movement-table{width:100%;overflow:auto}.department-inventory-movement-table table{width:100%;border-collapse:collapse;text-align:left}.department-inventory-movement-table th,.department-inventory-movement-table td{padding:10px 9px;border-top:1px solid var(--line);color:var(--muted-strong);font-size:12px;white-space:nowrap}.department-inventory-movement-table th{color:var(--muted);font-weight:600}.department-inventory-movement-table td strong,.department-inventory-movement-table td small{display:block}.department-inventory-movement-table td strong{color:var(--ink-soft);font-size:12px}.department-inventory-movement-table td small{margin-top:3px;color:var(--muted);font-size:11px}
+
+
+/* Pharmacy catalogue: compact ecommerce-style product cards */
+.department-inventory-grid {
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+  gap: 14px;
+}
+.department-inventory-card {
+  min-height: 184px;
+  gap: 13px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--panel);
+  box-shadow: 0 2px 8px rgb(20 35 55 / 4%);
+  transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+.department-inventory-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--blue);
+  box-shadow: 0 12px 28px rgb(20 35 55 / 10%);
+}
+.department-inventory-card:disabled { cursor: default; opacity: 1; }
+.department-inventory-card-heading {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+}
+.department-inventory-card-heading strong {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.4;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.department-inventory-card-code {
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .035em;
+}
+.department-inventory-card-nhis,
+.department-inventory-card-price {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.department-inventory-card-nhis {
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.department-inventory-card-nhis small,
+.department-inventory-card-price small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.department-inventory-card-nhis strong {
+  color: var(--ink-soft);
+  font-size: 12px;
+  font-weight: 600;
+}
+.department-inventory-card-price strong {
+  color: var(--blue);
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.department-inventory-modal--storefront {
+  width: min(100%, 700px);
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--page);
+  box-shadow: 0 28px 90px rgb(0 0 0 / 28%);
+}
+.department-inventory-modal--storefront .department-inventory-modal-heading {
+  margin: 0;
+  padding: 25px 26px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.department-inventory-modal--storefront .department-inventory-modal-heading h2 {
+  font-size: 24px;
+  letter-spacing: -.025em;
+}
+.department-inventory-modal-code {
+  font-size: 12px !important;
+  letter-spacing: .035em;
+}
+.department-inventory-modal-pricing {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  padding: 18px 26px;
+  background: var(--panel);
+}
+.department-inventory-modal-pricing > div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.department-inventory-modal-pricing span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.department-inventory-modal-pricing strong {
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 700;
+}
+.department-inventory-modal-pricing > div:first-child strong { color: var(--blue); }
+.department-inventory-modal-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 26px;
+  padding: 20px 0 10px;
+  border-bottom: 1px solid var(--line);
+}
+.department-inventory-modal-section-heading span {
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 650;
+}
+.department-inventory-modal-section-heading small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.department-inventory-modal--storefront .department-inventory-edit-form {
+  padding: 16px 26px 24px;
+}
+.department-inventory-modal--storefront .department-inventory-edit-grid {
+  gap: 14px;
+}
+.department-inventory-modal--storefront .care-field input {
+  min-height: 40px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.department-inventory-modal--storefront .department-inventory-edit-toggle {
+  padding: 13px;
+  border-radius: 9px;
+}
+.department-inventory-modal--storefront .department-inventory-modal-actions {
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.department-inventory-modal--storefront .department-inventory-modal-actions .button {
+  min-height: 39px;
+  padding-inline: 16px;
+  border-radius: 8px;
+}
+@media (max-width: 600px) {
+  .department-inventory-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .department-inventory-card { min-height: 172px; padding: 12px; }
+  .department-inventory-card-price strong { font-size: 14px; }
+  .department-inventory-modal--storefront { max-height: 94vh; border-radius: 14px; }
+  .department-inventory-modal--storefront .department-inventory-modal-heading { padding: 19px 17px 15px; }
+  .department-inventory-modal-pricing { padding: 15px 17px; }
+  .department-inventory-modal-section-heading { margin-inline: 17px; }
+  .department-inventory-modal--storefront .department-inventory-edit-form { padding: 14px 17px 19px; }
+}
