@@ -28,6 +28,7 @@ import { createBrowserStore } from '../shared/browserStore.js'
 import { getWorkspace, subscribeWorkspace, updateWorkspace } from '../admin/workspaceStore.js'
 import { useRoleAccess } from '../../access/roleAccess.js'
 import { formatClockTime, formatDateTime12 } from '../shared/TimeInput.jsx'
+import { StatusPill, TactileTabs } from '../../components/ui-kit/UiKit.jsx'
 import './OperationsPages.css'
 
 const currency = new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 })
@@ -366,7 +367,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
             <thead><tr><th>Patient</th><th>Reason & status</th><th>Requested</th><th>Action</th></tr></thead>
             <tbody>{requests.map((request) => <tr key={request.id}>
               <td><strong><PatientLink patientId={request.patientId}>{request.patientName}</PatientLink></strong><span>{request.patientId}</span></td>
-              <td>{request.reason}<span className="operations-subvalue">{request.status}</span></td>
+              <td>{request.reason}<span className="operations-subvalue"><StatusPill label={request.status} /></span></td>
               <td>{formatDateTime(request.requestedAt)}</td>
               <td>{canManageBeds && request.status === 'Requested' && <button className="operations-table-action" type="button" onClick={() => openRequestedAdmission(request)}>Assign bed</button>}</td>
             </tr>)}</tbody>
@@ -391,7 +392,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
               return (
                 <article className={`ward-bed ward-bed--${bed.status}`} key={bed.id}>
                   <div><strong>{bed.id}</strong><span>{ward?.name}</span></div>
-                  <span className={`bed-status bed-status--${bed.status}`}>{bed.status}</span>
+                  <StatusPill label={bed.status} />
                   {patient && <small><PatientLink patientId={patient.id}>{patient.name}</PatientLink> · {patient.id}</small>}
                   {canManageBeds && bed.status === 'cleaning' && <button type="button" onClick={() => inpatientStore.update((current) => ({
                     ...current,
@@ -409,8 +410,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
             <label className="operations-search"><Search size={14} /><input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Find patient or bed" aria-label="Search admissions" /></label>
           </div>
           <div className="operations-filter-row">
-            <button type="button" className={wardFilter === 'all' ? 'operations-filter operations-filter--active' : 'operations-filter'} onClick={() => setWardFilter('all')}>All wards</button>
-            {facilityWards.map((ward) => <button type="button" key={ward.id} className={wardFilter === ward.id ? 'operations-filter operations-filter--active' : 'operations-filter'} onClick={() => setWardFilter(ward.id)}>{ward.name}</button>)}
+            <TactileTabs label="Filter by ward" value={wardFilter} onChange={setWardFilter} options={[{ value: 'all', label: 'All wards' }, ...facilityWards.map((ward) => ({ value: ward.id, label: ward.name }))]} />
           </div>
           <div className="operations-table-wrap">
             <table className="operations-table">
