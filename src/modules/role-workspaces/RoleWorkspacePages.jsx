@@ -53,11 +53,10 @@ function ManagementDashboard() {
         </div>
       </header>
       <div className="role-metric-grid">
-        {metrics.map(({ label, value, note, icon: Icon }) => (
+        {metrics.map(({ label, value, icon: Icon }) => (
           <article className="role-metric-card" key={label}>
             <span><Icon size={15} /> {label}</span>
             <strong>{value}</strong>
-            <small>{note}</small>
           </article>
         ))}
       </div>
