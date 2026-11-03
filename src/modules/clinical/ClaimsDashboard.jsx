@@ -86,7 +86,7 @@ export default function ClaimsDashboard({ pageId = 'claims-list', pageTitle = 'C
         <article><span>Saved claims</span><strong>{archive.records.length}</strong></article>
         <article><span>In {year}</span><strong>{yearRecords.length}</strong></article>
         <article><span>Selected period</span><strong>{monthRecords.length}</strong></article>
-        <article className="claims-coverage-estimate"><span>Expected NHIS medicine coverage</span><strong>{formatCurrency(knownMedicineCoverage)}{recordsMissingMedicineTariffs > 0 && <sup>*</sup>}</strong><small>{recordsMissingMedicineTariffs > 0 ? `${recordsMissingMedicineTariffs} claim(s) missing medicine tariff data` : 'Known medicine tariffs in selected period'}</small></article>
+        <article className="claims-coverage-estimate"><span>Expected NHIS medicine coverage</span><strong>{formatCurrency(knownMedicineCoverage)}{recordsMissingMedicineTariffs > 0 && <sup>*</sup>}</strong></article>
         <article><span>Encounter duplicate protection</span><strong>On</strong></article>
       </div>
 
