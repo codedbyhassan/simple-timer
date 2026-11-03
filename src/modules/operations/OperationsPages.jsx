@@ -367,7 +367,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
             <thead><tr><th>Patient</th><th>Reason & status</th><th>Requested</th><th>Action</th></tr></thead>
             <tbody>{requests.map((request) => <tr key={request.id}>
               <td><strong><PatientLink patientId={request.patientId}>{request.patientName}</PatientLink></strong><span>{request.patientId}</span></td>
-              <td>{request.reason}<span className="operations-subvalue"><StatusPill label={request.status} /></span></td>
+              <td>{request.reason}<span className="operations-subvalue"><StatusPill label={request.status} variant={undefined} /></span></td>
               <td>{formatDateTime(request.requestedAt)}</td>
               <td>{canManageBeds && request.status === 'Requested' && <button className="operations-table-action" type="button" onClick={() => openRequestedAdmission(request)}>Assign bed</button>}</td>
             </tr>)}</tbody>
@@ -392,7 +392,7 @@ export function InpatientPage({ pageId = 'ward-bed-board', pageTitle = 'Inpatien
               return (
                 <article className={`ward-bed ward-bed--${bed.status}`} key={bed.id}>
                   <div><strong>{bed.id}</strong><span>{ward?.name}</span></div>
-                  <StatusPill label={bed.status} />
+                  <StatusPill label={bed.status} variant={undefined} />
                   {patient && <small><PatientLink patientId={patient.id}>{patient.name}</PatientLink> · {patient.id}</small>}
                   {canManageBeds && bed.status === 'cleaning' && <button type="button" onClick={() => inpatientStore.update((current) => ({
                     ...current,
