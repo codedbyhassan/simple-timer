@@ -76,7 +76,7 @@ function PageHeading({ icon: Icon, eyebrow, title, description, aside }) {
   )
 }
 
-function MetricCard({ label, value, note, icon: Icon, tone = '' }) {
+function MetricCard({ label, value, icon: Icon, tone = '' }) {
   return (
     <article className={`operations-metric ${tone ? `operations-metric--${tone}` : ''}`}>
       <span className="operations-metric-icon"><Icon size={16} /></span>
