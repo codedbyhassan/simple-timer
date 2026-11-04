@@ -319,7 +319,7 @@ export function getRoleNames(roleIds) {
 }
 
 export function getPageRoute(page) {
-  if (page === 'patient-detail') return window.location.pathname
+  if (page === 'patient-detail' || page === 'staff-detail') return window.location.pathname
   const items = roleDefinitions.flatMap((role) => role.groups.flatMap((section) => section.items))
   return items.find((entry) => entry.id === page)?.path || '/'
 }
@@ -327,6 +327,7 @@ export function getPageRoute(page) {
 export function getPageFromPath(pathname) {
   const normalizedPath = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
   if (/^\/patients\/[^/]+$/.test(normalizedPath)) return 'patient-detail'
+  if (/^\/staff\/[^/]+$/.test(normalizedPath)) return 'staff-detail'
   const legacyPaths = {
     '/front-desk': 'opd-queue',
     '/nursing': 'triage-queue',

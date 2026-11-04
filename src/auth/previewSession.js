@@ -1,98 +1,107 @@
+// Staff session backed by Lovable Cloud auth. Keeps the original export names so App wiring stays stable.
+import { supabase } from '../integrations/supabase/client.ts'
 import { roleDefinitions } from '../access/roleAccess.js'
 
-const SESSION_KEY = 'ascend-hms-preview-session-v1'
-const channel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel(`${SESSION_KEY}:updates`)
 const listeners = new Set()
-
-function isValidSession(value) {
-  return value
-    && typeof value === 'object'
-    && typeof value.id === 'string'
-    && typeof value.displayName === 'string'
-    && Array.isArray(value.roleIds)
-    && value.roleIds.length === 1
-    && roleDefinitions.some((role) => role.id === value.roleIds[0])
-}
-
-function readSession() {
-  try {
-    const saved = localStorage.getItem(SESSION_KEY)
-    if (!saved) return null
-    const session = JSON.parse(saved)
-    if (!isValidSession(session)) throw new Error('Stored preview session is invalid.')
-    return session
-  } catch (error) {
-    console.error('Could not read the preview sign-in session.', error)
-    return null
-  }
-}
-
-let snapshot = readSession()
+let snapshot // undefined = still loading, null = signed out
+let realtimeChannel = null
 
 function notify(next) {
   snapshot = next
   listeners.forEach((listener) => listener())
 }
 
+async function loadStaff(user) {
+  const [{ data: profile }, { data: roles }] = await Promise.all([
+    supabase.from('profiles').select('*').eq('id', user.id).maybeSingle(),
+    supabase.from('user_roles').select('role').eq('user_id', user.id),
+  ])
+  const known = new Set(roleDefinitions.map((role) => role.id))
+  const roleIds = (roles || []).map((row) => row.role).filter((role) => known.has(role)).slice(0, 1)
+  return {
+    id: user.id,
+    email: user.email || '',
+    displayName: profile?.full_name || user.email || 'Staff member',
+    staffId: profile?.staff_id || '',
+    department: profile?.department || '',
+    status: profile?.status || 'Active',
+    mustChangePassword: Boolean(profile?.must_change_password),
+    roleIds,
+  }
+}
+
+function watchOwnRecords(userId) {
+  if (realtimeChannel) supabase.removeChannel(realtimeChannel)
+  const refresh = async () => {
+    const { data } = await supabase.auth.getUser()
+    if (data.user) notify(await loadStaff(data.user))
+  }
+  realtimeChannel = supabase
+    .channel(`own-staff-${userId}-${Math.random().toString(36).slice(2)}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'profiles', filter: `id=eq.${userId}` }, refresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'user_roles', filter: `user_id=eq.${userId}` }, refresh)
+    .subscribe()
+}
+
+async function applyUser(user) {
+  if (!user) {
+    if (realtimeChannel) { supabase.removeChannel(realtimeChannel); realtimeChannel = null }
+    notify(null)
+    return
+  }
+  try {
+    notify(await loadStaff(user))
+    watchOwnRecords(user.id)
+  } catch (error) {
+    console.error('Could not load staff profile.', error)
+    notify(null)
+  }
+}
+
 if (typeof window !== 'undefined') {
-  window.addEventListener('storage', (event) => {
-    if (event.key !== SESSION_KEY) return
-    try {
-      const session = event.newValue ? JSON.parse(event.newValue) : null
-      if (session !== null && !isValidSession(session)) {
-        console.error('Ignored an invalid cross-tab preview session.')
-        return
-      }
-      notify(session)
-    } catch (error) {
-      console.error('Could not apply a cross-tab preview session update.', error)
-    }
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === 'TOKEN_REFRESHED') return
+    // Defer DB calls out of the auth callback.
+    setTimeout(() => applyUser(session?.user || null), 0)
   })
-  channel?.addEventListener('message', (event) => {
-    if (event.data !== null && !isValidSession(event.data)) {
-      console.error('Ignored an invalid broadcast preview session.')
-      return
-    }
-    notify(event.data)
-  })
+  supabase.auth.getUser().then(({ data }) => applyUser(data.user || null)).catch(() => notify(null))
 }
 
-export function getPreviewSession() {
-  return snapshot
-}
-
+export const getPreviewSession = () => snapshot
 export function subscribeToPreviewSession(listener) {
   listeners.add(listener)
   return () => listeners.delete(listener)
 }
 
-export function signInToPreview(roleIds) {
-  const selectedRoles = roleDefinitions.filter((role) => roleIds.includes(role.id))
-  if (roleIds.length !== 1 || selectedRoles.length !== 1) {
-    throw new Error('Choose exactly one valid preview role.')
-  }
-  const session = {
-    id: `preview-${Date.now().toString(36)}`,
-    displayName: `${selectedRoles[0].name} Demo`,
-    roleIds: selectedRoles.map((role) => role.id),
-    signedInAt: new Date().toISOString(),
-  }
-  try {
-    localStorage.setItem(SESSION_KEY, JSON.stringify(session))
-  } catch (error) {
-    throw new Error(`Could not save the preview sign-in session: ${error instanceof Error ? error.message : String(error)}`)
-  }
-  notify(session)
-  channel?.postMessage(session)
-  return session
+export async function signInWithPassword(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+  if (error) throw new Error(error.message === 'Invalid login credentials' ? 'Email or password is incorrect.' : error.message)
+  await supabase.rpc('touch_sign_in')
+  return data.user
 }
 
-export function signOutOfPreview() {
-  try {
-    localStorage.removeItem(SESSION_KEY)
-  } catch (error) {
-    throw new Error(`Could not clear the preview sign-in session: ${error instanceof Error ? error.message : String(error)}`)
-  }
-  notify(null)
-  channel?.postMessage(null)
+export async function setupFirstAdmin({ email, password, fullName }) {
+  const { data, error } = await supabase.auth.signUp({
+    email: email.trim(), password,
+    options: { emailRedirectTo: window.location.origin, data: { full_name: fullName.trim() } },
+  })
+  if (error) throw new Error(error.message)
+  return { needsConfirmation: !data.session }
+}
+
+export async function changePassword(currentPassword, newPassword) {
+  const { error } = await supabase.auth.updateUser({ password: newPassword, current_password: currentPassword })
+  if (error) throw new Error(error.message)
+  await supabase.rpc('mark_password_changed')
+  const { data } = await supabase.auth.getUser()
+  if (data.user) notify(await loadStaff(data.user))
+}
+
+export async function requestPasswordReset(email) {
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo: `${window.location.origin}/reset-password` })
+  if (error) throw new Error(error.message)
+}
+
+export async function signOutOfPreview() {
+  await supabase.auth.signOut()
 }

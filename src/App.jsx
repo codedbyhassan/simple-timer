@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
 import {
   Bell,
+  KeyRound,
   Check,
   ChevronDown,
   CircleAlert,
@@ -15,8 +16,9 @@ import {
   UserRound,
   X,
 } from 'lucide-react'
-import AuthPage from './auth/AuthPage.jsx'
-import { getPreviewSession, signInToPreview, signOutOfPreview, subscribeToPreviewSession } from './auth/previewSession.js'
+import AuthPage, { AccountBlockedScreen, ChangePasswordScreen, ResetPasswordPage } from './auth/AuthPage.jsx'
+import { getPreviewSession, signOutOfPreview, subscribeToPreviewSession } from './auth/previewSession.js'
+import StaffDetailPage from './modules/admin/StaffDetailPage.jsx'
 import ToastViewport from './auth/ToastViewport.jsx'
 import {
   defaultRolePermissions,
@@ -95,6 +97,7 @@ function App() {
   }, [sidebarCollapsed])
   const [query, setQuery] = useState('')
   const [dialog, setDialog] = useState('')
+  const [changingPassword, setChangingPassword] = useState(false)
   const patients = useSyncExternalStore(subscribeToDemoPatients, getDemoPatients, getDemoPatients)
   const appointments = useSyncExternalStore(subscribeToAppointments, getAppointments, getAppointments)
   const careData = useSyncExternalStore(subscribeToCareData, getCareData, getCareData)
@@ -138,6 +141,8 @@ function App() {
     ? true
     : page === 'patient-detail'
       ? permissions.has('patient360.read')
+      : page === 'staff-detail'
+        ? permissions.has('admin.permissions.manage')
       : pageItems.some((item) => item.id === page), [permissions, pageItems])
 
   const navigate = useCallback((page, { replace = false, patientId = '' } = {}) => {
@@ -197,6 +202,7 @@ function App() {
   }, [roleIds, roleGrants])
 
   useEffect(() => {
+    if (session === undefined || pathname === '/reset-password') return
     if (!session) {
       if (pathname !== '/signin') window.history.replaceState({}, '', '/signin')
       return
@@ -233,25 +239,14 @@ function App() {
 
   const dismissToast = useCallback((toastId) => setToasts((current) => current.filter((toast) => toast.id !== toastId)), [])
   const addToast = (toast) => setToasts((current) => [...current, { ...toast, id: `${Date.now()}-${Math.random()}` }].slice(-3))
-  const handleSignIn = (selectedRoles) => {
+  const handleSignIn = () => addToast({ type: 'success', title: 'Signed in', message: 'Welcome back.' })
+  const handleSignOut = async () => {
+    const name = session?.displayName || 'Staff member'
     try {
-      const signedIn = signInToPreview(selectedRoles)
-      const roleNames = getRoleNames(signedIn.roleIds).join(' · ')
-      addToast({ type: 'success', title: 'Signed in', message: `Welcome to ${roleNames}.` })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      addToast({ type: 'error', title: 'Sign-in failed', message })
-      throw error
-    }
-  }
-  const handleSignOut = () => {
-    try {
-      const name = session?.displayName || 'Demo user'
-      signOutOfPreview()
+      await signOutOfPreview()
       addToast({ type: 'success', title: 'Signed out', message: `${name} has signed out.` })
     } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      addToast({ type: 'error', title: 'Sign-out failed', message })
+      addToast({ type: 'error', title: 'Sign-out failed', message: error instanceof Error ? error.message : String(error) })
     }
   }
 
@@ -283,11 +278,15 @@ function App() {
   const currentItem = pageItems.find((item) => item.id === activePage)
   const pageTitle = activePage === 'patient-detail'
     ? 'Patient 360'
+    : activePage === 'staff-detail'
+      ? 'Staff detail'
     : currentItem?.label || roleDefinitions.find((role) => roleIds.includes(role.id) && role.homePage === activePage)?.name || 'Workspace'
   const pageKind = activePage === 'patient-detail' ? 'patients' : currentItem?.page
 
   let pageContent
-  if (pageKind === 'front-desk') {
+  if (activePage === 'staff-detail') {
+    pageContent = <StaffDetailPage staffId={decodeURIComponent(pathname.split('/')[2] || '')} />
+  } else if (pageKind === 'front-desk') {
     pageContent = <FrontDeskPage pageId={activePage} pageTitle={pageTitle} />
   } else if (pageKind === 'nursing') {
     pageContent = <NursePage pageId={activePage} pageTitle={pageTitle} />
@@ -332,10 +331,17 @@ function App() {
     pageContent = <RoleModulePreview title={pageTitle} roleName={selectedRoleNames.join(' + ')} />
   }
 
+  if (pathname === '/reset-password') return <ResetPasswordPage />
+  if (session === undefined) {
+    return <main className="auth-loading" aria-busy="true"><img src="/brand/hms-icon.png" alt="" /><span>Loading your workspace…</span></main>
+  }
+  if (session && session.mustChangePassword) return <ChangePasswordScreen session={session} forced />
+  if (session && changingPassword) return <ChangePasswordScreen session={session} onDone={() => { setChangingPassword(false); addToast({ type: 'success', title: 'Password updated', message: 'Use your new password next time.' }) }} />
+  if (session && (session.status !== 'Active' || !session.roleIds.length)) return <AccountBlockedScreen session={session} />
   if (!session) {
     return (
       <>
-        <AuthPage onSignIn={handleSignIn} />
+        <AuthPage onSignedIn={handleSignIn} />
         <ToastViewport toasts={toasts} onDismiss={dismissToast} />
       </>
     )
@@ -446,7 +452,10 @@ function App() {
                       <span className="avatar avatar--profile">{session.displayName.split(/\s+/).slice(0, 2).map((part) => part[0]).join('').toUpperCase()}</span>
                       <div><strong>{session.displayName}</strong><span>{selectedRoleNames.join(' · ')}</span></div>
                     </div>
-                    <div className="profile-preview-note"><UserRound size={15}/><span>Local preview session<br/><small>Account settings and password management are not connected.</small></span></div>
+                    <div className="profile-preview-note"><UserRound size={15}/><span>{session.email}<br/><small>{session.staffId ? `${session.staffId} · ` : ''}{session.department || 'Staff account'}</small></span></div>
+                    <button type="button" onClick={() => { setMenu(''); setChangingPassword(true) }}>
+                      <KeyRound size={16} /> Change password
+                    </button>
                     {permissions.has('admin.settings.manage') && (
                       <button type="button" onClick={() => navigate('thresholds-settings')}>
                         <Settings size={16} /> Settings

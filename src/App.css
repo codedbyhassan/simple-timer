@@ -1816,3 +1816,6 @@ p {
 .app-shell .care-stats article > small,
 .app-shell .nurse-stat > small,
 .app-shell .role-metric-card > small { display:none !important; }
+.auth-loading{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:var(--muted);font-size:14px}
+.auth-loading img{width:44px;height:44px;animation:auth-pulse 1.4s ease-in-out infinite}
+@keyframes auth-pulse{50%{opacity:.45;transform:scale(.94)}}
