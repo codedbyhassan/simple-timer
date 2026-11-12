@@ -12,7 +12,7 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <script>
-      // Apply the saved theme before first paint so there is no flash.
+      // Read the cached theme for first paint; IndexedDB is authoritative after app startup.
       try {
         var t = localStorage.getItem('hms.theme') || 'system';
         var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
