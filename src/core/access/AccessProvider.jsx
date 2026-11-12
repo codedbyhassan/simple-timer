@@ -1,10 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { authService } from '../auth/authService.js'
 import { workspaceHome, workspacesForRoles } from './navigation.js'
+import { useAuth } from '../auth/AuthProvider.jsx'
 
 const AccessContext = createContext(null)
 
 export function AccessProvider({ children }) {
+  const auth = useAuth()
   const [state, setState] = useState({ status: 'loading', access: null, error: null })
   const [attempt, setAttempt] = useState(0)
 
@@ -14,7 +16,7 @@ export function AccessProvider({ children }) {
       .then((access) => alive && setState({ status: 'ready', access, error: null }))
       .catch((error) => alive && setState({ status: 'error', access: null, error }))
     return () => { alive = false }
-  }, [attempt])
+  }, [attempt, auth.user?.id, auth.user?.role])
 
   const retry = useCallback(() => {
     setState((s) => ({ ...s, status: 'loading' }))
