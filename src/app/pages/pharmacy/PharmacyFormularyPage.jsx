@@ -4,7 +4,7 @@ import { PharmacyEmpty, PharmacyError, PharmacyField, PharmacyNotice, PharmacyPa
 import './pharmacy styles/shared.css'
 import './pharmacy styles/formulary.css'
 
-export default function PharmacyFormularyPage({ data, error, commit, can }) {
+export default async function PharmacyFormularyPage({ data, error, commit, can }) {
   const [codes, setCodes] = useState({})
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
@@ -24,7 +24,7 @@ export default function PharmacyFormularyPage({ data, error, commit, can }) {
       medicines: data.pharmacy.medicines.map((item) => item.id === medicine.id ? { ...item, nhiaCode: code } : item),
       activity: [{ id: uid('ACT-PH'), type: 'Mapping', message: `${medicine.name} mapping ${code ? 'updated' : 'cleared'}`, at: now }, ...data.pharmacy.activity],
     }
-    if (commit({ ...data, pharmacy })) {
+    if (await commit({ ...data, pharmacy })) {
       setMessage(`${medicine.name} mapping saved in the shared workspace.`)
       setCodes((current) => ({ ...current, [medicine.id]: code }))
     }
