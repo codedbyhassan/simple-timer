@@ -4,8 +4,9 @@ with sync_playwright() as p:
     b=p.chromium.launch(); ctx=b.new_context(viewport={'width':1440,'height':900}, color_scheme='light')
     pg=ctx.new_page(); errs=[]
     pg.on('console', lambda m: errs.append(m.text) if m.type=='error' else None); pg.on('pageerror', lambda e: errs.append(str(e)))
-    pg.goto(BASE+'/signin?as=hospital_admin'); pg.evaluate("localStorage.removeItem('hms.demo.session')"); pg.goto(BASE+'/signin?as=hospital_admin')
-    pg.fill('input[name=email]','demo@ascend.test'); pg.fill('input[name=password]','Ascend#2026'); pg.click('button[type=submit]')
+    pg.goto(BASE+'/signin'); pg.wait_for_selector('#local-profile')
+    option = next(item for item in pg.locator('#local-profile option').all() if item.inner_text().startswith('Hospital administrator'))
+    pg.select_option('#local-profile', value=option.get_attribute('value')); pg.click('button[type=submit]')
     pg.wait_for_selector('.hms-shell'); pg.goto(BASE+'/design-system'); pg.wait_for_selector('.hms-receipt'); pg.wait_for_timeout(900)
     fonts=pg.evaluate("document.fonts.ready.then(()=>[...document.fonts].filter(f=>f.status==='loaded').map(f=>f.family+' '+f.weight))")
     print('loaded fonts:', sorted(set(fonts)))
