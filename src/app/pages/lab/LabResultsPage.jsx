@@ -5,7 +5,7 @@ import { LabEmpty, LabError, LabField, LabNotice, LabPanel, LabPatient, LabStatu
 import './lab styles/shared.css'
 import './lab styles/results.css'
 
-export default async async function LabResultsPage({ data, error, commit, can }) {
+export default function LabResultsPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [drafts, setDrafts] = useState({})
@@ -31,7 +31,7 @@ export default async async function LabResultsPage({ data, error, commit, can })
     setActionError('')
   }
 
-  const saveResults = () => {
+  const saveResults = async () => {
     setMessage('')
     setActionError('')
     if (!selected || !can('lab.process')) { setActionError('Your role cannot enter results.'); return }
@@ -60,7 +60,7 @@ export default async async function LabResultsPage({ data, error, commit, can })
     }
   }
 
-  const verify = () => {
+  const verify = async () => {
     setMessage('')
     setActionError('')
     if (!selected || !can('lab.verify')) { setActionError('Your role cannot verify laboratory results.'); return }
