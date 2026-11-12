@@ -43,14 +43,14 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <Stack gap="xs">
-        <Heading>Choose a staff profile</Heading>
+        <Heading>Choose a role profile</Heading>
         <Text tone="muted">Select a local role profile to open its workspace. This does not verify a real person’s identity.</Text>
       </Stack>
       <form className="hms-local-signin" onSubmit={onSubmit}>
         {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
         {loading ? <Text tone="muted">Loading local profiles…</Text> : profiles.length ? (
           <>
-            <label className="hms-local-signin__label" htmlFor="local-profile">Staff role</label>
+            <label className="hms-local-signin__label" htmlFor="local-profile">Role profile</label>
             <select id="local-profile" value={selected} onChange={(event) => setSelected(event.target.value)} disabled={busy}>
               {profiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.displayName || profile.name} · {profile.department}</option>)}
             </select>
