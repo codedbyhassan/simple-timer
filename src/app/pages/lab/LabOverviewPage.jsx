@@ -2,12 +2,14 @@ import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
 import { LabEmpty, LabError, LabNotice, LabPanel, LabPatient, LabStatus, elapsed, patientFor, testFor, tone } from './LabShared.jsx'
 import useHospitalSettings from '@core/storage/useHospitalSettings.js'
+import useMinuteClock from '@core/storage/useMinuteClock.js'
 import './lab styles/shared.css'
 import './lab styles/overview.css'
 
 export default function LabOverviewPage({ data, error }) {
   const { lab } = data
   const { settings } = useHospitalSettings()
+  const now = useMinuteClock()
   const turnaroundTarget = Math.max(1, Number(settings.lab_turnaround_target) || 150)
   const lowStockEnabled = settings.low_stock_alerts !== false
   const open = lab.orders.filter((order) => order.status !== 'Verified')
@@ -17,7 +19,7 @@ export default function LabOverviewPage({ data, error }) {
     return component && (component.criticalLow !== undefined && Number(value) < component.criticalLow || component.criticalHigh !== undefined && Number(value) > component.criticalHigh)
   }))
   const stockAlerts = lowStockEnabled ? lab.stock.filter((item) => item.quantity <= item.reorderLevel).length : 0
-  const overTarget = open.filter((order) => order.orderedAt && Number.isFinite(Date.parse(order.orderedAt)) && Date.now() - Date.parse(order.orderedAt) >= turnaroundTarget * 60000).length
+  const overTarget = open.filter((order) => order.orderedAt && Number.isFinite(Date.parse(order.orderedAt)) && now - Date.parse(order.orderedAt) >= turnaroundTarget * 60000).length
   const recent = [...lab.activity].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 5)
 
   return <>
