@@ -5,7 +5,7 @@ import useAdminCollection from './useAdminCollection.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
 import { uid } from '../cashier/CashierShared.jsx'
-import { exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
+import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
   BACKUP_JOBS,
@@ -178,6 +178,7 @@ function SettingsPage({ menu }) {
     try {
       const next = Object.fromEntries(defaults.map((setting) => [setting.id, valueOf(setting)]))
       await writeDocument('admin.settings', next)
+      await appendAuditEvent({ action: 'Updated hospital settings', resource: 'Local operating preferences', category: 'Administration' })
       setValues(next)
       setSavedValues(next)
       setSaved(true)
@@ -459,7 +460,7 @@ function InventoryPage({ menu }) {
 }
 
 function AuditPage({ menu }) {
-  const { records, loaded, error } = useAdminCollection('hms.admin.audit.v1', AUDIT_SEED)
+  const { records, loaded, error } = useAdminCollection('audit', AUDIT_SEED)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All activity')
   const filtered = records.filter((event) => `${event.id} ${event.time} ${event.actor} ${event.action} ${event.resource} ${event.category}`.toLowerCase().includes(query.toLowerCase()) && (category === 'All activity' || event.category === category))
@@ -470,7 +471,7 @@ function AuditPage({ menu }) {
       <PageHeader title={menu.label} description={menu.summary} actions={<button type="button" className="hms-admin-ops__quiet-action" onClick={() => window.print()}><Icon name="download" size={16} />Print view</button>} />
       <div className="hms-admin-ops">
         {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
-        <div className="hms-admin-ops__audit-banner"><span><Icon name="shieldCheck" size={19} /></span><div><strong>Administrative activity trail</strong><p>Chronological record of access, configuration and operational events.</p></div><StatusBadge tone="success">Append-only</StatusBadge></div>
+        <div className="hms-admin-ops__audit-banner"><span><Icon name="shieldCheck" size={19} /></span><div><strong>Administrative activity trail</strong><p>Chronological record of changes saved by this local installation.</p></div><StatusBadge tone="neutral">Local history</StatusBadge></div>
         <section className="hms-admin-ops__surface">
           <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Governance</span><h2>Event history</h2></div><span className="hms-admin-ops__subtle">{filtered.length} events</span></div>
           <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search actor, event or record" /><select aria-label="Filter audit category" value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item}>{item}</option>)}</select></div>
@@ -499,6 +500,7 @@ function BackupPage({ menu }) {
     setBusy(true); setError(''); setMessage('')
     try {
       const backup = await exportLocalDatabase()
+      await appendAuditEvent({ action: 'Exported local backup', resource: `${backup.documents.length} data collections`, category: 'Backup' })
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
@@ -521,6 +523,7 @@ function BackupPage({ menu }) {
     try {
       const backup = JSON.parse(await file.text())
       await importLocalDatabase(backup)
+      await appendAuditEvent({ action: 'Restored local backup', resource: `${backup.documents.length} data collections`, category: 'Backup' })
       setMessage(`Restored ${backup.documents.length} local data collections. Reload the application to refresh every screen.`)
     } catch (restoreError) {
       setError(restoreError instanceof Error ? restoreError.message : 'Unable to restore this backup.')
