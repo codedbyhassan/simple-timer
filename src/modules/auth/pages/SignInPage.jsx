@@ -82,6 +82,7 @@ export default function SignInPage() {
                   <button
                     className="hms-local-signin__card hms-local-signin__role-card"
                     type="button"
+                    data-role={role}
                     key={role}
                     onClick={() => openRole(selectedWorkspace, role)}
                     disabled={Boolean(busyRole)}
@@ -104,6 +105,7 @@ export default function SignInPage() {
                 <button
                   className="hms-local-signin__card"
                   type="button"
+                  data-workspace={workspace.id}
                   key={workspace.id}
                   onClick={() => chooseWorkspace(workspace)}
                   disabled={Boolean(busyRole)}
