@@ -37,7 +37,7 @@ function claimXmlPreview(record, patient) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<claimsBatch>\n  <claim id="${escapeXml(record.id)}">\n    <member>${escapeXml(patient?.memberNumber)}</member>\n    <dateOfBirth>${escapeXml(patient?.dateOfBirth)}</dateOfBirth>\n    <service>${escapeXml(record.service)}</service>\n    <diagnosisCode>${escapeXml(record.diagnosisCode)}</diagnosisCode>\n    <physicianID>${escapeXml(record.physicianId)}</physicianID>\n    <claimCheckCode>${escapeXml(record.claimCheckCode)}</claimCheckCode>\n    <preauthorisationCode>${escapeXml(record.preauthorisationCode)}</preauthorisationCode>\n  </claim>\n</claimsBatch>`
 }
 
-export default async async function ClaimsListPage({ data, error, commit, can }) {
+export default function ClaimsListPage({ data, error, commit, can }) {
   const location = useLocation()
   const records = data.claims.records
   const initialFilter = location.state?.status || 'All'
@@ -70,7 +70,7 @@ export default async async function ClaimsListPage({ data, error, commit, can })
     setActionError('')
   }
 
-  const refreshSnapshots = () => {
+  const refreshSnapshots = async () => {
     setMessage('')
     setActionError('')
     if (!can('claims.build')) { setActionError('Your role cannot build or refresh claim snapshots.'); return }
@@ -96,7 +96,7 @@ export default async async function ClaimsListPage({ data, error, commit, can })
     }
   }
 
-  const saveFields = () => {
+  const saveFields = async () => {
     setMessage('')
     setActionError('')
     if (!selected || !can('claims.enter_ccc')) { setActionError('Your role cannot update claim office fields.'); return }
