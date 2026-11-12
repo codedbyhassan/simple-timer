@@ -127,7 +127,10 @@ export const WORKSPACES = [
 ]
 
 export const menuPath = (ws, menu) => `/${ws.slug}/${menu.slug}`
-export const workspaceHome = (ws) => `/${ws.slug}/overview`
+export const workspaceHome = (ws, can = () => true) => {
+  const firstAvailable = ws?.menus.find((menu) => menu.anyOf.some(can))
+  return firstAvailable ? menuPath(ws, firstAvailable) : '/profile'
+}
 
 // Workspaces for a person's roles, in role order.
 export const workspacesForRoles = (roles) =>
