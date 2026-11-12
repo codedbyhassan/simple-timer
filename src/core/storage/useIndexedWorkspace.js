@@ -12,7 +12,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
     let alive = true
     const load = async () => {
       try {
-        const value = await initialiseWorkspace(HOSPITAL_WORKSPACE_KEY, defaults, 'hms.reception.workspace.v1')
+        const value = await initialiseWorkspace(HOSPITAL_WORKSPACE_KEY, defaults)
         if (alive) {
           setData(value)
           setError('')
