@@ -129,7 +129,7 @@ function ReadonlyDetails({ user }) {
       </section>
 
       <section className="hms-user-detail__section">
-        <h2>Account notes</h2>
+        <h2>Profile notes</h2>
         <p className="hms-user-detail__notes">{user.notes || 'No notes recorded.'}</p>
       </section>
     </>
@@ -178,7 +178,7 @@ export default function UserDetailPage() {
 
   const deleteUser = async () => {
     if (!user) return
-    if (!window.confirm(`Delete ${user.name} from the staff directory on this device?`)) return
+    if (!window.confirm(`Delete local role profile ${user.name}?`)) return
     const success = await commit(users.filter((item) => item.id !== user.id))
     if (success) navigate('/admin/users', { replace: true })
     else setError(storageError || 'Unable to remove this local profile.')
@@ -201,12 +201,12 @@ export default function UserDetailPage() {
     return (
       <>
         <PageHeader title="User not found" />
-        <div className="hms-user-detail__not-found"><p>This user is no longer in the staff directory.</p><Link to="/admin/users">Return to users</Link></div>
+        <div className="hms-user-detail__not-found"><p>This profile is no longer available.</p><Link to="/admin/users">Return to profiles</Link></div>
       </>
     )
   }
 
-  const menu = { label: isNew ? 'Add user' : user.name, summary: isNew ? 'Create a local staff profile and assign a workspace role.' : `${roleLabel(user.role)} · ${user.department}` }
+  const menu = { label: isNew ? 'Add user' : user.name, summary: isNew ? 'Create a local role profile for a staff member.' : `${roleLabel(user.role)} · ${user.department}` }
 
   return (
     <>
@@ -226,7 +226,7 @@ export default function UserDetailPage() {
         {!isNew ? <ReadonlyDetails user={user} /> : null}
         {error && !editing ? <p className="hms-user-detail__error" role="alert">{error}</p> : null}
       </div>
-      <Dialog open={editing} title={isNew ? 'New local staff profile' : 'Edit staff details'} description="Enter the account details and choose a role for this staff member." onClose={cancelEdit} size="large">
+      <Dialog open={editing} title={isNew ? 'New local role profile' : 'Edit local profile'} description="Enter the profile details and choose its workspace role." onClose={cancelEdit} size="large">
         <UserForm key={user?.id || 'new'} initial={initial} onSave={saveUser} onCancel={cancelEdit} saving={saving} error={error} isNew={isNew} />
       </Dialog>
     </>
