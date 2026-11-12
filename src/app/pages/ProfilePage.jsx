@@ -1,46 +1,39 @@
-import { useState } from 'react'
-import { Avatar, Button, Card, PageHeader, StatusBadge, Text, useToast } from '@ui'
-import { authService, describeAuthError, useAuth } from '@core/auth'
+import { useNavigate } from 'react-router-dom'
+import { Avatar, Button, Card, PageHeader, StatusBadge, Text } from '@ui'
+import { useAuth } from '@core/auth'
 import { useAccess } from '@core/access/AccessProvider.jsx'
 import { roleLabel } from '@core/access/roles.js'
 
 export default function ProfilePage() {
-  const { user } = useAuth()
+  const { user, signOut } = useAuth()
   const { access, roles } = useAccess()
-  const toast = useToast()
-  const [busy, setBusy] = useState(false)
+  const navigate = useNavigate()
+  const displayName = access.displayName || user?.displayName || user?.name || 'Local staff profile'
 
-  const sendReset = async () => {
-    setBusy(true)
-    try {
-      await authService.requestPasswordReset(user.email)
-      toast.success('Reset link sent', `Check ${user.email} for the link.`)
-    } catch (err) {
-      const { title, message } = describeAuthError(err)
-      toast.error(title, message)
-    } finally {
-      setBusy(false)
-    }
+  const switchProfile = async () => {
+    await signOut()
+    navigate('/signin', { replace: true })
   }
 
   return (
     <>
-      <PageHeader title="Profile" />
-      <div style={{ display: 'grid', gap: 24, maxWidth: 720 }}>
+      <PageHeader title="Profile" description="The local staff profile currently selected for this installation." />
+      <div style={{ display: 'grid', gap: 18, maxWidth: 720 }}>
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <Avatar name={access.displayName || user.email} size="lg" />
+            <Avatar name={displayName} size="lg" />
             <div style={{ minWidth: 0 }}>
-              <p style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 600 }}>{access.displayName || 'Account'}</p>
-              <Text tone="muted" size="sm">{user.email}</Text>
+              <p style={{ margin: 0, fontSize: 'var(--text-lg)', fontWeight: 650 }}>{displayName}</p>
+              <Text tone="muted" size="sm">{user?.department || 'Department not set'}</Text>
             </div>
+            <StatusBadge tone="info">Local profile</StatusBadge>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 20 }}>
-            {roles.length ? roles.map((r) => <StatusBadge key={r} tone="info">{roleLabel(r)}</StatusBadge>) : <Text tone="muted" size="sm">No role assigned.</Text>}
+            {roles.map((role) => <StatusBadge key={role} tone="neutral">{roleLabel(role)}</StatusBadge>)}
           </div>
         </Card>
-        <Card title="Password" description="We email you a link to choose a new password.">
-          <Button size="md" intent="secondary" loading={busy} onClick={sendReset}>Send reset link</Button>
+        <Card title="Access mode" description="Profiles and permissions are stored in IndexedDB on this device. They do not authenticate a real staff member and do not sync to another installation.">
+          <Button size="md" intent="secondary" onClick={switchProfile}>Switch local profile</Button>
         </Card>
       </div>
     </>
