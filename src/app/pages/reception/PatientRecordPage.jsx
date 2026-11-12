@@ -22,7 +22,7 @@ const TAB_PERMISSIONS = {
 const dateLabel = (value) => value ? formatDate(value.slice(0, 10)) : 'Not recorded'
 const list = (value) => Array.isArray(value) ? value : []
 
-export default async function PatientRecordPage() {
+export default function PatientRecordPage() {
   const { patientId, id } = useParams()
   const { data, error, commit } = useReceptionWorkspace()
   const { can } = useAccess()
@@ -46,7 +46,7 @@ export default async function PatientRecordPage() {
   const claims = list(data.claims?.records).filter((entry) => entry.patientId === patient.id)
   const documents = list(data.documents).filter((entry) => entry.patientId === patient.id)
   const openEdit = () => { setValues({ ...patient }); setEditing(true); setFormError(''); setMessage('') }
-  const save = (event) => {
+  const save = async (event) => {
     event.preventDefault()
     if (!can('patients.update')) { setFormError('Your role does not have permission to update patient records.'); return }
     if (values.coverage === 'NHIS' && values.memberNumber && !/^\d{8}(\d{2})?$/.test(values.memberNumber)) { setFormError('NHIS membership numbers must contain 8 or 10 digits.'); return }
