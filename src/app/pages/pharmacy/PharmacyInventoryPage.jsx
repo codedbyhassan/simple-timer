@@ -10,7 +10,7 @@ const dateFromToday = (offset) => {
   return date.toISOString().slice(0, 10)
 }
 
-export default async async function PharmacyInventoryPage({ data, error, commit, can }) {
+export default function PharmacyInventoryPage({ data, error, commit, can }) {
   const [receive, setReceive] = useState({ medicineId: data.pharmacy.medicines[0]?.id || '', lot: '', quantity: '', expiresAt: dateFromToday(180), reason: '' })
   const [adjust, setAdjust] = useState({ batchId: '', quantity: '', reason: '' })
   const [message, setMessage] = useState('')
@@ -24,7 +24,7 @@ export default async async function PharmacyInventoryPage({ data, error, commit,
   const selectedBatch = batches.find((batch) => batch.id === adjust.batchId)
   const movements = [...data.pharmacy.movements].filter((movement) => filter === 'All' || movement.type === filter).sort((a, b) => b.at.localeCompare(a.at))
 
-  const addReceipt = (event) => {
+  const addReceipt = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
@@ -51,7 +51,7 @@ export default async async function PharmacyInventoryPage({ data, error, commit,
     }
   }
 
-  const saveAdjustment = (event) => {
+  const saveAdjustment = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
