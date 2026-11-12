@@ -29,16 +29,24 @@ def check(name, condition, detail=''):
     results.append((name, bool(condition), detail))
     print(('PASS' if condition else 'FAIL'), name, detail)
 
+WORKSPACE_FOR_ROLE = {
+    'receptionist': 'Reception', 'records_officer': 'Reception',
+    'triage_nurse': 'Nursing', 'ward_nurse': 'Nursing', 'bed_manager': 'Nursing',
+    'doctor': 'Doctor', 'lab_technician': 'Laboratory',
+    'pharmacist': 'Pharmacy', 'pharmacy_assistant': 'Pharmacy', 'store_keeper': 'Pharmacy',
+    'cashier': 'Finance', 'finance_officer': 'Finance',
+    'claims_officer': 'Claims', 'hospital_admin': 'Administration',
+    'management_viewer': 'Administration',
+}
+MULTI_ROLE_WORKSPACES = {'Reception', 'Nursing', 'Pharmacy', 'Finance', 'Administration'}
+
 def login(page, role):
     page.goto(f'{BASE}/signin')
-    page.wait_for_selector('#local-profile')
-    expected = ROLE_LABELS[role]
-    option = next(
-        item for item in page.locator('#local-profile option').all()
-        if item.inner_text().startswith(expected)
-    )
-    page.select_option('#local-profile', value=option.get_attribute('value'))
-    page.click('button[type=submit]')
+    page.wait_for_selector('.hms-local-signin__card')
+    workspace = WORKSPACE_FOR_ROLE[role]
+    page.locator('.hms-local-signin__card').filter(has_text=workspace).first.click()
+    if workspace in MULTI_ROLE_WORKSPACES:
+        page.locator('.hms-local-signin__role-card').filter(has_text=ROLE_LABELS[role]).click()
     page.wait_for_selector('.hms-shell', timeout=8000)
 
 def logout(page):
@@ -110,8 +118,8 @@ with sync_playwright() as playwright:
     check('profile clearly identifies local access mode', page.get_by_text('Access mode').is_visible() and page.get_by_text('Local profile').is_visible())
     page.click('button:has-text("Switch role profile")')
     page.wait_for_url('**/signin')
-    page.wait_for_selector('#local-profile')
-    check('switching profile returns to the local profile selector', page.locator('#local-profile').count() == 1)
+    page.wait_for_selector('.hms-local-signin__card')
+    check('switching profile returns to workspace selection', page.locator('.hms-local-signin__card').count() == 8)
 
     login(page, 'hospital_admin')
     page.wait_for_url('**/admin/overview')
