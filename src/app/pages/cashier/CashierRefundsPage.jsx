@@ -4,7 +4,7 @@ import { CashierError, CashierField, CashierNotice, CashierPanel, dateLabel, mon
 import './cashier styles/shared.css'
 import './cashier styles/refunds.css'
 
-export default async function CashierRefundsPage({ data, error, commit, can }) {
+export default function CashierRefundsPage({ data, error, commit, can }) {
   const [showForm, setShowForm] = useState(false)
   const paidInvoices = data.payments.filter((item) => Number(item.paid) > 0)
   const [invoiceId, setInvoiceId] = useState(paidInvoices[0]?.id || '')
@@ -12,7 +12,7 @@ export default async function CashierRefundsPage({ data, error, commit, can }) {
   const [reason, setReason] = useState('')
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
-  const submit = (event) => {
+  const submit = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
