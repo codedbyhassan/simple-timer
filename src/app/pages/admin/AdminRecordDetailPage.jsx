@@ -66,9 +66,9 @@ async async async function EditableRecord({ module, menu }) {
   const loaded = module === 'catalogue' ? cashier.loaded : module === 'mappings' ? claims.loaded : local.loaded
   const storageError = module === 'catalogue' ? cashier.error : module === 'mappings' ? claims.error : local.error
   const commit = async (next) => {
-    if (module === 'catalogue') return cashier.await commit({ ...cashier.data, cashier: { ...cashier.data.cashier, prices: next.map((item) => ({ ...item, amount: Number(item.price ?? item.amount ?? 0), price: undefined, source: item.source || 'Service catalogue' })) } })
-    if (module === 'mappings') return claims.await commit({ ...claims.data, claims: { ...claims.data.claims, mappings: next.map((item) => ({ ...item, kind: item.type || item.kind || 'Reference' })) } })
-    return local.await commit(next)
+    if (module === 'catalogue') return await cashier.commit({ ...cashier.data, cashier: { ...cashier.data.cashier, prices: next.map((item) => ({ ...item, amount: Number(item.price ?? item.amount ?? 0), price: undefined, source: item.source || 'Service catalogue' })) } })
+    if (module === 'mappings') return await claims.commit({ ...claims.data, claims: { ...claims.data.claims, mappings: next.map((item) => ({ ...item, kind: item.type || item.kind || 'Reference' })) } })
+    return await local.commit(next)
   }
   const isNew = recordId === 'new'
   const record = useMemo(() => records.find((item) => item[detail.id] === recordId), [records, recordId, detail.id])
