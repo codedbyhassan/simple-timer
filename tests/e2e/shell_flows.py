@@ -55,6 +55,8 @@ def logout(page):
     page.click('button[aria-label="Account menu"]')
     page.click('[role=menuitem]:has-text("Log out")')
     page.wait_for_url('**/signin')
+    page.wait_for_selector('.hms-local-signin__card', timeout=8000)
+    print(f'LOGOUT DEBUG: {page.url} | {page.locator("body").inner_text()[:100]!r}')
 
 def nav_labels(page):
     return [text.strip() for text in page.locator('.hms-rail__item').all_inner_texts()]
