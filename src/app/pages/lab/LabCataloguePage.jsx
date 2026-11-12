@@ -6,7 +6,7 @@ import './lab styles/catalogue.css'
 
 const EMPTY_TEST = { code: '', name: '', category: 'Haematology', specimenType: '', turnaroundHours: '4', fee: '', trackedStock: true, component: '', unit: '', low: '', high: '', criticalLow: '', criticalHigh: '' }
 
-export default async async function LabCataloguePage({ data, error, commit, can }) {
+export default function LabCataloguePage({ data, error, commit, can }) {
   const [values, setValues] = useState(EMPTY_TEST)
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState('')
@@ -14,7 +14,7 @@ export default async async function LabCataloguePage({ data, error, commit, can 
   const [showAdd, setShowAdd] = useState(false)
   const tests = data.lab.catalogue.filter((test) => `${test.name} ${test.code} ${test.category} ${test.specimenType}`.toLowerCase().includes(query.toLowerCase().trim()))
 
-  const addTest = (event) => {
+  const addTest = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
@@ -57,7 +57,7 @@ export default async async function LabCataloguePage({ data, error, commit, can 
     }
   }
 
-  const toggleTest = (test) => {
+  const toggleTest = async (test) => {
     if (!can('lab.manage_catalogue')) return
     const now = new Date().toISOString()
     const lab = {
