@@ -1,0 +1,6 @@
+.hms-tag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 9px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--text); }
+.hms-tag__dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-subtle); }
+.hms-tag--accent .hms-tag__dot { background: var(--accent); }
+.hms-tag--critical .hms-tag__dot { background: var(--critical); }
+.hms-tag--success .hms-tag__dot { background: var(--success); }
+.hms-tag--warning .hms-tag__dot { background: var(--warning); }

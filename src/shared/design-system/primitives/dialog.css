@@ -1,0 +1,89 @@
+.hms-dialog__backdrop {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow: auto;
+  background: rgb(15 23 42 / 54%);
+  backdrop-filter: blur(3px);
+}
+
+.hms-dialog {
+  width: min(100%, 620px);
+  max-height: min(88vh, 900px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--color-text-primary, #172033);
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e9f0);
+  border-radius: 18px;
+  box-shadow: 0 24px 80px rgb(15 23 42 / 28%);
+}
+
+.hms-dialog--large {
+  width: min(100%, 880px);
+}
+
+.hms-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--color-border, #e5e9f0);
+}
+
+.hms-dialog__header h2 {
+  margin: 0;
+  font: 700 1.15rem/1.35 var(--font-heading, inherit);
+}
+
+.hms-dialog__header p {
+  margin: 6px 0 0;
+  color: var(--color-text-secondary, #657084);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.hms-dialog__close {
+  display: grid;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.hms-dialog__close:hover {
+  background: var(--color-surface-subtle, #f1f4f8);
+}
+
+.hms-dialog__content {
+  padding: 22px 24px 24px;
+  overflow: auto;
+}
+
+@media (max-width: 640px) {
+  .hms-dialog__backdrop {
+    align-items: end;
+    padding: 12px;
+  }
+
+  .hms-dialog {
+    max-height: 92vh;
+    border-radius: 18px 18px 12px 12px;
+  }
+
+  .hms-dialog__header,
+  .hms-dialog__content {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+}

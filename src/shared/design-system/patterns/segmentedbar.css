@@ -1,0 +1,7 @@
+.hms-segbar { display: flex; flex-direction: column; gap: 12px; }
+.hms-segbar__bar { display: flex; gap: 4px; height: 26px; }
+.hms-segbar__part { min-width: 14px; border-radius: 10px; }
+.hms-segbar__legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: var(--text-sm); color: var(--text-muted); }
+.hms-segbar__legend li { display: inline-flex; align-items: center; gap: 7px; }
+.hms-segbar__legend strong { color: var(--text); font-weight: var(--weight-semibold); }
+.hms-segbar__dot { width: 8px; height: 8px; border-radius: 50%; }

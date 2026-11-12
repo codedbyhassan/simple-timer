@@ -1,0 +1,2 @@
+.hms-cashier__table td:first-child { min-width: 180px; }
+@media (max-width: 700px) { .hms-cashier__table { min-width: 880px; } }

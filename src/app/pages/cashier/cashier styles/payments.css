@@ -1,0 +1,15 @@
+.hms-cashier__payment-grid { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(280px, .7fr); align-items: start; gap: 15px; }
+.hms-cashier__balance-card { display: grid; gap: 5px; padding: 14px; border: 1px solid var(--accent-border, var(--border)); border-radius: 11px; background: var(--accent-soft, var(--surface-subtle)); }
+.hms-cashier__balance-card span,
+.hms-cashier__balance-card small { color: var(--text-muted); font-size: var(--text-xs); }
+.hms-cashier__balance-card strong { color: var(--text); font-size: var(--text-xl); }
+.hms-cashier__receipt { display: grid; gap: 11px; max-width: 360px; margin: auto; padding: 20px; border: 1px dashed var(--border); border-radius: 6px; background: var(--surface); color: var(--text); font-size: var(--text-sm); }
+.hms-cashier__receipt > strong,
+.hms-cashier__receipt > small { text-align: center; }
+.hms-cashier__receipt > strong { font-size: var(--text-md); }
+.hms-cashier__receipt > small,
+.hms-cashier__receipt em { color: var(--text-muted); font-size: var(--text-xs); }
+.hms-cashier__receipt > span { display: flex; justify-content: space-between; gap: 10px; }
+.hms-cashier__receipt > span > strong { text-align: right; }
+.hms-cashier__receipt hr { width: 100%; border: 0; border-top: 1px dashed var(--border); }
+@media (max-width: 800px) { .hms-cashier__payment-grid { grid-template-columns: 1fr; } }

@@ -1,0 +1,14 @@
+.hms-iconbtn {
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 140ms, color 140ms, border-color 140ms;
+}
+.hms-iconbtn--md { width: 36px; height: 36px; }
+.hms-iconbtn--sm { width: 30px; height: 30px; }
+.hms-iconbtn--neutral:hover { background: var(--surface-subtle); color: var(--text); border-color: var(--border); }
+.hms-iconbtn--neutral:active { background: var(--border); }

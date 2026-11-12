@@ -1,0 +1,8 @@
+.hms-ranked { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.hms-ranked__item { display: flex; align-items: center; gap: 12px; }
+.hms-ranked__text { flex: 1; min-width: 0; }
+.hms-ranked__name { margin: 0; font-size: var(--text-md); font-weight: var(--weight-medium); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hms-ranked__sub { margin: 0; font-size: var(--text-xs); color: var(--accent-text); font-weight: var(--weight-medium); }
+.hms-ranked__score { display: inline-flex; align-items: center; gap: 4px; font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+.hms-ranked__score svg { color: var(--warning); fill: var(--warning); }
+.hms-ranked__cap { min-width: 56px; text-align: right; font-size: var(--text-xs); color: var(--text-muted); }

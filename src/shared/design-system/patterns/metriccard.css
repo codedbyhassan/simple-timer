@@ -1,0 +1,10 @@
+.hms-metric { display: flex; flex-direction: column; gap: 10px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); }
+.hms-metric__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.hms-metric__label { font-size: var(--text-sm); color: var(--text-muted); font-weight: var(--weight-medium); }
+.hms-metric__icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 11px; background: var(--accent-soft); color: var(--accent-text); }
+.hms-metric__value { margin: 0; font-family: var(--font-display); font-size: var(--text-metric); font-weight: var(--weight-semibold); letter-spacing: -0.03em; line-height: 1.1; color: var(--text); }
+.hms-metric__foot { display: flex; align-items: center; gap: 10px; min-height: 24px; }
+.hms-metric__delta { display: inline-flex; align-items: center; gap: 4px; height: 24px; padding: 0 8px; border-radius: var(--radius-pill); font-size: var(--text-xs); font-weight: var(--weight-semibold); }
+.hms-metric__delta.is-good { background: var(--success-soft); color: var(--success); }
+.hms-metric__delta.is-bad { background: var(--critical-soft); color: var(--critical); }
+.hms-metric__caption { font-size: var(--text-xs); color: var(--text-subtle); }

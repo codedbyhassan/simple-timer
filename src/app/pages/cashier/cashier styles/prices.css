@@ -1,0 +1,2 @@
+.hms-cashier__table td:nth-child(4) { white-space: nowrap; }
+@media (max-width: 700px) { .hms-cashier__table { min-width: 800px; } }

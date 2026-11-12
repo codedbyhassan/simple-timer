@@ -1,0 +1,5 @@
+.hms-stripes { display: flex; flex-direction: column; gap: 10px; }
+.hms-stripes__heads { display: flex; gap: 12px; font-size: var(--text-xs); color: var(--text-muted); }
+.hms-stripes__heads strong { color: var(--text); font-weight: var(--weight-semibold); }
+.hms-stripes__row { display: flex; gap: 3px; height: 40px; }
+.hms-stripes__pill { flex: 1; min-width: 3px; max-width: 9px; border-radius: 6px; }

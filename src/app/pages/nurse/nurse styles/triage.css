@@ -1,0 +1,348 @@
+.hms-nurse__triage-layout {
+  display: grid;
+  grid-template-columns: minmax(285px, 0.72fr) minmax(0, 1.6fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.hms-nurse__triage-list {
+  position: sticky;
+  top: 16px;
+}
+
+.hms-nurse__triage-patient {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 0;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.hms-nurse__triage-patient:first-of-type {
+  padding-top: 0;
+}
+
+.hms-nurse__triage-patient:last-child {
+  border-bottom: 0;
+}
+
+.hms-nurse__triage-patient.is-selected {
+  margin-inline: -10px;
+  width: calc(100% + 20px);
+  padding-inline: 10px;
+  border-radius: 11px;
+  background: var(--accent-soft);
+}
+
+.hms-nurse__triage-patient-head,
+.hms-nurse__triage-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hms-nurse__triage-meta small {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__triage-reason {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__draft-label {
+  color: var(--accent-text);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+}
+
+.hms-nurse__patient-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-nurse__patient-header > div:last-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.hms-nurse__arrival-time {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__triage-context {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) auto;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-nurse__triage-context > span {
+  display: grid;
+  gap: 4px;
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-nurse__triage-context strong {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+}
+
+.hms-nurse__triage-context a {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent-text);
+  font-size: 12px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.hms-nurse__triage-form-panel form {
+  display: grid;
+  gap: 18px;
+}
+
+.hms-nurse__vitals-section {
+  display: grid;
+  gap: 13px;
+}
+
+.hms-nurse__vitals-section > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hms-nurse__vitals-section > header h3 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-md);
+}
+
+.hms-nurse__vitals-section > header > small {
+  max-width: 300px;
+  color: var(--text-muted);
+  font-size: 12px;
+  text-align: right;
+}
+
+.hms-nurse__vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.hms-nurse__bmi {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  min-height: 76px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-subtle);
+}
+
+.hms-nurse__bmi span,
+.hms-nurse__bmi small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.hms-nurse__bmi strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+}
+
+.hms-nurse__soft-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  font-size: var(--text-sm);
+}
+
+.hms-nurse__soft-warning svg {
+  flex: 0 0 auto;
+}
+
+.hms-nurse__soft-warning > span {
+  display: grid;
+  gap: 3px;
+}
+
+.hms-nurse__soft-warning small {
+  color: var(--text);
+  font-size: 12px;
+}
+
+.hms-nurse__priority-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.hms-nurse__priority-options label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-height: 66px;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  cursor: pointer;
+}
+
+.hms-nurse__priority-options label.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.hms-nurse__priority-options input,
+.hms-nurse__red-flags input,
+.hms-nurse__checklist input {
+  flex: 0 0 auto;
+  width: 17px;
+  height: 17px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.hms-nurse__priority-options label > span {
+  display: grid;
+  gap: 6px;
+}
+
+.hms-nurse__priority-options label small {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.hms-nurse__red-flags {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 13px;
+  border: 1px solid color-mix(in srgb, var(--critical) 22%, var(--border));
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--critical-soft) 40%, var(--surface));
+}
+
+.hms-nurse__red-flags > strong,
+.hms-nurse__red-flags > small {
+  grid-column: 1 / -1;
+}
+
+.hms-nurse__red-flags > strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-nurse__red-flags > small {
+  margin-top: -6px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__red-flags label {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.hms-nurse__form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.hms-nurse__readonly-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 1000px) {
+  .hms-nurse__triage-layout {
+    grid-template-columns: minmax(250px, 0.7fr) minmax(0, 1.3fr);
+  }
+
+  .hms-nurse__vitals-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .hms-nurse__triage-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hms-nurse__triage-list {
+    position: static;
+  }
+
+  .hms-nurse__priority-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .hms-nurse__triage-context,
+  .hms-nurse__red-flags {
+    grid-template-columns: 1fr;
+  }
+
+  .hms-nurse__vitals-section > header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hms-nurse__vitals-section > header > small {
+    text-align: left;
+  }
+
+  .hms-nurse__form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .hms-nurse__form-actions .hms-nurse__button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,11 @@
+.hms-spinner {
+  display: inline-block;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: hms-spin 700ms linear infinite;
+}
+@keyframes hms-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .hms-spinner { animation-duration: 1800ms; }
+}

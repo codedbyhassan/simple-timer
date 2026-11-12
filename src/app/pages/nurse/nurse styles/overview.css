@@ -1,0 +1,211 @@
+.hms-nurse__welcome {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, var(--border));
+  border-radius: var(--radius-xl);
+  background: linear-gradient(110deg, var(--accent-soft), var(--surface) 72%);
+}
+
+.hms-nurse__welcome h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(20px, 2.4vw, 26px);
+  letter-spacing: -0.035em;
+}
+
+.hms-nurse__welcome p {
+  max-width: 650px;
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+}
+
+.hms-nurse__welcome-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  color: var(--accent-text);
+}
+
+.hms-nurse__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hms-nurse__overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 18px;
+}
+
+.hms-nurse__overview-grid > * {
+  min-width: 0;
+}
+
+.hms-nurse__count {
+  display: grid;
+  place-items: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-nurse__waiting-list {
+  display: grid;
+}
+
+.hms-nurse__waiting-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 18px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+
+.hms-nurse__waiting-row:first-child {
+  padding-top: 0;
+}
+
+.hms-nurse__waiting-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.hms-nurse__wait-copy {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+}
+
+.hms-nurse__wait-copy small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__ward-list {
+  display: grid;
+}
+
+.hms-nurse__ward-list > a {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.8fr) minmax(130px, 1.2fr);
+  align-items: center;
+  gap: 15px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.hms-nurse__ward-list > a:last-child {
+  border-bottom: 0;
+}
+
+.hms-nurse__ward-list > a > span:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.hms-nurse__ward-list strong {
+  font-size: var(--text-sm);
+}
+
+.hms-nurse__ward-list small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__occupancy {
+  display: grid;
+  gap: 6px;
+}
+
+.hms-nurse__occupancy i {
+  display: block;
+  overflow: hidden;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-subtle);
+}
+
+.hms-nurse__occupancy i b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+}
+
+.hms-nurse__activity {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hms-nurse__activity li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-nurse__activity li:first-child {
+  padding-top: 0;
+}
+
+.hms-nurse__activity li:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.hms-nurse__activity li > span:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-nurse__activity strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.hms-nurse__activity small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 960px) {
+  .hms-nurse__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hms-nurse__overview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .hms-nurse__welcome {
+    padding: 18px;
+  }
+}

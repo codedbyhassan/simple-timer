@@ -1,0 +1,5 @@
+.hms-logo { display: inline-block; line-height: 0; }
+.hms-logo img { width: 100%; height: auto; }
+.hms-logo__dark { display: none !important; }
+:root[data-theme="dark"] .hms-logo__light { display: none; }
+:root[data-theme="dark"] .hms-logo__dark { display: block !important; }

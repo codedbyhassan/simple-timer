@@ -1,0 +1,27 @@
+.hms-folder { position: relative; display: block; width: 100%; height: 150px; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; border-radius: 22px; isolation: isolate; }
+.hms-folder::before { /* the back panel with its tab */
+  content: ''; position: absolute; inset: 0; z-index: -2; border-radius: 22px;
+  background: var(--surface-subtle); border: 1px solid var(--border); box-shadow: var(--shadow-card);
+}
+.hms-folder__paper { position: absolute; left: 16px; right: 16px; top: 14px; height: 70px; z-index: -1; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); transform: rotate(-1.2deg); overflow: hidden; }
+.hms-folder__paper--back { left: 22px; right: 22px; top: 10px; z-index: -1.5; transform: rotate(1deg); opacity: 0.7; }
+.hms-folder__preview { display: block; padding: 10px 12px; font-size: 11px; line-height: 1.4; color: var(--text-muted); }
+.hms-folder__front { position: absolute; left: 0; right: 0; bottom: 0; height: 78px; padding: 12px 18px; display: flex; flex-direction: column; justify-content: center; gap: 1px; border-radius: 0 0 22px 22px; background: color-mix(in srgb, var(--surface) 78%, transparent); backdrop-filter: blur(6px); border-top: 1px solid var(--border); }
+.hms-folder__name { font-family: var(--font-display); font-size: var(--text-md); font-weight: var(--weight-semibold); letter-spacing: -0.01em; color: var(--text); }
+.hms-folder__count { font-size: var(--text-sm); color: var(--text-muted); }
+.hms-folder__meta { font-size: var(--text-xs); color: var(--text-subtle); }
+.hms-folder:hover::before { border-color: var(--border-strong); }
+.hms-folder:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+
+/* Selected: the whole folder takes the accent and the paper shows a text preview. */
+.hms-folder.is-selected::before { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 80%, #fff), var(--accent)); border-color: transparent; }
+.hms-folder.is-selected .hms-folder__front { background: transparent; border-top-color: transparent; }
+.hms-folder.is-selected .hms-folder__name, .hms-folder.is-selected .hms-folder__count, .hms-folder.is-selected .hms-folder__meta { color: var(--accent-contrast); }
+.hms-folder.is-selected .hms-folder__count, .hms-folder.is-selected .hms-folder__meta { opacity: 0.85; }
+
+/* Dark variant: black body with a colour wash showing at the top. */
+.hms-folder--dark::before { background: linear-gradient(120deg, #f6a96b 0%, #e98a6c 30%, #e55fc7 100%); border: 3px solid #0b0b0c; }
+.hms-folder--dark .hms-folder__paper { display: none; }
+.hms-folder--dark .hms-folder__front { height: 98px; padding: 14px 18px; background: #1d1d1f; border-top: 0; border-radius: 0 0 20px 20px; backdrop-filter: none; }
+.hms-folder--dark .hms-folder__name { color: #fff; }
+.hms-folder--dark .hms-folder__count, .hms-folder--dark .hms-folder__meta { color: #a1a1a6; }

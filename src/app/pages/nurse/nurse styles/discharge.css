@@ -1,0 +1,185 @@
+.hms-nurse__discharge-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--info) 28%, var(--border));
+  border-radius: 12px;
+  background: var(--info-soft);
+}
+
+.hms-nurse__discharge-banner > span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--info);
+}
+
+.hms-nurse__discharge-banner > div {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-nurse__discharge-banner strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-nurse__discharge-banner small {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.hms-nurse__discharge-list {
+  display: grid;
+  gap: 14px;
+}
+
+.hms-nurse__discharge-card {
+  display: grid;
+  gap: 14px;
+  padding: 15px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+
+.hms-nurse__discharge-card > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hms-nurse__discharge-progress {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+.hms-nurse__discharge-progress strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+}
+
+.hms-nurse__discharge-progress small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.hms-nurse__progress-track {
+  overflow: hidden;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--surface-subtle);
+}
+
+.hms-nurse__progress-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--success);
+  transition: width 180ms ease;
+}
+
+.hms-nurse__checklist {
+  display: grid;
+}
+
+.hms-nurse__checklist > label {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+
+.hms-nurse__checklist > label:last-child {
+  border-bottom: 0;
+}
+
+.hms-nurse__checklist > label > span {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-nurse__checklist strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+}
+
+.hms-nurse__checklist small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__checklist .is-checked strong {
+  color: var(--success);
+}
+
+.hms-nurse__discharge-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.hms-nurse__discharge-actions .hms-nurse__field {
+  flex: 1;
+  max-width: 320px;
+  margin-right: auto;
+}
+
+.hms-nurse__discharge-history {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__discharge-history:last-child {
+  border-bottom: 0;
+}
+
+@media (max-width: 650px) {
+  .hms-nurse__checklist > label {
+    grid-template-columns: 20px minmax(0, 1fr);
+  }
+
+  .hms-nurse__checklist > label > .hms-reception__status,
+  .hms-nurse__checklist > label > span:last-of-type {
+    grid-column: 2;
+  }
+
+  .hms-nurse__discharge-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hms-nurse__discharge-actions .hms-nurse__field {
+    max-width: none;
+  }
+
+  .hms-nurse__discharge-history {
+    grid-template-columns: 1fr auto;
+  }
+
+  .hms-nurse__discharge-history > span:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}

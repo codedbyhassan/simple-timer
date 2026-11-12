@@ -1,0 +1,20 @@
+.hms-hospital-profile { display: grid; gap: 18px; padding-top: 2px; }
+.hms-hospital-profile__identity { display: flex; align-items: center; gap: 15px; padding: 20px 22px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); }
+.hms-hospital-profile__mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 15px; color: var(--accent-text); background: var(--accent-soft); flex: 0 0 auto; }
+.hms-hospital-profile__identity-copy { flex: 1; min-width: 0; }
+.hms-hospital-profile__eyebrow { color: var(--text-muted); font-size: 12px; }
+.hms-hospital-profile__identity h2 { margin: 3px 0 2px; font-size: var(--text-xl); letter-spacing: -0.02em; }
+.hms-hospital-profile__identity p { margin: 0; color: var(--text-muted); font-size: var(--text-sm); }
+.hms-hospital-profile__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.hms-hospital-profile__details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 22px; margin: 0; }
+.hms-hospital-profile__detail { display: grid; gap: 5px; min-width: 0; padding: 13px 0; border-top: 1px solid var(--border); }
+.hms-hospital-profile__detail dt { color: var(--text-muted); font-size: 12px; }
+.hms-hospital-profile__detail dd { overflow-wrap: anywhere; margin: 0; color: var(--text); font-size: var(--text-sm); font-weight: var(--weight-medium); }
+@media (max-width: 720px) {
+  .hms-hospital-profile__grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .hms-hospital-profile__identity { align-items: flex-start; flex-wrap: wrap; padding: 17px; }
+  .hms-hospital-profile__identity-copy { flex-basis: calc(100% - 68px); }
+  .hms-hospital-profile__details { grid-template-columns: 1fr; }
+}

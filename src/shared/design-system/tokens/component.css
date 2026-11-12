@@ -1,0 +1,37 @@
+/* Layer 0, tier 3: the knobs. Change one value here, every instance changes. */
+:root {
+  --button-radius: var(--radius-md);
+  --button-height-md: 34px;
+  --button-height-lg: 42px;
+  --button-primary-bg: var(--accent);
+  --button-primary-bg-hover: var(--accent-hover);
+  --button-primary-fg: var(--accent-contrast);
+  --button-secondary-border: var(--border-strong);
+
+  --field-height: 42px;
+  --field-radius: var(--radius-md);
+  --field-bg: var(--surface);
+  --field-border: var(--border-strong);
+  --field-border-hover: var(--text-subtle);
+  --field-border-focus: var(--accent);
+
+  --toast-radius: var(--radius-lg);
+  --toast-width: 440px;
+  --toast-bg: var(--surface-raised);
+  --toast-border: var(--border);
+
+  --link-color: var(--accent-text);
+}
+
+/* Shell */
+:root {
+  --shell-topbar-height: 60px;
+  --shell-rail-width: 280px;
+  --shell-rail-width-compact: 76px;
+  --glass-blur: 16px;
+  --glass-bg: color-mix(in srgb, var(--bg) 74%, transparent);
+  --glass-rail-bg: color-mix(in srgb, var(--surface-subtle) 82%, transparent);
+  --nav-hover: color-mix(in srgb, var(--text) 7%, transparent);
+  --nav-active-bg: var(--accent);
+  --nav-active-fg: var(--accent-contrast);
+}

@@ -1,0 +1,8 @@
+.hms-gauge { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.hms-gauge svg { width: 100%; max-width: 280px; height: auto; }
+.hms-gauge__num { font-family: var(--font-display); font-size: 34px; font-weight: var(--weight-semibold); letter-spacing: -0.03em; fill: var(--text); }
+.hms-gauge__cap { font-size: 11.5px; fill: var(--text-muted); }
+.hms-gauge__legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; font-size: var(--text-sm); color: var(--text-muted); }
+.hms-gauge__legend li { display: inline-flex; align-items: center; gap: 7px; }
+.hms-gauge__legend strong { color: var(--text); font-weight: var(--weight-semibold); }
+.hms-gauge__dot { width: 8px; height: 8px; border-radius: 50%; }

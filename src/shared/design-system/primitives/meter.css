@@ -1,0 +1,7 @@
+.hms-meter { height: 6px; border-radius: var(--radius-pill); background: var(--border); overflow: hidden; }
+.hms-meter__fill { display: block; height: 100%; border-radius: inherit; transition: width 320ms var(--ease-out); }
+.hms-meter__fill--accent { background: var(--accent); }
+.hms-meter__fill--critical { background: var(--critical); }
+.hms-meter__fill--success { background: var(--success); }
+.hms-meter__fill--warning { background: var(--warning); }
+@media (prefers-reduced-motion: reduce) { .hms-meter__fill { transition: none; } }

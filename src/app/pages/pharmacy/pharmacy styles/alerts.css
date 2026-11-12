@@ -1,0 +1,120 @@
+.hms-pharmacy__alert-counts,
+.hms-pharmacy__stock-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.hms-pharmacy__alert-counts > div,
+.hms-pharmacy__stock-summary > div {
+  display: grid;
+  gap: 7px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.hms-pharmacy__alert-counts span,
+.hms-pharmacy__stock-summary span {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__alert-counts strong,
+.hms-pharmacy__stock-summary strong {
+  color: var(--text);
+  font-size: 23px;
+  line-height: 1;
+}
+
+.hms-pharmacy__alert-list {
+  display: grid;
+  gap: 10px;
+}
+
+.hms-pharmacy__alert-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.hms-pharmacy__alert-card.is-critical {
+  border-left: 3px solid var(--critical);
+  background: color-mix(in srgb, var(--critical-soft) 26%, var(--surface));
+}
+
+.hms-pharmacy__alert-card.is-warning {
+  border-left: 3px solid var(--warning);
+}
+
+.hms-pharmacy__alert-icon {
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.hms-pharmacy__alert-card.is-critical .hms-pharmacy__alert-icon {
+  background: var(--critical-soft);
+  color: var(--critical);
+}
+
+.hms-pharmacy__alert-copy {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.hms-pharmacy__alert-copy > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hms-pharmacy__alert-copy > div strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-pharmacy__alert-copy p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.hms-pharmacy__alert-copy > small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__alert-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+@media (max-width: 760px) {
+  .hms-pharmacy__alert-counts,
+  .hms-pharmacy__stock-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hms-pharmacy__alert-card {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .hms-pharmacy__alert-actions {
+    grid-column: 2;
+    flex-wrap: wrap;
+  }
+}

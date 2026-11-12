@@ -1,0 +1,5 @@
+.hms-crumbs ol { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; font-size: var(--text-sm); }
+.hms-crumbs li { display: inline-flex; align-items: center; gap: 6px; color: var(--text-subtle); }
+.hms-crumbs a, .hms-crumbs span { display: inline-flex; align-items: center; gap: 6px; color: var(--text-muted); text-decoration: none; font-weight: var(--weight-medium); border-radius: 6px; }
+.hms-crumbs a:hover { color: var(--text); }
+.hms-crumbs .is-current { color: var(--text); }

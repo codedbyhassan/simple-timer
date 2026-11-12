@@ -1,0 +1,6 @@
+.hms-critical { display: flex; align-items: center; gap: 12px; padding: 10px var(--space-6); background: var(--critical-soft); color: var(--critical); border-bottom: 1px solid var(--critical); }
+.hms-critical__text { margin: 0; flex: 1; font-size: var(--text-sm); color: var(--text); }
+.hms-critical__text strong { color: var(--critical); }
+.hms-critical__more { color: var(--text-muted); }
+.hms-critical__btn { height: 32px; padding: 0 14px; border-radius: var(--radius-sm); border: 1px solid var(--critical); background: var(--surface); color: var(--critical); font-weight: var(--weight-semibold); font-size: var(--text-sm); cursor: pointer; }
+.hms-critical__btn:hover { background: var(--critical); color: var(--bg); }

@@ -1,38 +1,42 @@
+// Electron main process. Loads the Vite dev server in development and dist/index.html when packaged.
+const { app, BrowserWindow, shell, Menu } = require('electron')
 const path = require('node:path')
-const { app, BrowserWindow } = require('electron')
 
-const developmentUrl = process.env.VITE_DEV_SERVER_URL || 'http://127.0.0.1:5173'
+const isDev = Boolean(process.env.ELECTRON_DEV_URL)
 
 function createWindow() {
-  const window = new BrowserWindow({
+  const win = new BrowserWindow({
     width: 1440,
-    height: 960,
-    minWidth: 375,
-    minHeight: 640,
+    height: 900,
+    minWidth: 1280,
+    minHeight: 720,
     title: 'Ascend HMS',
+    icon: path.join(__dirname, 'icon.png'),
     backgroundColor: '#ffffff',
-    autoHideMenuBar: true,
-    icon: path.join(__dirname, '..', 'public', 'brand', 'hms-desktop.ico'),
+    show: false,
     webPreferences: {
+      preload: path.join(__dirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
     },
   })
 
-  window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
+  win.once('ready-to-show', () => win.show())
 
-  if (app.isPackaged) {
-    window.loadFile(path.join(__dirname, '..', 'dist', 'index.html'))
-  } else {
-    window.loadURL(developmentUrl)
-  }
+  // External links open in the system browser, never inside the app window.
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https?:/i.test(url)) shell.openExternal(url)
+    return { action: 'deny' }
+  })
+
+  if (isDev) win.loadURL(process.env.ELECTRON_DEV_URL)
+  else win.loadFile(path.join(__dirname, '..', 'dist', 'index.html'))
 }
 
 app.whenReady().then(() => {
-  app.setAppUserModelId('com.ascendtechnologies.hms')
+  if (!isDev) Menu.setApplicationMenu(null)
   createWindow()
-
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })

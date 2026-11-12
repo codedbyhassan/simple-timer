@@ -1,0 +1,95 @@
+.hms-lab__specimen-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.75fr) minmax(0, 1.25fr);
+  align-items: start;
+  gap: 14px;
+}
+
+.hms-lab__specimen-list {
+  display: grid;
+  gap: 8px;
+}
+
+.hms-lab__specimen-choice {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px 10px;
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.hms-lab__specimen-choice:hover,
+.hms-lab__specimen-choice.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.hms-lab__specimen-choice > span:first-child {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.hms-lab__specimen-choice strong {
+  font-size: var(--text-sm);
+}
+
+.hms-lab__specimen-choice small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-lab__specimen-choice > small:last-child {
+  grid-column: 1 / -1;
+}
+
+.hms-lab__specimen-detail {
+  display: grid;
+  gap: 13px;
+}
+
+.hms-lab__collection-checks {
+  display: grid;
+  gap: 8px;
+  margin: 15px 0;
+  padding: 13px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface-subtle);
+}
+
+.hms-lab__collection-checks > strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-lab__collection-checks > small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+}
+
+.hms-lab__receive-actions,
+.hms-lab__reject-box {
+  display: grid;
+  gap: 10px;
+  margin-top: 13px;
+}
+
+.hms-lab__reject-box {
+  padding-top: 13px;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 900px) {
+  .hms-lab__specimen-layout {
+    grid-template-columns: 1fr;
+  }
+}

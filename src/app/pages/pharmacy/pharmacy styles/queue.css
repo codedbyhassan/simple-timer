@@ -1,0 +1,119 @@
+.hms-pharmacy__queue-toolbar,
+.hms-pharmacy__levels-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.hms-pharmacy__rx-list {
+  display: grid;
+  gap: 10px;
+}
+
+.hms-pharmacy__rx-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface);
+}
+
+.hms-pharmacy__rx-card.is-urgent {
+  border-left: 3px solid var(--critical);
+}
+
+.hms-pharmacy__rx-card-main {
+  display: grid;
+  gap: 11px;
+  min-width: 0;
+}
+
+.hms-pharmacy__rx-card-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hms-pharmacy__rx-card-title > strong {
+  margin-right: 3px;
+  font-size: var(--text-sm);
+}
+
+.hms-pharmacy__rx-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__rx-details span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hms-pharmacy__allergy-flag {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 550px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.hms-pharmacy__allergy-flag span {
+  display: grid;
+  gap: 3px;
+}
+
+.hms-pharmacy__allergy-flag strong {
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__allergy-flag small {
+  color: var(--text);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__rx-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.hms-pharmacy__rx-items span {
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__rx-card-actions {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 760px) {
+  .hms-pharmacy__queue-toolbar,
+  .hms-pharmacy__levels-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hms-pharmacy__rx-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hms-pharmacy__rx-card-actions .hms-pharmacy__button {
+    width: 100%;
+  }
+}

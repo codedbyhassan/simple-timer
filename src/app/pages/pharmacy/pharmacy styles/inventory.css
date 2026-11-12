@@ -1,0 +1,43 @@
+.hms-pharmacy__inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 15px;
+}
+
+.hms-pharmacy__inventory-form {
+  display: grid;
+  gap: 13px;
+}
+
+.hms-pharmacy__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hms-pharmacy__ledger-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  white-space: nowrap;
+}
+
+.hms-pharmacy__ledger-filter select {
+  width: auto;
+  min-height: 34px;
+}
+
+@media (max-width: 850px) {
+  .hms-pharmacy__inventory-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .hms-pharmacy__form-row {
+    grid-template-columns: 1fr;
+  }
+}

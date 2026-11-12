@@ -1,0 +1,107 @@
+.hms-nurse__task-summary {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  overflow: hidden;
+  padding: 19px 72px 19px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(110deg, var(--accent-soft), var(--surface) 72%);
+}
+
+.hms-nurse__task-summary > div {
+  display: grid;
+  gap: 5px;
+}
+
+.hms-nurse__task-summary > div + div {
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.hms-nurse__task-summary strong {
+  color: var(--text);
+  font-size: 25px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hms-nurse__task-summary small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-nurse__task-summary-icon {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  transform: translateY(-50%);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--accent-text);
+}
+
+.hms-nurse__task-form {
+  border-top: 3px solid var(--accent);
+}
+
+.hms-nurse__task-filters {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  margin: -4px 0 7px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-nurse__task-filters button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hms-nurse__task-filters button.is-selected {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-nurse__task-filters button span {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 7px;
+  background: var(--surface);
+  font-size: 11px;
+}
+
+@media (max-width: 650px) {
+  .hms-nurse__task-summary {
+    grid-template-columns: 1fr;
+    padding-right: 68px;
+  }
+
+  .hms-nurse__task-summary > div + div {
+    padding: 10px 0 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+}

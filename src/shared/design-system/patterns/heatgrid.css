@@ -1,0 +1,10 @@
+.hms-heat { display: flex; flex-direction: column; gap: 6px; }
+.hms-heat__row { display: grid; grid-template-columns: 44px repeat(5, 1fr); gap: 6px; align-items: center; }
+.hms-heat__col { text-align: center; font-size: var(--text-xs); color: var(--text-muted); }
+.hms-heat__rowlabel { font-size: var(--text-xs); color: var(--text-muted); }
+.hms-heat__cell { height: 34px; border-radius: 10px; background: var(--accent-soft); }
+.hms-heat__cell--1 { background: color-mix(in srgb, var(--accent) 28%, var(--surface)); }
+.hms-heat__cell--2 { background: color-mix(in srgb, var(--accent) 52%, var(--surface)); }
+.hms-heat__cell--3 { background: color-mix(in srgb, var(--accent) 76%, var(--surface)); }
+.hms-heat__cell--4 { background: var(--accent); }
+.hms-heat__cell--0 { background: var(--surface-subtle); border: 1px solid var(--border); }

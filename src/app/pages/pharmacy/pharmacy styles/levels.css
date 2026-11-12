@@ -1,0 +1,13 @@
+.hms-pharmacy__table-panel {
+  padding-bottom: 8px;
+}
+
+.hms-pharmacy__table td.is-negative {
+  color: var(--critical);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-pharmacy__table td.is-positive {
+  color: var(--success);
+  font-weight: var(--weight-semibold);
+}

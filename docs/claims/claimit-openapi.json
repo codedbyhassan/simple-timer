@@ -1,0 +1,467 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ClaimIt Integration API",
+    "description": "API for Integrating HMS with ClaimIt",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:31719/json-api"
+    },
+    {
+      "url": "http://localhost:31719/xml-api"
+    }
+  ],
+  "paths": {
+    "/token": {
+      "post": {
+        "tags": [
+          "Generate Authorization Token"
+        ],
+        "summary": "Generate Authorization Token",
+        "parameters": [
+          {
+            "name": "username",
+            "description": "Login username",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "password",
+            "description": "Login password",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token generation successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "token": {
+                      "type": "string",
+                      "description": "Authorization token to use in subsequent calls to API"
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "Token generation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "failed": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate failure"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/claims": {
+      "post": {
+        "tags": [
+          "Save claims generated on HMS"
+        ],
+        "summary": "Save claims generated on HMS",
+        "requestBody": {
+          "description": "Claims data in XML/JSON data format per requirement document",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Claims-Data"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Claims-Data"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Claims import process completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Claims-Import-Report"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Claims import process failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    },
+                    "failed": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate failure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized request / Access denied to resource. This usually occurs if authorization code is not set or is invalid or the authorization token does not have required priviledges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+              "apiKey"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/claims/{claimID}/delete": {
+      "post": {
+        "tags": [
+          "Delete claim from claims database"
+        ],
+        "summary": "Delete claim from claims database",
+        "parameters": [
+          {
+            "name": "claimID",
+            "description": "The reference claimID to delete (claimID defined in HMS)",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Delete operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    },
+                    "failed": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate failure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized request / Access denied to resource. This usually occurs if authorization code is not set or is invalid or the authorization token does not have required priviledges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+              "apiKey"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    },
+    "/batch/{year}/{month}/delete": {
+      "post": {
+        "tags": [
+          "Delete claims batch from claims database"
+        ],
+        "summary": "Delete claims batch from claims database",
+        "parameters": [
+          {
+            "name": "year",
+            "description": "batch year to delete (format YYYY, eg 2019)",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "month",
+            "description": "batch month to delete (format MM, eg 01 for January)",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Delete operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate success"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Delete operation failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    },
+                    "failed": {
+                      "type": "boolean",
+                      "description": "Boolean to indicate failure"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized request / Access denied to resource. This usually occurs if authorization code is not set or is invalid or the authorization token does not have required priviledges",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "user_msg": {
+                      "type": "string",
+                      "description": "Human readable error message"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "apiKey": [
+              "apiKey"
+            ]
+          }
+        ],
+        "x-codegen-request-body-name": "body"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Claims-Data": {
+        "properties": {
+          "claims": {
+            "type": "array",
+            "description": "Claims Data structured per XML / JSON requirement"
+          }
+        }
+      },
+      "Claims-Import-Report": {
+        "properties": {
+          "reportDate": {
+            "type": "string",
+            "description": "Import completion time"
+          },
+          "passedClaims": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of claims that passed validation"
+          },
+          "failedClaims": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of claims that failed validation"
+          },
+          "warnedClaims": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of claims with warning"
+          },
+          "savedClaims": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of claims saved to the claim database"
+          },
+          "totalCost": {
+            "type": "number",
+            "description": "Total cost of claims saved to the claims database"
+          },
+          "timeTaken": {
+            "type": "string",
+            "description": "Total time taken to complete the import operation in hours, minutes and seconds (format HH:MM:SS)"
+          },
+          "claims": {
+            "type": "array",
+            "description": "Validation results for each claim processed per the Claims Import Data",
+            "items": {
+              "type": "object",
+              "properties": {
+                "claim": {
+                  "type": "object",
+                  "properties": {
+                    "index": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "The index of the claim as was in the Claims Import Data"
+                    },
+                    "claimID": {
+                      "type": "string",
+                      "description": "The reference ClaimID of the claim as was in the Claims Import Data"
+                    },
+                    "cost": {
+                      "type": "string",
+                      "description": "The final cost of the claim computed by ClaimIt"
+                    },
+                    "initCost": {
+                      "type": "string",
+                      "description": "The initial cost of the claim in the claims database before import"
+                    },
+                    "outcome": {
+                      "type": "string",
+                      "description": "The validation outcome for this claim. Indicating whether there was an ERROR, WARNING or it PASSED."
+                    },
+                    "errors": {
+                      "type": "array",
+                      "description": "The validation errors for this claim",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "The error code"
+                          },
+                          "info": {
+                            "type": "string",
+                            "description": "Human readable explanation of the error"
+                          },
+                          "help": {
+                            "type": "string",
+                            "description": "Further information on this error to assist in resolution"
+                          }
+                        }
+                      }
+                    },
+                    "warnings": {
+                      "type": "array",
+                      "description": "The validation warnings for this claim",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": {
+                            "type": "string",
+                            "description": "The warning code"
+                          },
+                          "info": {
+                            "type": "string",
+                            "description": "Human readable explanation of the warning"
+                          },
+                          "help": {
+                            "type": "string",
+                            "description": "Further information on this warning to assist in resolution"
+                          }
+                        }
+                      }
+                    },
+                    "source": {
+                      "type": "object",
+                      "description": "The source Claim Data processed"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "success": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Indicator for success of the import process"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

@@ -1,0 +1,204 @@
+.hms-patient-record {
+  display: grid;
+  gap: 18px;
+}
+
+.hms-patient-record__banner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e9f0);
+  border-radius: 16px;
+}
+
+.hms-patient-record__banner > div {
+  flex: 1;
+}
+
+.hms-patient-record__banner h2 {
+  margin: 3px 0;
+  color: var(--color-text-primary, #172033);
+  font-size: 1.25rem;
+}
+
+.hms-patient-record__banner p {
+  margin: 0;
+  color: var(--color-text-secondary, #657084);
+}
+
+.hms-patient-record__tabs {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  overflow: auto;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e5e9f0);
+  border-radius: 14px;
+}
+
+.hms-patient-record__tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  color: var(--color-text-secondary, #657084);
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.hms-patient-record__tabs button[aria-selected="true"] {
+  color: var(--color-text-primary, #172033);
+  background: var(--color-surface-subtle, #f1f4f8);
+  font-weight: 700;
+}
+
+.hms-patient-record__tabs button span {
+  color: var(--color-text-secondary, #657084);
+  font-size: 0.78rem;
+}
+
+.hms-patient-record__panel,
+.hms-patient-record__grid,
+.hms-patient-record__stack {
+  display: grid;
+  gap: 16px;
+}
+
+.hms-patient-record__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.hms-patient-record__facts,
+.hms-patient-record__clinical-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 20px;
+  margin: 0;
+}
+
+.hms-patient-record__facts div,
+.hms-patient-record__clinical-card dl div {
+  min-width: 0;
+}
+
+.hms-patient-record__facts dt,
+.hms-patient-record__clinical-card dt {
+  margin-bottom: 4px;
+  color: var(--color-text-secondary, #657084);
+  font-size: 0.8rem;
+}
+
+.hms-patient-record__facts dd,
+.hms-patient-record__clinical-card dd {
+  margin: 0;
+  color: var(--color-text-primary, #172033);
+  overflow-wrap: anywhere;
+}
+
+.hms-patient-record__table-wrap {
+  width: 100%;
+  overflow: auto;
+}
+
+.hms-patient-record__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.87rem;
+}
+
+.hms-patient-record__table th,
+.hms-patient-record__table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid var(--color-border, #e5e9f0);
+  white-space: nowrap;
+}
+
+.hms-patient-record__table th {
+  color: var(--color-text-secondary, #657084);
+  font-weight: 600;
+}
+
+.hms-patient-record__clinical-card {
+  display: grid;
+  gap: 15px;
+  padding: 17px;
+  border: 1px solid var(--color-border, #e5e9f0);
+  border-radius: 13px;
+}
+
+.hms-patient-record__clinical-card header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hms-patient-record__clinical-card header div,
+.hms-patient-record__clinical-card li {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-patient-record__clinical-card small,
+.hms-patient-record__document small {
+  color: var(--color-text-secondary, #657084);
+}
+
+.hms-patient-record__clinical-card p {
+  margin: 0;
+  color: var(--color-text-secondary, #657084);
+}
+
+.hms-patient-record__clinical-card ul {
+  display: grid;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hms-patient-record__clinical-card li {
+  padding: 10px 0;
+  border-top: 1px solid var(--color-border, #e5e9f0);
+}
+
+.hms-patient-record__clinical-card li span {
+  color: var(--color-text-secondary, #657084);
+}
+
+.hms-patient-record__document {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--color-border, #e5e9f0);
+  border-radius: 12px;
+}
+
+.hms-patient-record__document span {
+  display: grid;
+  gap: 4px;
+}
+
+@media (max-width: 840px) {
+  .hms-patient-record__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .hms-patient-record__banner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hms-patient-record__banner > div {
+    flex-basis: calc(100% - 80px);
+  }
+}

@@ -1,0 +1,28 @@
+.hms-search { position: relative; width: 100%; }
+.hms-search__field {
+  display: flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 10px;
+  border-radius: 10px; border: 0;
+  background: var(--search-fill);
+  color: var(--text-subtle);
+  transition: background-color 160ms;
+}
+.hms-search.is-focused .hms-search__field { background: var(--search-fill-focus); }
+.hms-search__icon { display: grid; flex: none; }
+.hms-search__field input {
+  flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; outline: none; background: transparent;
+  font-size: 15px; color: var(--text); letter-spacing: -0.01em; caret-color: var(--accent);
+}
+.hms-search__field input::placeholder { color: var(--text-subtle); }
+.hms-search__field input::-webkit-search-cancel-button, .hms-search__field input::-webkit-search-decoration { display: none; -webkit-appearance: none; }
+.hms-search__clear { display: grid; place-items: center; flex: none; width: 16px; height: 16px; padding: 0; border: 0; border-radius: 50%; background: var(--text-subtle); color: var(--bg); cursor: pointer; }
+.hms-search__clear:hover { background: var(--text-muted); }
+
+/* Cancel sits outside the field so the field itself never moves off-centre. */
+.hms-search__cancel {
+  position: absolute; left: calc(100% + 14px); top: 0; height: 36px; padding: 0 2px;
+  border: 0; background: none; color: var(--accent-text); font-size: 15px; font-weight: var(--weight-medium); cursor: pointer;
+  opacity: 0; pointer-events: none; transform: translateX(-6px); transition: opacity 160ms, transform 200ms var(--ease-out);
+}
+.hms-search.is-focused .hms-search__cancel { opacity: 1; pointer-events: auto; transform: none; }
+@media (prefers-reduced-motion: reduce) { .hms-search__cancel { transition: none; transform: none; } }

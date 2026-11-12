@@ -1,0 +1,142 @@
+.hms-lab__catalogue-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.hms-lab__test-card {
+  display: grid;
+  align-content: start;
+  gap: 13px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.hms-lab__test-card.is-inactive {
+  opacity: 0.75;
+}
+
+.hms-lab__test-card > header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.hms-lab__test-icon {
+  display: grid;
+  flex: 0 0 35px;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.hms-lab__test-card > header > span:nth-child(2) {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.hms-lab__test-card > header strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-lab__test-card > header small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-lab__test-card > dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.hms-lab__test-card > dl > div {
+  display: grid;
+  gap: 4px;
+  padding: 9px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+}
+
+.hms-lab__test-card dt {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-lab__test-card dd {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+}
+
+.hms-lab__components {
+  display: grid;
+  gap: 7px;
+}
+
+.hms-lab__components > strong {
+  color: var(--text);
+  font-size: var(--text-xs);
+}
+
+.hms-lab__components > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--text-xs);
+}
+
+.hms-lab__components > div > span {
+  display: grid;
+  gap: 3px;
+}
+
+.hms-lab__components > div > span:last-child {
+  text-align: right;
+}
+
+.hms-lab__components small {
+  color: var(--text-muted);
+  font-size: 10px;
+}
+
+.hms-lab__catalogue-form {
+  display: grid;
+  gap: 14px;
+}
+
+.hms-lab__catalogue-form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 11px;
+}
+
+@media (max-width: 900px) {
+  .hms-lab__catalogue-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .hms-lab__catalogue-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hms-lab__catalogue-form-grid {
+    grid-template-columns: 1fr;
+  }
+}

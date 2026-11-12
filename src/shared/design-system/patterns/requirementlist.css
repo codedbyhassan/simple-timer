@@ -1,0 +1,15 @@
+.hms-reqs { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.hms-reqs__item { display: flex; align-items: center; gap: 10px; font-size: var(--text-sm); color: var(--text-muted); }
+.hms-reqs__item.is-met { color: var(--text); }
+.hms-reqs__mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-strong);
+  color: var(--accent-contrast);
+  transition: background-color 140ms, border-color 140ms;
+}
+.hms-reqs__item.is-met .hms-reqs__mark { background: var(--success); border-color: var(--success); }
+.hms-reqs__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

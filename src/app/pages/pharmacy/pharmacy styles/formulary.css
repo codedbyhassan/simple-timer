@@ -1,0 +1,123 @@
+.hms-pharmacy__mapping-summary {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.hms-pharmacy__mapping-summary > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 120px;
+  color: var(--accent-text);
+}
+
+.hms-pharmacy__mapping-summary > div:first-child {
+  color: var(--warning);
+}
+
+.hms-pharmacy__mapping-summary > div > span {
+  display: grid;
+  gap: 3px;
+}
+
+.hms-pharmacy__mapping-summary strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+}
+
+.hms-pharmacy__mapping-summary small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__mapping-summary p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.hms-pharmacy__mapping-list {
+  display: grid;
+  gap: 10px;
+}
+
+.hms-pharmacy__mapping-row {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.hms-pharmacy__mapping-row.is-unmapped {
+  border-left: 3px solid var(--warning);
+}
+
+.hms-pharmacy__mapping-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.hms-pharmacy__mapping-icon {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--surface-subtle);
+  color: var(--accent-text);
+}
+
+.hms-pharmacy__mapping-info > span:nth-child(2) {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+}
+
+.hms-pharmacy__mapping-info strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-pharmacy__mapping-info small {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.hms-pharmacy__mapping-edit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 10px;
+  padding-left: 44px;
+}
+
+@media (max-width: 760px) {
+  .hms-pharmacy__mapping-summary {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hms-pharmacy__mapping-summary p {
+    grid-column: 1 / -1;
+  }
+
+  .hms-pharmacy__mapping-edit {
+    grid-template-columns: 1fr;
+    padding-left: 0;
+  }
+
+  .hms-pharmacy__mapping-info {
+    flex-wrap: wrap;
+  }
+}

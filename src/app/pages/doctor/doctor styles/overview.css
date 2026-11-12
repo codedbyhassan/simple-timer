@@ -1,0 +1,89 @@
+.hms-doctor__metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.hms-doctor__overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 18px;
+}
+
+.hms-doctor__overview-list,
+.hms-doctor__draft-list {
+  display: grid;
+}
+
+.hms-doctor__overview-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  color: inherit;
+  text-decoration: none;
+}
+
+.hms-doctor__overview-row:first-child {
+  padding-top: 0;
+}
+
+.hms-doctor__overview-row:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.hms-doctor__overview-row > span:last-child {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+}
+
+.hms-doctor__overview-row small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-doctor__draft-list > a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+}
+
+.hms-doctor__draft-list > a:last-child {
+  border: 0;
+}
+
+.hms-doctor__draft-list > a > span {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-doctor__draft-list small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-doctor__draft-list svg {
+  color: var(--accent-text);
+}
+
+@media (max-width: 1000px) {
+  .hms-doctor__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .hms-doctor__overview-grid {
+    grid-template-columns: 1fr;
+  }
+}

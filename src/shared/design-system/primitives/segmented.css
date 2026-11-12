@@ -1,0 +1,6 @@
+.hms-seg { display: inline-flex; padding: 4px; gap: 4px; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-md); }
+.hms-seg__opt { position: relative; display: grid; place-items: center; height: 30px; padding: 0 16px; border-radius: var(--radius-sm); font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--text-muted); cursor: pointer; transition: background-color 140ms, color 140ms; }
+.hms-seg__opt input { position: absolute; inset: 0; opacity: 0; cursor: pointer; margin: 0; }
+.hms-seg__opt:hover { color: var(--text); }
+.hms-seg__opt.is-on { background: var(--accent); color: var(--accent-contrast); }
+.hms-seg__opt:has(input:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 2px; }

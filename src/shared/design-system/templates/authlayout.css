@@ -1,0 +1,20 @@
+.hms-auth { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100vh; min-height: 100dvh; }
+
+.hms-auth__side { display: flex; flex-direction: column; padding: var(--space-4) var(--space-5); background: var(--bg); }
+.hms-auth__top { display: flex; justify-content: flex-end; }
+.hms-auth__center { flex: 1; display: grid; place-items: center; padding: var(--space-5) 0; }
+.hms-auth__card { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: var(--space-6); }
+.hms-auth__content { display: flex; flex-direction: column; gap: var(--space-5); }
+.hms-auth__footer { font-size: var(--text-xs); color: var(--text-subtle); }
+
+.hms-auth__panel { position: relative; overflow: hidden; background: var(--panel-bg); }
+.hms-auth__mark {
+  position: absolute;
+  width: 128%;
+  max-width: none;
+  right: -30%;
+  bottom: -14%;
+  opacity: var(--panel-mark-opacity);
+  user-select: none;
+  pointer-events: none;
+}

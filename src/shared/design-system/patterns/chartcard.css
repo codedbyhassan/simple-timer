@@ -1,0 +1,6 @@
+.hms-chartcard { padding: 20px 22px 22px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); }
+.hms-chartcard__head { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.hms-chartcard__eyebrow { margin: 0 0 2px; font-size: var(--text-sm); color: var(--text-muted); }
+.hms-chartcard__title { margin: 0; font-size: var(--text-xl); font-weight: var(--weight-semibold); letter-spacing: -0.02em; }
+.hms-chartcard__open { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-subtle); color: var(--text); cursor: pointer; transition: background-color 140ms; }
+.hms-chartcard__open:hover { background: var(--border); }

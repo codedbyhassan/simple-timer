@@ -1,0 +1,4 @@
+.hms-pagehead { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-5); }
+.hms-pagehead__title { margin: 0; font-size: var(--text-2xl); font-weight: var(--weight-semibold); letter-spacing: -0.02em; line-height: 1.15; }
+.hms-pagehead__desc { margin: 6px 0 0; color: var(--text-muted); font-size: var(--text-md); }
+.hms-pagehead__actions { display: flex; gap: var(--space-2); }

@@ -1,0 +1,6 @@
+.hms-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-card); }
+.hms-card--md { padding: var(--space-5); }
+.hms-card--lg { padding: var(--space-6); }
+.hms-card__head { margin-bottom: var(--space-4); }
+.hms-card__title { margin: 0; font-size: var(--text-lg); font-weight: var(--weight-semibold); letter-spacing: -0.01em; }
+.hms-card__desc { margin: 2px 0 0; font-size: var(--text-sm); color: var(--text-muted); }

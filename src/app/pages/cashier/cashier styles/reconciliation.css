@@ -1,0 +1,6 @@
+.hms-cashier__reconcile-form,
+.hms-cashier__new-shift { display: grid; grid-template-columns: minmax(220px, 1fr) minmax(180px, .8fr) auto; align-items: end; gap: 14px; }
+.hms-cashier__variance { display: grid; gap: 4px; padding: 10px 12px; border-radius: 9px; background: var(--surface-subtle); color: var(--text-muted); font-size: var(--text-xs); }
+.hms-cashier__variance strong { color: var(--text); font-size: var(--text-md); }
+.hms-cashier__new-shift { grid-template-columns: minmax(220px, 1fr) auto; max-width: 650px; }
+@media (max-width: 700px) { .hms-cashier__reconcile-form, .hms-cashier__new-shift { grid-template-columns: 1fr; } }

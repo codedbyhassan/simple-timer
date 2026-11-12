@@ -1,0 +1,104 @@
+.hms-reception__patient-banner {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.hms-reception__patient-banner > div {
+  flex: 1;
+  min-width: 180px;
+}
+
+.hms-reception__patient-banner h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-xl);
+  letter-spacing: -0.025em;
+}
+
+.hms-reception__patient-banner p {
+  margin: 5px 0 0;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.hms-reception__patient-detail-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.hms-reception__detail-main,
+.hms-reception__detail-rail {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.hms-reception__patient-edit {
+  padding-top: 4px;
+}
+
+.hms-reception__visit-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-reception__visit-row:last-child {
+  border-bottom: 0;
+}
+
+.hms-reception__visit-row > span:nth-child(2) {
+  display: grid;
+  gap: 4px;
+  flex: 1;
+}
+
+.hms-reception__visit-row strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-reception__visit-row small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-reception__visit-icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.hms-reception__rail-link {
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
+}
+
+@media (max-width: 900px) {
+  .hms-reception__patient-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .hms-reception__patient-banner {
+    align-items: flex-start;
+  }
+}

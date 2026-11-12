@@ -1,0 +1,64 @@
+/* Fixed-viewport shell: the rail and the header never move, only the content scrolls. */
+.hms-shell { display: grid; grid-template-columns: var(--shell-rail-width) minmax(0, 1fr); height: 100vh; height: 100dvh; min-width: 1100px; overflow: hidden; }
+.hms-shell.is-compact { grid-template-columns: var(--shell-rail-width-compact) minmax(0, 1fr); }
+
+.hms-shell__main { position: relative; min-width: 0; min-height: 0; background: var(--canvas); }
+.hms-shell__header { position: absolute; top: 0; left: 0; right: var(--shell-scrollbar, 0px); z-index: 40; }
+.hms-shell__content { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: calc(var(--shell-header-h, 60px) + var(--space-6)) var(--space-6) var(--space-7); }
+
+/* Glass exists only on the rail and the header. Solid fallback where blur is unavailable. */
+.hms-rail, .hms-topbar { background: var(--bg); }
+@supports (backdrop-filter: blur(1px)) {
+  .hms-rail { background: var(--glass-rail-bg); backdrop-filter: blur(var(--glass-blur)) saturate(1.2); }
+  .hms-topbar { background: var(--glass-bg); backdrop-filter: blur(var(--glass-blur)) saturate(1.2); }
+}
+
+/* Rail */
+.hms-rail { position: relative; height: 100%; overflow: hidden; display: flex; flex-direction: column; border-right: 1px solid var(--border); padding: var(--space-4) var(--space-3); }
+.hms-rail__brand { display: flex; align-items: center; height: 44px; padding: 0 10px; margin-bottom: var(--space-4); }
+.hms-shell.is-compact .hms-rail__brand { justify-content: center; padding: 0; }
+.hms-rail__mark { width: 40px; height: auto; }
+.hms-rail__mark--dark { display: none; }
+:root[data-theme="dark"] .hms-rail__mark--light { display: none; }
+:root[data-theme="dark"] .hms-rail__mark--dark { display: block; }
+.hms-rail__switch { margin-bottom: var(--space-3); }
+.hms-rail__scroll { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: var(--space-4); }
+.hms-rail__scroll::-webkit-scrollbar { display: none; }
+.hms-rail__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.hms-rail__label { margin: 0 0 6px; padding: 0 12px; font-size: 11px; font-weight: var(--weight-semibold); letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-subtle); }
+.hms-rail__label.is-hidden { display: none; }
+.hms-rail__rule { border: 0; border-top: 1px solid var(--border); margin: 0 8px 10px; }
+
+.hms-rail__item, .hms-rail__collapse {
+  display: flex; align-items: center; gap: 12px;
+  width: 100%; height: 38px; padding: 0 12px;
+  border: 0; border-radius: var(--radius-md);
+  background: transparent; color: var(--text-muted);
+  font-size: var(--text-md); font-weight: var(--weight-medium); text-decoration: none; cursor: pointer; text-align: left;
+  transition: background-color 140ms, color 140ms;
+}
+.hms-shell.is-compact .hms-rail__item, .hms-shell.is-compact .hms-rail__collapse { justify-content: center; padding: 0; }
+.hms-rail__item:hover, .hms-rail__collapse:hover { background: var(--nav-hover); color: var(--text); }
+.hms-rail__item.is-active { background: var(--nav-active-bg); color: var(--nav-active-fg); }
+.hms-rail__item.is-active:hover { background: var(--accent-hover); }
+.hms-rail__text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* Workspace switcher */
+.hms-switch { display: flex; align-items: center; gap: 10px; width: 100%; height: 44px; padding: 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); font-weight: var(--weight-medium); text-align: left; cursor: pointer; transition: background-color 140ms, border-color 140ms; }
+.hms-switch:hover, .hms-switch.is-open { background: var(--surface-subtle); border-color: var(--border-strong); }
+.hms-switch__icon { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-text); flex: none; }
+.hms-switch__label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hms-switch__chev { color: var(--text-subtle); display: grid; }
+.hms-shell.is-compact .hms-switch { justify-content: center; padding: 0; }
+
+/* Header: the search field sits in the true centre, whatever is on the right. */
+.hms-topbar { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 440px) minmax(0, 1fr); align-items: center; gap: var(--space-5); height: var(--shell-topbar-height); padding: 0 var(--space-6); border-bottom: 1px solid var(--border); }
+.hms-topbar__center { position: relative; }
+.hms-topbar__right { justify-self: end; display: flex; align-items: center; gap: var(--space-2); }
+
+.hms-userbtn { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding: 0 8px 0 4px; border: 1px solid transparent; border-radius: var(--radius-pill); background: transparent; color: var(--text-muted); cursor: pointer; transition: background-color 140ms, border-color 140ms; }
+.hms-userbtn:hover, .hms-userbtn.is-open { background: var(--nav-hover); border-color: var(--border); }
+.hms-account { display: flex; align-items: center; gap: 12px; }
+.hms-account__text { min-width: 0; }
+.hms-account__name { margin: 0; font-weight: var(--weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hms-account__sub { margin: 0; font-size: var(--text-sm); color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

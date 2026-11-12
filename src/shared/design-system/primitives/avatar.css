@@ -1,0 +1,13 @@
+.hms-avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  user-select: none;
+}
+.hms-avatar--md { width: 32px; height: 32px; font-size: 12px; }
+.hms-avatar--lg { width: 44px; height: 44px; font-size: 15px; }

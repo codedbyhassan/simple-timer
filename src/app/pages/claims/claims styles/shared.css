@@ -1,0 +1,40 @@
+.hms-claims { display: grid; gap: 16px; }
+.hms-claims__metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; }
+.hms-claims__panel { min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 15px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.hms-claims__panel-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 15px; }
+.hms-claims__panel-head h2 { margin: 0; color: var(--text); font-size: var(--text-md); }
+.hms-claims__panel-head p,
+.hms-claims__muted { margin: 5px 0 0; color: var(--text-muted); font-size: var(--text-sm); line-height: 1.5; }
+.hms-claims__notice { display: flex; align-items: flex-start; gap: 9px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface-subtle); color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
+.hms-claims__notice > svg { flex: 0 0 auto; margin-top: 1px; color: var(--accent-text); }
+.hms-claims__notice--success { border-color: var(--success-border, var(--border)); background: var(--success-soft, var(--surface-subtle)); }
+.hms-claims__notice--success > svg { color: var(--success); }
+.hms-claims__notice--error { border-color: var(--critical-border, var(--border)); background: var(--critical-soft, var(--surface-subtle)); }
+.hms-claims__notice--error > svg { color: var(--critical); }
+.hms-claims__button,
+.hms-claims__link { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: fit-content; min-height: 38px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-semibold); text-decoration: none; cursor: pointer; }
+.hms-claims__button:hover,
+.hms-claims__link:hover { border-color: var(--accent); color: var(--accent-text); }
+.hms-claims__button:disabled { opacity: .55; cursor: not-allowed; }
+.hms-claims__button--primary { border-color: var(--accent); background: var(--accent); color: var(--accent-contrast, #fff); }
+.hms-claims__button--primary:hover { background: var(--accent-hover, var(--accent)); color: var(--accent-contrast, #fff); }
+.hms-claims__button--small { min-height: 31px; padding: 5px 9px; font-size: var(--text-xs); }
+.hms-claims__link { min-height: unset; padding: 0; border: 0; background: transparent; color: var(--accent-text); }
+.hms-claims__table-wrap { width: 100%; overflow-x: auto; }
+.hms-claims__table { width: 100%; border-collapse: collapse; text-align: left; }
+.hms-claims__table th { padding: 10px 11px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: var(--text-xs); font-weight: var(--weight-semibold); white-space: nowrap; }
+.hms-claims__table td { padding: 12px 11px; border-bottom: 1px solid var(--border); color: var(--text); font-size: var(--text-sm); vertical-align: middle; }
+.hms-claims__table tr:last-child td { border-bottom: 0; }
+.hms-claims__table td strong,
+.hms-claims__table td small { display: block; }
+.hms-claims__table td small { margin-top: 3px; color: var(--text-muted); font-size: var(--text-xs); }
+.hms-claims__table td code { display: block; max-width: 180px; overflow: hidden; color: var(--text-muted); font-size: var(--text-xs); text-overflow: ellipsis; }
+.hms-claims__field { display: grid; gap: 6px; min-width: 0; }
+.hms-claims__field > span { color: var(--text); font-size: var(--text-sm); font-weight: var(--weight-semibold); }
+.hms-claims__field input,
+.hms-claims__field select { width: 100%; min-height: 40px; padding: 9px 11px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface); color: var(--text); font: inherit; font-size: var(--text-sm); }
+.hms-claims__empty { display: flex; align-items: center; gap: 8px; padding: 18px 10px; color: var(--text-muted); font-size: var(--text-sm); }
+.hms-claims__empty svg { color: var(--success); }
+.hms-claims__file-input { display: none; }
+@media (max-width: 1000px) { .hms-claims__metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .hms-claims__metrics { grid-template-columns: 1fr; } .hms-claims__panel { padding: 14px; } .hms-claims__panel-head { flex-direction: column; } }

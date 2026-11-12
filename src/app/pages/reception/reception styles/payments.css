@@ -1,0 +1,127 @@
+.hms-reception__payment-summary {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  overflow: hidden;
+  padding: 19px 70px 19px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(110deg, var(--accent-soft), var(--surface) 70%);
+}
+
+.hms-reception__payment-summary > div {
+  display: grid;
+  gap: 5px;
+}
+
+.hms-reception__payment-summary > div + div {
+  padding-left: 16px;
+  border-left: 1px solid var(--border);
+}
+
+.hms-reception__payment-summary strong {
+  color: var(--text);
+  font-size: 25px;
+  font-variant-numeric: tabular-nums;
+}
+
+.hms-reception__payment-summary small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-reception__payment-icon {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  transform: translateY(-50%);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  background: var(--surface);
+  color: var(--accent-text);
+}
+
+.hms-reception__table-wrap {
+  overflow-x: auto;
+}
+
+.hms-reception__table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.hms-reception__table th {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.hms-reception__table td {
+  padding: 13px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-reception__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.hms-reception__table td > small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.hms-reception__table td.is-balance {
+  color: var(--warning);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-reception__table-patient {
+  color: var(--accent-text);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+}
+
+.hms-reception__table-patient:hover {
+  text-decoration: underline;
+}
+
+.hms-reception__payment-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 13px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-reception__payment-note svg {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 650px) {
+  .hms-reception__payment-summary {
+    grid-template-columns: 1fr;
+    padding-right: 68px;
+  }
+
+  .hms-reception__payment-summary > div + div {
+    padding: 10px 0 0;
+    border-top: 1px solid var(--border);
+    border-left: 0;
+  }
+}

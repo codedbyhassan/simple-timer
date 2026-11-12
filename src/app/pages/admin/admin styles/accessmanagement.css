@@ -1,0 +1,137 @@
+.hms-access { display: grid; gap: 18px; padding-top: 2px; }
+.hms-access__summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; align-items: center; gap: 12px; padding: 16px 20px; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--shadow-card); }
+.hms-access__summary > div:not(.hms-access__summary-status) { display: flex; align-items: center; gap: 11px; }
+.hms-access__summary-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 11px; color: var(--accent-text); background: var(--accent-soft); }
+.hms-access__summary > div > span:last-child { display: grid; gap: 2px; }
+.hms-access__summary strong { font-size: 19px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.hms-access__summary small { color: var(--text-muted); font-size: 12px; }
+.hms-access__summary-status { justify-self: end; }
+.hms-access__add-user { display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border: 1px solid var(--accent); border-radius: var(--radius-md); background: var(--accent); color: var(--accent-contrast); font-size: var(--text-sm); font-weight: var(--weight-semibold); text-decoration: none; }
+.hms-access__add-user:hover { background: var(--accent-hover); }
+.hms-access__add-user:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.hms-access__error { padding: 11px 14px; border: 1px solid var(--critical); border-radius: var(--radius-md); color: var(--critical); font-size: var(--text-sm); }
+.hms-access__workspace { overflow: hidden; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-xl); background: var(--surface); box-shadow: var(--shadow-card); }
+.hms-access__tabs { display: flex; gap: 24px; padding: 0 22px; border-bottom: 1px solid var(--border); }
+.hms-access__tabs button { position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 54px; padding: 0 1px; border: 0; background: transparent; color: var(--text-muted); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-medium); cursor: pointer; }
+.hms-access__tabs button::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: transparent; content: ''; }
+.hms-access__tabs button.is-active { color: var(--accent-text); }
+.hms-access__tabs button.is-active::after { background: var(--accent); }
+.hms-access__tabs button > span { display: grid; place-items: center; min-width: 21px; height: 21px; padding: 0 5px; border-radius: 999px; background: var(--surface-subtle); color: var(--text-muted); font-size: 11px; font-variant-numeric: tabular-nums; }
+.hms-access__toolbar { display: flex; align-items: center; gap: 12px; padding: 14px 18px; }
+.hms-access__search { display: flex; align-items: center; gap: 9px; width: min(100%, 400px); min-height: 40px; padding: 0 11px; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-muted); }
+.hms-access__search:focus-within { border-color: var(--focus-ring); box-shadow: 0 0 0 3px var(--focus-ring-soft); }
+.hms-access__search > svg { flex: 0 0 auto; }
+.hms-access__search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text); font: inherit; font-size: var(--text-sm); }
+.hms-access__search input::placeholder { color: var(--text-subtle); }
+.hms-access__search button { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 50%; background: var(--surface-subtle); color: var(--text-muted); cursor: pointer; }
+.hms-access__status-filter { display: flex; align-items: center; gap: 8px; color: var(--text-muted); font-size: 12px; }
+.hms-access__status-filter select { min-height: 40px; padding: 0 28px 0 10px; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); background: var(--surface); font: inherit; font-size: var(--text-sm); }
+.hms-access__result-count { margin-left: auto; color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+.hms-access__users-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; border-top: 1px solid var(--border); }
+.hms-access__table-wrap { min-width: 0; overflow-x: auto; }
+.hms-access__table { width: 100%; border-collapse: collapse; text-align: left; }
+.hms-access__table th { padding: 11px 12px; border-bottom: 1px solid var(--border); background: var(--surface-subtle); color: var(--text-muted); font-size: 11px; font-weight: var(--weight-semibold); letter-spacing: 0.045em; text-transform: uppercase; white-space: nowrap; }
+.hms-access__table th:first-child, .hms-access__table td:first-child { padding-left: 18px; }
+.hms-access__table td { padding: 11px 12px; border-bottom: 1px solid var(--border); color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+.hms-access__table tbody tr:last-child td { border-bottom: 0; }
+.hms-access__table tbody tr:hover, .hms-access__table tbody tr.is-selected { background: var(--accent-soft); }
+.hms-access__user-select { display: flex; align-items: center; gap: 9px; padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.hms-access__user-select:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; border-radius: 4px; }
+.hms-access__avatar, .hms-access__detail-avatar { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-soft); color: var(--accent-text); font-size: 11px; font-weight: var(--weight-semibold); flex: 0 0 auto; }
+.hms-access__person { display: grid; gap: 3px; }
+.hms-access__person strong { color: var(--text); font-size: 12px; font-weight: var(--weight-semibold); }
+.hms-access__person small { color: var(--text-subtle); font-size: 11px; }
+.hms-access__detail { padding: 19px 18px; border-left: 1px solid var(--border); background: var(--surface-subtle); }
+.hms-access__detail-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.hms-access__detail-avatar { width: 48px; height: 48px; font-size: 14px; }
+.hms-access__detail h2 { margin: 15px 0 3px; color: var(--text); font-size: var(--text-lg); letter-spacing: -0.02em; }
+.hms-access__detail-email { margin: 0; color: var(--text-muted); font-size: 12px; overflow-wrap: anywhere; }
+.hms-access__facts { display: grid; gap: 0; margin: 17px 0; border-top: 1px solid var(--border); }
+.hms-access__facts > div { display: flex; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.hms-access__facts dt { color: var(--text-muted); }
+.hms-access__facts dd { margin: 0; color: var(--text); font-weight: var(--weight-medium); text-align: right; }
+.hms-access__section-label { display: block; margin-bottom: 9px; color: var(--text-subtle); font-size: 10px; font-weight: var(--weight-semibold); letter-spacing: .06em; text-transform: uppercase; }
+.hms-access__assigned-role { padding: 13px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.hms-access__role-heading { display: flex; align-items: center; gap: 8px; color: var(--accent-text); }
+.hms-access__role-heading strong { color: var(--text); font-size: 12px; }
+.hms-access__assigned-role p { margin: 7px 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.hms-access__permission-count { color: var(--text-subtle); font-size: 11px; }
+.hms-access__permission-list { padding-top: 14px; }
+.hms-access__permission { display: flex; align-items: center; gap: 7px; padding: 5px 0; color: var(--success); }
+.hms-access__permission code, .hms-access__chips code, .hms-access__permission-card code { color: var(--text-muted); font-family: var(--font-mono, ui-monospace, monospace); font-size: 10px; }
+.hms-access__more { display: block; padding: 5px 0 0 22px; color: var(--accent-text); font-size: 11px; }
+.hms-access__detail--empty { display: grid; align-content: center; justify-items: center; min-height: 300px; text-align: center; }
+.hms-access__detail--empty strong { margin-top: 11px; color: var(--text); font-size: var(--text-sm); }
+.hms-access__detail--empty p { max-width: 215px; margin: 6px 0; color: var(--text-muted); font-size: 12px; line-height: 1.5; }
+.hms-access__detail-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 13px; color: var(--accent-text); background: var(--accent-soft); }
+.hms-access__empty { display: grid; justify-items: center; gap: 7px; padding: 40px 18px; color: var(--text-muted); text-align: center; }
+.hms-access__empty svg { color: var(--text-subtle); }
+.hms-access__empty strong { color: var(--text); font-size: var(--text-sm); }
+.hms-access__empty span { font-size: 12px; }
+.hms-access__panel { padding: 20px; border-top: 1px solid var(--border); }
+.hms-access__user-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hms-access__user-card { display: grid; min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); color: inherit; text-decoration: none; transition: border-color 140ms, box-shadow 140ms, transform 140ms; }
+.hms-access__user-card:hover { border-color: var(--accent); box-shadow: var(--shadow-card); transform: translateY(-1px); }
+.hms-access__user-card:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+.hms-access__user-card-top { display: flex; align-items: center; gap: 9px; }
+.hms-access__user-card-top > svg { margin-left: auto; color: var(--text-subtle); }
+.hms-access__user-card h2 { overflow: hidden; margin: 15px 0 4px; color: var(--text); font-size: var(--text-md); font-weight: var(--weight-semibold); text-overflow: ellipsis; white-space: nowrap; }
+.hms-access__user-email { overflow: hidden; margin: 0; color: var(--text-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.hms-access__user-meta { display: grid; gap: 9px; padding: 14px 0; }
+.hms-access__user-meta > span { display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; color: var(--text-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.hms-access__user-meta svg { flex: 0 0 auto; color: var(--text-subtle); }
+.hms-access__user-card-foot { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-top: 11px; border-top: 1px solid var(--border); }
+.hms-access__user-card-foot span { color: var(--text-subtle); font-size: 11px; }
+.hms-access__user-card-foot strong { overflow: hidden; color: var(--text-muted); font-size: 11px; font-weight: var(--weight-medium); text-overflow: ellipsis; white-space: nowrap; }
+.hms-access__role-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.hms-access__role-card { min-width: 0; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--surface); }
+.hms-access__role-card-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.hms-access__role-icon { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; color: var(--accent-text); background: var(--accent-soft); }
+.hms-access__role-count { color: var(--text-muted); font-size: 11px; }
+.hms-access__role-card h2 { margin: 13px 0 5px; color: var(--text); font-size: var(--text-sm); }
+.hms-access__role-card > p { min-height: 37px; margin: 0; color: var(--text-muted); font-size: 11px; line-height: 1.5; }
+.hms-access__role-permissions { display: flex; align-items: baseline; gap: 6px; margin: 13px 0; padding-top: 11px; border-top: 1px solid var(--border); }
+.hms-access__role-permissions strong { color: var(--text); font-size: 19px; font-variant-numeric: tabular-nums; }
+.hms-access__role-permissions span { color: var(--text-muted); font-size: 11px; }
+.hms-access__chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.hms-access__chips code { padding: 4px 6px; border-radius: 5px; background: var(--surface-subtle); }
+.hms-access__chips > span { color: var(--accent-text); font-size: 10px; }
+.hms-access__permission-groups { display: grid; gap: 20px; }
+.hms-access__permission-group header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+.hms-access__permission-group h2 { margin: 0; color: var(--text); font-size: var(--text-sm); }
+.hms-access__permission-group header > span { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 5px; border-radius: 999px; background: var(--surface-subtle); color: var(--text-muted); font-size: 10px; }
+.hms-access__permission-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.hms-access__permission-card { min-width: 0; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-md); }
+.hms-access__permission-card-name { display: flex; align-items: center; gap: 8px; color: var(--success); }
+.hms-access__permission-card p { margin: 7px 0; color: var(--text-muted); font-size: 11px; }
+.hms-access__permission-roles { display: flex; flex-wrap: wrap; gap: 5px; }
+.hms-access__permission-roles span { padding: 4px 6px; border-radius: 5px; background: var(--surface-subtle); color: var(--text-muted); font-size: 10px; }
+@media (max-width: 1100px) {
+  .hms-access__user-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hms-access__users-layout { grid-template-columns: 1fr; }
+  .hms-access__detail { border-top: 1px solid var(--border); border-left: 0; }
+  .hms-access__detail:not(.hms-access__detail--empty) { display: grid; grid-template-columns: minmax(150px, .7fr) minmax(200px, 1.3fr); column-gap: 24px; }
+  .hms-access__detail-top, .hms-access__detail h2, .hms-access__detail-email, .hms-access__facts { grid-column: 1; }
+  .hms-access__assigned-role, .hms-access__permission-list { grid-column: 2; }
+  .hms-access__detail h2 { margin-top: 12px; }
+  .hms-access__facts { align-self: end; }
+  .hms-access__role-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 720px) {
+  .hms-access__user-grid { grid-template-columns: 1fr; }
+  .hms-access__summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hms-access__summary-status { grid-column: 1 / -1; justify-self: start; }
+  .hms-access__toolbar { flex-wrap: wrap; }
+  .hms-access__search { width: 100%; }
+  .hms-access__status-filter { flex: 1; justify-content: space-between; }
+  .hms-access__status-filter select { flex: 1; }
+  .hms-access__result-count { margin-left: 0; }
+  .hms-access__detail:not(.hms-access__detail--empty) { grid-template-columns: 1fr; }
+  .hms-access__detail-top, .hms-access__detail h2, .hms-access__detail-email, .hms-access__facts, .hms-access__assigned-role, .hms-access__permission-list { grid-column: 1; }
+  .hms-access__role-grid, .hms-access__permission-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .hms-access__tabs { gap: 17px; padding: 0 14px; }
+  .hms-access__panel { padding: 14px; }
+  .hms-access__summary { padding: 13px; }
+}

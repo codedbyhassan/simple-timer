@@ -2,23 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" sizes="512x512" href="/brand/hms-icon.png" />
-    <link rel="shortcut icon" href="/brand/hms-desktop.ico" />
-    <link rel="apple-touch-icon" href="/brand/hms-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="description"
-      content="Ascend HMS — a connected workspace for hospital teams."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
-    <meta property="og:title" content="Ascend HMS | Hospital Management" />
-    <meta property="og:description" content="Ascend HMS — a connected workspace for hospital teams." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary" />
-    <title>Ascend HMS | Hospital Management</title>
+    <meta name="description" content="Ascend HMS by Ascend Technologies" />
+    <title>Ascend HMS</title>
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <script>
+      // Apply the saved theme before first paint so there is no flash.
+      try {
+        var t = localStorage.getItem('hms.theme') || 'system';
+        var dark = t === 'dark' || (t === 'system' && matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

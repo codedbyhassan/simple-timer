@@ -1,0 +1,224 @@
+.hms-doctor__consult-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.75fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 18px;
+}
+
+.hms-doctor__consult-sidebar,
+.hms-doctor__consult-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.hms-doctor__consult-tabs {
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.hms-doctor__consult-tabs button {
+  padding: 10px 14px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.hms-doctor__consult-tabs button[aria-selected="true"] {
+  color: var(--text);
+  background: var(--surface-muted, #f1f4f8);
+  font-weight: 700;
+}
+
+.hms-doctor__selected-patient {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid var(--border);
+}
+
+.hms-doctor__selected-patient p {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-doctor__selected-patient > small {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.hms-doctor__full-button {
+  width: 100%;
+  margin-top: 14px;
+}
+
+.hms-doctor__gap-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hms-doctor__gap-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  line-height: 1.4;
+}
+
+.hms-doctor__gap-list svg {
+  flex: 0 0 auto;
+  color: var(--warning);
+}
+
+.hms-doctor__form-grid,
+.hms-doctor__prescription-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.hms-doctor__form-grid--diagnosis {
+  align-items: end;
+}
+
+.hms-doctor__hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.hms-doctor__inline-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(120px, 0.45fr) auto;
+  align-items: end;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.hms-doctor__prescription-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 12px 0;
+}
+
+.hms-doctor__line-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hms-doctor__line-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-doctor__line-list li > span {
+  display: grid;
+  gap: 4px;
+}
+
+.hms-doctor__line-list strong {
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+
+.hms-doctor__line-list small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-doctor__procedure-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-sm);
+}
+
+.hms-doctor__procedure-row span {
+  color: var(--text-muted);
+}
+
+.hms-doctor__action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.hms-doctor__finalize-bar {
+  position: sticky;
+  bottom: 8px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 15px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.hms-doctor__finalize-bar > span {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.hms-doctor__consult-main.is-readonly {
+  opacity: 0.92;
+}
+
+@media (max-width: 1000px) {
+  .hms-doctor__consult-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .hms-doctor__consult-sidebar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .hms-doctor__consult-sidebar,
+  .hms-doctor__form-grid,
+  .hms-doctor__prescription-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .hms-doctor__inline-fields {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .hms-doctor__inline-fields > :last-child {
+    grid-column: 1 / -1;
+  }
+
+  .hms-doctor__finalize-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,64 @@
+.hms-doctor__admission-summary,
+.hms-doctor__opd-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.hms-doctor__admission-summary > div,
+.hms-doctor__opd-summary > div {
+  display: grid;
+  gap: 5px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+}
+
+.hms-doctor__admission-summary small,
+.hms-doctor__opd-summary small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.hms-doctor__admission-summary strong,
+.hms-doctor__opd-summary strong {
+  color: var(--text);
+  font-size: 25px;
+}
+
+.hms-doctor__admission-list {
+  display: grid;
+}
+
+.hms-doctor__admission-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-doctor__admission-list article:last-child {
+  border: 0;
+}
+
+.hms-doctor__admission-list article > div,
+.hms-doctor__admission-list article > span {
+  display: grid;
+  gap: 6px;
+}
+
+.hms-doctor__admission-list article > div > small,
+.hms-doctor__admission-list article > span > small {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .hms-doctor__admission-list article {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,131 @@
+.hms-reception__booking {
+  border-top: 3px solid var(--accent);
+}
+
+.hms-reception__schedule-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hms-reception__date-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+}
+
+.hms-reception__date-switch button {
+  min-height: 34px;
+  padding: 6px 11px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.hms-reception__date-switch button.is-selected {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-reception__date-switch label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 8px;
+  border-left: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.hms-reception__date-switch input {
+  width: 135px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.hms-reception__schedule-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px 18px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.hms-reception__schedule-summary strong {
+  color: var(--text);
+  font-size: var(--text-lg);
+  font-variant-numeric: tabular-nums;
+}
+
+.hms-reception__schedule-summary-date {
+  margin-left: auto;
+  color: var(--text);
+  font-weight: var(--weight-semibold);
+}
+
+.hms-reception__filter-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  margin: -3px -4px 9px;
+  padding: 0 4px 9px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hms-reception__filter-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.hms-reception__filter-tabs button.is-active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: var(--weight-semibold);
+}
+
+@media (max-width: 580px) {
+  .hms-reception__schedule-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hms-reception__date-switch {
+    justify-content: space-between;
+  }
+
+  .hms-reception__date-switch input {
+    width: 105px;
+  }
+}

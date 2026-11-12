@@ -1,0 +1,3 @@
+.hms-cashier__refund-grid { display: grid; grid-template-columns: minmax(280px, 1fr) minmax(260px, .8fr); align-items: start; gap: 15px; }
+.hms-cashier__checklist { display: grid; gap: 12px; margin: 0; padding-left: 20px; color: var(--text); font-size: var(--text-sm); line-height: 1.5; }
+@media (max-width: 800px) { .hms-cashier__refund-grid { grid-template-columns: 1fr; } }

@@ -1,0 +1,2 @@
+.hms-cashier__table td:last-child { text-align: right; }
+@media (max-width: 700px) { .hms-cashier__table { min-width: 760px; } }
