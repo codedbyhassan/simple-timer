@@ -7,7 +7,7 @@ import './cashier styles/payments.css'
 
 const METHODS = ['Cash', 'Mobile money', 'Card', 'Insurance co-payment']
 
-export default function CashierPaymentsPage({ data, error, commit, can }) {
+export default async function CashierPaymentsPage({ data, error, commit, can }) {
   const location = useLocation()
   const [showPayment, setShowPayment] = useState(Boolean(location.state?.invoiceId))
   const available = useMemo(() => data.payments.filter((item) => balance(item) > 0), [data.payments])
@@ -35,7 +35,7 @@ export default function CashierPaymentsPage({ data, error, commit, can }) {
     const nextInvoice = { ...invoice, paid: nextPaid, method, status: nextPaid >= Number(invoice.billed) ? 'Settled' : 'Part-paid' }
     const transaction = { id: uid('RCT'), invoiceId: invoice.id, patientId: invoice.patientId, amount: paidAmount, method, reference: reference.trim() || uid('CASH'), recordedAt: now, cashier: 'Cashier' }
     const cashier = { ...data.cashier, transactions: [transaction, ...data.cashier.transactions], activity: [{ id: uid('CACT'), message: `Payment recorded for ${invoice.id} · ${money(paidAmount)}`, at: now }, ...data.cashier.activity] }
-    if (commit({ ...data, payments: data.payments.map((item) => item.id === invoice.id ? nextInvoice : item), cashier })) {
+    if (await commit({ ...data, payments: data.payments.map((item) => item.id === invoice.id ? nextInvoice : item), cashier })) {
       setReceipt({ ...transaction, invoice: nextInvoice, patient: patientFor(data, invoice.patientId) })
       setMessage('Payment saved locally. Confirm settlement through the hospital finance system before issuing an official receipt.')
       setReference('')
