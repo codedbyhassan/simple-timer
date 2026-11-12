@@ -14,8 +14,13 @@ export const localAuth = {
   onAuthChange(listener) {
     listeners.add(listener)
     const unsubscribe = subscribeToDocument(LOCAL_PROFILES_KEY, async () => {
-      current = await getCurrentProfile()
-      emit(current ? 'USER_UPDATED' : 'SIGNED_OUT', current)
+      try {
+        current = await getCurrentProfile()
+        emit(current ? 'USER_UPDATED' : 'SIGNED_OUT', current)
+      } catch {
+        current = null
+        emit('SIGNED_OUT', null)
+      }
     })
     return () => { listeners.delete(listener); unsubscribe() }
   },
@@ -38,14 +43,5 @@ export const localAuth = {
       permissions: ROLE_PERMISSIONS[current.role] || [],
       department: current.department || '',
     }
-  },
-  isRecovery: () => false,
-  initialLinkError: () => null,
-  waitForRecovery: async () => false,
-  async requestPasswordReset() {
-    throw new Error('Password reset is not available in local-profile mode. Profiles do not use passwords.')
-  },
-  async updatePassword() {
-    throw new Error('Local profiles do not use passwords.')
   },
 }
