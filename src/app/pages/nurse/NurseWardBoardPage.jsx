@@ -7,7 +7,7 @@ import './nurse styles/wards.css'
 
 const WARD_FILTER_ALL = 'All wards'
 
-export default async async function NurseWardBoardPage({ data, error, commit, can }) {
+export default function NurseWardBoardPage({ data, error, commit, can }) {
   const [wardFilter, setWardFilter] = useState(WARD_FILTER_ALL)
   const [message, setMessage] = useState('')
   const nurse = data.nurse
