@@ -18,7 +18,7 @@ export default function NurseTasksPage({ data, error, commit, can }) {
   const due = data.nurse.tasks.filter((task) => task.status !== 'Completed').length
   const overdue = data.nurse.tasks.filter((task) => task.status === 'Overdue').length
 
-  const updateTask = (task, status = 'Completed') => {
+  const updateTask = async (task, status = 'Completed') => {
     if (!can('nursing.observe')) return
     const now = new Date().toISOString()
     const nurse = {
@@ -28,7 +28,7 @@ export default function NurseTasksPage({ data, error, commit, can }) {
     }
     if (await commit({ ...data, nurse })) setMessage(status === 'Completed' ? 'Task marked complete.' : 'Task status updated.')
   }
-  const addTask = (event) => {
+  const addTask = async (event) => {
     event.preventDefault()
     if (!can('nursing.observe')) { setFormError('Your role does not have permission to create nursing tasks.'); return }
     if (!values.patientId || !values.wardId) { setFormError('Select a patient and ward for this task.'); return }
