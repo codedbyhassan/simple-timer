@@ -4,7 +4,7 @@ import { CashierError, CashierField, CashierNotice, CashierPanel, dateLabel, mon
 import './cashier styles/shared.css'
 import './cashier styles/reconciliation.css'
 
-export default async async function CashierReconciliationPage({ data, error, commit, can }) {
+export default function CashierReconciliationPage({ data, error, commit, can }) {
   const [counted, setCounted] = useState('')
   const [openingFloat, setOpeningFloat] = useState(String(data.cashier.shift.openingFloat || 0))
   const [message, setMessage] = useState('')
@@ -17,7 +17,7 @@ export default async async function CashierReconciliationPage({ data, error, com
   const cashCollected = todays.filter((item) => item.method === 'Cash').reduce((sum, item) => sum + Number(item.amount || 0), 0)
   const expected = Number(shift.openingFloat || 0) + cashCollected
 
-  const reconcile = (event) => {
+  const reconcile = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
@@ -34,7 +34,7 @@ export default async async function CashierReconciliationPage({ data, error, com
       setShowReconcile(false)
     }
   }
-  const openNext = () => {
+  const openNext = async () => {
     setMessage('')
     setActionError('')
     const value = Number(openingFloat)
