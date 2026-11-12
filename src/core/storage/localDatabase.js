@@ -150,3 +150,20 @@ export async function initialiseWorkspace(key, defaults, legacyStorageKey = null
     return merged
   }, defaults)
 }
+
+export async function appendAuditEvent({ action, resource = 'Local data', category = 'Data', outcome = 'Success' }) {
+  const session = await readDocument('local.session')
+  const profiles = await readDocument('local.profiles')
+  const actorProfile = Array.isArray(profiles) ? profiles.find((profile) => profile.id === session?.profileId) : null
+  const event = {
+    id: `LOCAL-${globalThis.crypto?.randomUUID?.() || Date.now()}`,
+    time: new Date().toLocaleString(),
+    actor: actorProfile?.displayName || actorProfile?.name || 'Local user',
+    action,
+    resource,
+    outcome,
+    category,
+  }
+  await updateDocument('admin.audit', (events) => [event, ...(Array.isArray(events) ? events : [])].slice(0, 2000), [])
+  return event
+}
