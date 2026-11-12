@@ -1,24 +1,22 @@
 # Local profiles and access
 
-Ascend HMS is a frontend-only, local-first application. It does not connect to Supabase or another backend.
+Ascend HMS does not provide remote authentication or a backend account service.
 
-## Profiles
+## How access works
 
-- On first launch, the application creates one local demonstration profile for each supported staff role.
-- Selecting a profile opens its workspace and applies the role's frontend navigation and permission map.
-- The profile list is stored in IndexedDB on the current browser or desktop installation.
-- Administrators can create, edit, suspend and remove local profiles from Administration → Users.
+- The first launch creates local staff profiles in IndexedDB.
+- A user selects a profile from the sign-in screen.
+- The selected profile determines the role-based navigation and frontend permissions.
+- Administrators can create, edit, suspend and remove local profiles.
+- At least one active hospital administrator profile must remain.
+- Selecting a profile does not verify a person's identity and does not require a password.
 
-## Important limitations
+## Security limitations
 
-Local profile selection is a workflow and demonstration aid, not secure authentication. Anyone with access to the same browser profile or desktop installation can potentially access local records. Frontend permission checks are not a security boundary.
+Local profiles are for interface demonstration and single-installation workflow evaluation only. They are not secure authentication. Anyone who can use the same browser profile or desktop installation may select a profile and access its locally stored records. Frontend permission checks can be bypassed by a technically capable user.
 
-There is no password reset, email invitation, remote identity provider, multi-user synchronisation or server-side authorisation.
+Do not use this application to store real patient information, credentials or other sensitive production data.
 
-## Local data
+## Data recovery
 
-Operational records, profiles, configuration and audit records are stored in IndexedDB. Use Administration → Backup to export or restore the current installation's data. Exported JSON backups are not encrypted by the application; protect them as sensitive files.
-
-## Development
-
-No .env file is required. Run `npm run dev` and select a local staff profile.
+Profiles are stored in the `local.profiles` IndexedDB document. Use Administration → Backup and restore to export or restore the complete local database. Keep backup files private; they are not encrypted by the application.
