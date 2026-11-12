@@ -11,7 +11,7 @@ const EMPTY_USER = {
   email: '',
   department: '',
   role: 'receptionist',
-  status: 'Invited',
+  status: 'Active',
   staffNumber: '',
   jobTitle: '',
   phone: '',
@@ -57,7 +57,7 @@ function UserForm({ initial, onSave, onCancel, saving, error, isNew }) {
     <form className="hms-user-detail__form" onSubmit={(event) => { event.preventDefault(); onSave(form) }}>
       <div className="hms-user-detail__form-grid">
         <Field label="Full name" name="name" value={form.name} onChange={setField} required autoComplete="name" />
-        <Field label="Email address" name="email" type="email" value={form.email} onChange={setField} required autoComplete="email" />
+        <Field label="Contact email (optional)" name="email" type="email" value={form.email} onChange={setField} autoComplete="email" />
         <Field label="Department" name="department" value={form.department} onChange={setField} required />
         <Field label="Job title" name="jobTitle" value={form.jobTitle} onChange={setField} />
         <Field label="Staff ID" name="staffNumber" value={form.staffNumber} onChange={setField} />
@@ -77,7 +77,7 @@ function UserForm({ initial, onSave, onCancel, saving, error, isNew }) {
         </Field>
         <Field label="Account status" name="status" value={form.status} onChange={setField} required>
           <select name="status" value={form.status} onChange={setField} required>
-            {['Active', 'Invited', 'Suspended'].map((value) => <option key={value}>{value}</option>)}
+            {['Active', 'Suspended'].map((value) => <option key={value}>{value}</option>)}
           </select>
         </Field>
         <Field className="hms-user-detail__field--wide" label="Notes" name="notes" value={form.notes} onChange={setField}>
