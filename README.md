@@ -4,12 +4,12 @@ Ascend HMS is a frontend-only, local-first hospital workflow application by Asce
 
 ## Operating model
 
-- **IndexedDB is the source of truth** for operational records, local profiles, configuration, audit history and backup metadata.
+- **IndexedDB is the source of truth** for operational records, local profiles, configuration, interface preferences, notifications and audit history.
 - All role workspaces read and write the same local hospital dataset where their workflows overlap.
 - Local profiles provide role-based navigation and frontend workflow restrictions. They are not secure authentication.
 - Records are stored in the current browser profile or desktop installation. They do not synchronise between devices.
 - A new installation starts with empty operational records. No sample patient, clinical, financial or inventory activity is presented as live data.
-- Use Administration → Backup to export or restore the current local database.
+- Use Administration → Backup and restore to export or restore the current local database.
 
 This application is intended for frontend workflow demonstration and local evaluation. It is not a secure production clinical record system. Browser storage can be accessed by anyone with access to the same device profile, and local permission checks are not a security boundary.
 
@@ -20,7 +20,7 @@ npm install
 npm run dev
 ```
 
-No `.env` file is required. Select a local staff profile on the sign-in screen.
+No `.env` file is required. Select a local role profile on the sign-in screen.
 
 ## Commands
 
