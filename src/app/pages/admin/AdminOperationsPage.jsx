@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, SegmentedBar, StatusBadge } from '@ui'
+import { useAuth } from '@core/auth'
 import useAdminCollection from './useAdminCollection.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
@@ -11,7 +12,6 @@ import { uid } from '../cashier/CashierShared.jsx'
 import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, subscribeToDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
-  REFUNDS_SEED,
   SETTINGS_DEFAULTS,
 } from './operationalData.js'
 import './admin styles/adminoperations.css'
@@ -143,23 +143,23 @@ function SettingsPage({ menu }) {
 function ReportsPage({ menu }) {
   const { data, loaded } = useReceptionWorkspace()
   const rows = [
-    { label: 'Patient directory', count: data.patients.length, destination: '/reception/patients' },
-    { label: 'Appointments', count: data.appointments.length, destination: '/reception/appointments' },
-    { label: 'Encounters', count: data.queue.length, destination: '/reception/opd' },
+    { label: 'Patient directory', count: data.patients.length },
+    { label: 'Appointments', count: data.appointments.length },
+    { label: 'Encounters', count: data.queue.length },
   ]
   return (
     <>
       <PageHeader title={menu.label} description="Operational summaries calculated from records saved in this local installation." />
       <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown. No sample charts or generated activity are included.</p></div></div>
-        {!loaded ? <div className="hms-admin-ops__empty">Reading local records…</div> : <div className="hms-admin-ops__report-grid">{rows.map((item)=><Link to={item.destination} className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19}/></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated now</span><span>Open records <Icon name="chevronRight" size={14}/></span></div></Link>)}</div>}
+        {!loaded ? <div className="hms-admin-ops__empty">Reading local records…</div> : <div className="hms-admin-ops__report-grid">{rows.map((item)=><div className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19}/></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated from IndexedDB</span></div></div>)}</div>}
       </section></div>
     </>
   )
 }
 
 function RefundsPage({ menu }) {
-  const { records, loaded, error, commit } = useAdminCollection('hms.admin.refunds.v1', REFUNDS_SEED)
-  const { data: workspace, error: workspaceError, commit: commitWorkspace } = useCashierWorkspace()
+  const { user } = useAuth()
+  const { data: workspace, loaded, error: workspaceError, commit: commitWorkspace } = useCashierWorkspace()
   const [filter, setFilter] = useState('Pending')
   const [query, setQuery] = useState('')
   const sharedRefunds = workspace.cashier.refunds.map((refund) => ({
@@ -170,7 +170,7 @@ function RefundsPage({ menu }) {
     status: refund.status === 'Pending approval' ? 'Pending' : refund.status,
     source: 'cashier',
   }))
-  const allRecords = [...sharedRefunds, ...records]
+  const allRecords = sharedRefunds
   const filtered = allRecords.filter((refund) => (filter === 'All' || refund.status === filter) && `${refund.id} ${refund.patient} ${refund.invoice} ${refund.reason}`.toLowerCase().includes(query.toLowerCase()))
   const updateStatus = async (refund, status) => {
     if (!window.confirm(`${status} refund ${refund.id}?`)) return
@@ -178,13 +178,12 @@ function RefundsPage({ menu }) {
       const now = new Date().toISOString()
       const cashier = {
         ...workspace.cashier,
-        refunds: workspace.cashier.refunds.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: now, reviewedBy: 'Administrator' } : item),
+        refunds: workspace.cashier.refunds.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: now, reviewedBy: user?.displayName || user?.name || 'Local administrator' } : item),
         activity: [{ id: uid('CACT'), message: `Refund request ${refund.id} ${status.toLowerCase()} in the admin queue.`, at: now }, ...workspace.cashier.activity],
       }
       await commitWorkspace({ ...workspace, cashier })
       return
     }
-    await commit(records.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: new Date().toLocaleString() } : item))
   }
   const pendingAmount = allRecords.filter((refund) => refund.status === 'Pending').reduce((sum, refund) => sum + Number(refund.amount), 0)
 
@@ -192,7 +191,7 @@ function RefundsPage({ menu }) {
     <>
       <PageHeader title={menu.label} description={menu.summary} />
       <div className="hms-admin-ops">
-        {error || workspaceError ? <div className="hms-admin-ops__error" role="alert">{error || workspaceError}</div> : null}
+        {workspaceError ? <div className="hms-admin-ops__error" role="alert">{workspaceError}</div> : null}
         <div className="hms-admin-ops__refund-summary">
           <div><span className="hms-admin-ops__eyebrow">Awaiting decision</span><strong>{allRecords.filter((item) => item.status === 'Pending').length}</strong><small>requests</small></div>
           <div><span className="hms-admin-ops__eyebrow">Pending amount</span><strong>GHS {pendingAmount.toFixed(2)}</strong><small>requires review</small></div>
