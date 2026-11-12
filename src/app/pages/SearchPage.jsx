@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Icon, PageHeader } from '@ui'
 import useReceptionWorkspace from './reception/useReceptionWorkspace.js'
 import useLabWorkspace from './lab/useLabWorkspace.js'
@@ -8,7 +8,8 @@ import useClaimsWorkspace from './claims/useClaimsWorkspace.js'
 import './search-page.css'
 
 export default function SearchPage() {
-  const [query, setQuery] = useState('')
+  const [searchParams] = useSearchParams()
+  const [query, setQuery] = useState(() => searchParams.get('q') || '')
   const { data, loaded } = useReceptionWorkspace()
   const lab = useLabWorkspace()
   const pharmacy = usePharmacyWorkspace()
