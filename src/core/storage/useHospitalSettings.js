@@ -7,7 +7,6 @@ export const HOSPITAL_SETTINGS_DEFAULTS = [
   { id: 'lab_turnaround_target', group: 'Laboratory', label: 'Standard lab turnaround target', description: 'Default target used in lab performance reports.', value: '150', unit: 'minutes', type: 'number' },
   { id: 'nhis_expiry_warning', group: 'Claims', label: 'Insurance expiry warning', description: 'Show a warning before a patient’s cover expires.', value: '60', unit: 'days', type: 'number' },
   { id: 'low_stock_alerts', group: 'Inventory', label: 'Low-stock alerts', description: 'Show stock alerts when inventory reaches reorder level.', value: true, type: 'toggle' },
-  { id: 'critical_result_alerts', group: 'Clinical safety', label: 'Critical result alerts', description: 'Show critical laboratory results in the follow-up queue.', value: true, type: 'toggle' },
 ]
 
 const DEFAULT_VALUES = Object.fromEntries(HOSPITAL_SETTINGS_DEFAULTS.map((item) => [item.id, item.value]))
