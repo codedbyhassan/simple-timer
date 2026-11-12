@@ -2,6 +2,59 @@ const DB_NAME = 'ascend-hms-local'
 const DB_VERSION = 1
 const STORE = 'documents'
 const CHANNEL = 'ascend-hms-local-changes'
+
+const isRecord = (value) => value !== null && typeof value === 'object' && !Array.isArray(value)
+const equal = (left, right) => JSON.stringify(left) === JSON.stringify(right)
+
+export function mergeChanged(base, next, current) {
+  if (Array.isArray(base) && Array.isArray(next) && base.every((item) => isRecord(item) && item.id != null) && next.every((item) => isRecord(item) && item.id != null)) {
+    const baseMap = new Map(base.map((item) => [item.id, item]))
+    const nextMap = new Map(next.map((item) => [item.id, item]))
+    const currentList = Array.isArray(current) ? current : []
+    const currentMap = new Map(currentList.map((item) => [item.id, item]))
+    const deleted = new Set(base.filter((item) => !nextMap.has(item.id)).map((item) => item.id))
+    const result = currentList.filter((item) => !deleted.has(item.id)).map((item) => {
+      const before = baseMap.get(item.id)
+      const after = nextMap.get(item.id)
+      return before && after && !equal(before, after) ? mergeChanged(before, after, item) : item
+    })
+    const resultIds = new Set(result.map((item) => item.id))
+    next.forEach((item) => {
+      if (!baseMap.has(item.id) && !resultIds.has(item.id)) result.push(item)
+      else if (!currentMap.has(item.id) && baseMap.has(item.id)) result.push(item)
+    })
+    return result
+  }
+  if (isRecord(base) && isRecord(next)) {
+    const result = isRecord(current) ? { ...current } : {}
+    const keys = new Set([...Object.keys(base), ...Object.keys(next)])
+    keys.forEach((key) => {
+      if (!(key in next)) {
+        if (key in base) delete result[key]
+        return
+      }
+      if (!equal(base[key], next[key])) {
+        result[key] = (isRecord(base[key]) && isRecord(next[key])) || (Array.isArray(base[key]) && Array.isArray(next[key]))
+          ? mergeChanged(base[key], next[key], current?.[key])
+          : next[key]
+      }
+    })
+    return result
+  }
+  return equal(base, next) ? current : next
+}
+
+function mergeDefaults(defaults, saved) {
+  if (isRecord(defaults) && isRecord(saved)) {
+    const result = { ...defaults, ...saved }
+    Object.keys(defaults).forEach((key) => {
+      if (isRecord(defaults[key]) && isRecord(saved[key])) result[key] = mergeDefaults(defaults[key], saved[key])
+      else if (saved[key] === undefined) result[key] = defaults[key]
+    })
+    return result
+  }
+  return saved === undefined ? defaults : saved
+}
 let dbPromise
 let channel
 
@@ -131,16 +184,7 @@ export async function importLocalDatabase(backup) {
 }
 
 export async function initialiseWorkspace(key, defaults) {
-  return updateDocument(key, (saved) => {
-    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return defaults
-    const merged = { ...defaults, ...saved }
-    Object.entries(defaults).forEach(([name, value]) => {
-      if (value && typeof value === 'object' && !Array.isArray(value) && saved[name] && typeof saved[name] === 'object' && !Array.isArray(saved[name])) {
-        merged[name] = { ...value, ...saved[name] }
-      }
-    })
-    return merged
-  }, defaults)
+  return updateDocument(key, (saved) => mergeDefaults(defaults, saved), defaults)
 }
 
 export async function appendAuditEvent({ action, resource = 'Local data', category = 'Data', outcome = 'Success' }) {
