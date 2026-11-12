@@ -5,14 +5,12 @@ import { useAccess } from '@core/access/AccessProvider.jsx'
 import { findWorkspaceBySlug, menuPath, visibleMenus, workspaceHome } from '@core/access/navigation.js'
 import { roleLabel } from '@core/access/roles.js'
 import { useNotifications } from '@core/notifications/NotificationsProvider.jsx'
-import { useConnectionNotices } from '@core/realtime/useConnectionStatus.js'
 
 export default function AppLayout() {
   const { user, signOut } = useAuth()
   const access = useAccess()
   const notes = useNotifications()
   const toast = useToast()
-  useConnectionNotices(toast)
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
@@ -29,7 +27,7 @@ export default function AppLayout() {
               <Button size="md" intent="secondary" onClick={async () => { await signOut(); navigate('/signin', { replace: true }) }}>Sign out</Button>
             </div>
           )}>
-            The server did not return your roles and permissions. Check the connection and try again. If it keeps failing, contact your hospital administrator.
+            The local profile or IndexedDB data could not be read. Check browser storage availability and try again.
           </EmptyState>
         </div>
       </div>
@@ -44,7 +42,7 @@ export default function AppLayout() {
     ? [{ id: current.id, label: current.label, items: visibleMenus(current, access.can).map((menu) => ({ to: menuPath(current, menu), label: menu.label, icon: menu.icon })) }]
     : []
 
-  const name = access.access.displayName || user?.email || 'Account'
+  const name = access.access.displayName || user?.displayName || user?.name || 'Local profile'
   const role = access.roles.length ? roleLabel(access.roles[0]) : ''
   const critical = notes.pendingCritical
 
@@ -64,7 +62,7 @@ export default function AppLayout() {
           onOpenItem={(n) => n.target && navigate(n.target)}
         />
       )}
-      user={{ name, sub: role || user?.email }}
+      user={{ name, sub: role || user?.department || 'Local profile' }}
       menuItems={[
         { id: 'settings', label: 'Settings', icon: 'settings', onSelect: () => navigate('/settings') },
         { id: 'profile', label: 'Profile', icon: 'user', onSelect: () => navigate('/profile') },
