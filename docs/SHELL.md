@@ -1,29 +1,30 @@
 # Application shell
 
-Layout: side rail (left), top bar (search, connection, notifications, theme, account) and the content area. Glass (blur) exists only on the rail and the top bar, with a solid fallback where blur is unsupported. It is not exported from `@ui`.
+The application shell contains a role-aware side rail, top bar and content area. The app is local-first; it does not show a network connection state or claim remote synchronisation.
 
 ## Navigation and access
 
-- The rail shows the menus of the person's workspace (`src/core/access/navigation.js`). A menu shows when the person holds any one of its permissions. Items never appear disabled. People with more than one role get a workspace switcher at the top of the rail. The full list is in `product/ROLE_WORKSPACES.md`.
-- Permission codes and role names come from the database blueprint (section 5). Each role starts on its workspace overview.
-- Typing the URL of a workspace or menu you may not use shows a plain "no access" page.
-- Production reads access from `api.my_access()`, returning `{ display_name, roles, permissions, department }`. The function is created in the database core migrations (M3). Until then, only the dev demo backend can sign in to the shell.
-- Development: open any page with `?as=doctor` (or another role code) to switch the demo role.
+- Menus are derived from `src/core/access/navigation.js` and filtered by the selected local profile's role permissions.
+- Local profiles are stored in IndexedDB. They provide frontend role navigation, not identity verification or secure authentication.
+- Each built-in local profile has one role. Switching roles means signing out and selecting another profile.
+- Direct navigation to a route outside the selected role's permissions displays the no-access page.
+- No URL query parameter can impersonate a role.
 
 ## Top bar
 
-- Search focuses with `/` and opens the shared search page (`/search?q=`).
-- Connection chip shows Online, Reconnecting or Offline. For now it reports the network state. When the realtime layer lands (M6) it reports the channel and shows "Live" only while connected.
-- Notification centre follows the policy in the dashboard spec section 5: important items add a badge and a quiet toast, critical items show a persistent strip until acknowledged, routine events never notify. Opening the list marks items read.
-- Theme toggle and avatar menu (Settings, Profile, Log out).
-- Break-glass access is not in the top bar yet. It needs patient context and arrives with Patient 360 (M5).
+- Global search opens `/search?q=` and searches local records.
+- Notifications are stored in IndexedDB and remain available after reload.
+- Important notifications can display a quiet toast. Critical notifications remain visible until acknowledged.
+- Theme selection and rail collapse are device-local interface preferences.
+- The account menu links to Settings, Profile and Log out.
 
 ## Behaviour
 
-- Every route change scrolls to the top.
-- Collapsed or expanded rail is remembered per device.
-- Desktop only. Minimum width 1100 px in the shell, 1366 x 768 is the design target.
+- Route changes return the content area to the top.
+- Sidebar collapse preference is remembered in the current browser profile.
+- The shell supports desktop, tablet and mobile widths. Tables may scroll within their own containers, but the page shell must not force horizontal overflow.
+- The app remains usable offline because operational records are local.
 
 ## Tests
 
-`tests/e2e/shell_flows.py` (84 checks): menus for all nine demo roles against the brief, role home pages, the workspace switcher, forbidden URLs, menu keyboard handling, theme sync, notifications and the critical strip, rail collapse and persistence, the `/` shortcut, offline chip, scroll to top, dark theme and the 1366 x 768 layout.
+`tests/e2e/shell_flows.py` exercises local profile selection, role navigation, route access, local notifications, profile switching, theme behaviour, sidebar collapse, global search and viewport overflow. Run it against the local Vite server with Playwright installed.
