@@ -149,7 +149,7 @@ function ReportsPage({ menu }) {
   )
 }
 
-async async function RefundsPage({ menu }) {
+function RefundsPage({ menu }) {
   const { records, loaded, error, commit } = useAdminCollection('hms.admin.refunds.v1', REFUNDS_SEED)
   const { data: workspace, error: workspaceError, commit: commitWorkspace } = useCashierWorkspace()
   const [filter, setFilter] = useState('Pending')
@@ -164,7 +164,7 @@ async async function RefundsPage({ menu }) {
   }))
   const allRecords = [...sharedRefunds, ...records]
   const filtered = allRecords.filter((refund) => (filter === 'All' || refund.status === filter) && `${refund.id} ${refund.patient} ${refund.invoice} ${refund.reason}`.toLowerCase().includes(query.toLowerCase()))
-  const updateStatus = (refund, status) => {
+  const updateStatus = async async (refund, status) => {
     if (!window.confirm(`${status} refund ${refund.id}?`)) return
     if (refund.source === 'cashier') {
       const now = new Date().toISOString()
