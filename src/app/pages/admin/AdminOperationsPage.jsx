@@ -8,7 +8,7 @@ import useLabWorkspace from '../lab/useLabWorkspace.js'
 import usePharmacyWorkspace from '../pharmacy/usePharmacyWorkspace.js'
 import useClaimsWorkspace from '../claims/useClaimsWorkspace.js'
 import { uid } from '../cashier/CashierShared.jsx'
-import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
+import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, subscribeToDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
   REFUNDS_SEED,
@@ -91,19 +91,27 @@ function SettingsPage({ menu }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
+  const [dirty, setDirty] = useState(false)
   useEffect(() => {
     let alive = true
-    readDocument('admin.settings').then((stored) => {
-      if (!alive) return
-      const next = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
-      setValues(next); setSavedValues(next)
-    }).catch((loadError) => alive && setError(loadError instanceof Error ? loadError.message : 'Unable to load local settings.')).finally(() => alive && setLoaded(true))
-    return () => { alive = false }
-  }, [])
+    const refresh = async () => {
+      try {
+        const stored = await readDocument('admin.settings')
+        if (!alive || dirty) return
+        const next = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+        setValues(next); setSavedValues(next)
+      } catch (loadError) {
+        if (alive) setError(loadError instanceof Error ? loadError.message : 'Unable to load local settings.')
+      } finally { if (alive) setLoaded(true) }
+    }
+    refresh()
+    const unsubscribe = subscribeToDocument('admin.settings', refresh)
+    return () => { alive = false; unsubscribe() }
+  }, [dirty])
   const groups = [...new Set(defaults.map((setting) => setting.group))]
   const valueOf = (setting) => values[setting.id] ?? setting.value
   const dirtyCount = defaults.filter((setting) => valueOf(setting) !== (savedValues[setting.id] ?? setting.value)).length
-  const update = (id, value) => { setValues((current) => ({ ...current, [id]: value })); setSaved(false); setError('') }
+  const update = (id, value) => { setValues((current) => ({ ...current, [id]: value })); setSaved(false); setDirty(true); setError('') }
   const save = async () => {
     if (saving) return
     const invalid = defaults.find((setting) => setting.type === 'number' && (!Number.isFinite(Number(valueOf(setting))) || Number(valueOf(setting)) < 0))
@@ -113,11 +121,11 @@ function SettingsPage({ menu }) {
       const next = Object.fromEntries(defaults.map((setting) => [setting.id, valueOf(setting)]))
       await writeDocument('admin.settings', next)
       await appendAuditEvent({ action: 'Updated hospital settings', resource: 'Local operating preferences', category: 'Administration' })
-      setValues(next); setSavedValues(next); setSaved(true); setError('')
+      setValues(next); setSavedValues(next); setSaved(true); setDirty(false); setError('')
     } catch (saveError) { setError(saveError instanceof Error ? saveError.message : 'Unable to save local settings.') }
     finally { setSaving(false) }
   }
-  const reset = () => { setValues(savedValues); setSaved(false); setError('') }
+  const reset = () => { setValues(savedValues); setDirty(false); setSaved(false); setError('') }
   return (
     <>
       <PageHeader title={menu.label} description={menu.summary} actions={<button type="button" className="hms-admin-ops__primary-action" onClick={save} disabled={!loaded || saving}><Icon name="check" size={16} />{saving ? 'Saving…' : 'Save settings'}</button>} />
