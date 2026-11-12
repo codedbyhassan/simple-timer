@@ -7,7 +7,7 @@ import { deleteReceptionFile, getReceptionFile, saveReceptionFile } from './rece
 import './reception styles/shared.css'
 import './reception styles/documents.css'
 
-export default function DocumentsPage({ menu, data, error, commit }) {
+export default async async function DocumentsPage({ menu, data, error, commit }) {
   const [category, setCategory] = useState('All documents')
   const [patientId, setPatientId] = useState('All patients')
   const [query, setQuery] = useState('')
@@ -36,7 +36,7 @@ export default function DocumentsPage({ menu, data, error, commit }) {
     try {
       await saveReceptionFile(id, file)
       const doc = { id, patientId: docPatient, name: docName.trim(), category: docCategory, fileName: file.name, type: file.type || 'application/octet-stream', size: file.size, addedAt: TODAY, stored: true }
-      if (!commit({ ...data, documents: [doc, ...data.documents] })) {
+      if (!await commit({ ...data, documents: [doc, ...data.documents] })) {
         await deleteReceptionFile(id)
         setFormError('The document details could not be saved. Check local storage and try again.')
         return
@@ -75,7 +75,7 @@ export default function DocumentsPage({ menu, data, error, commit }) {
     if (!window.confirm(`Remove ${doc.name} from this patient's document list?`)) return
     try {
       if (doc.stored) await deleteReceptionFile(doc.id)
-      if (commit({ ...data, documents: data.documents.filter((item) => item.id !== doc.id) })) { setSelectedId(''); setMessage(`${doc.name} removed from the list.`) }
+      if (await commit({ ...data, documents: data.documents.filter((item) => item.id !== doc.id) })) { setSelectedId(''); setMessage(`${doc.name} removed from the list.`) }
     } catch (deleteError) {
       setFormError(deleteError instanceof Error ? deleteError.message : 'Unable to remove the document.')
     }
