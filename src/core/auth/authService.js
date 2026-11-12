@@ -1,9 +1,5 @@
-import { isSupabaseConfigured } from './supabaseClient.js'
-import { supabaseAuth } from './supabaseAdapter.js'
+import { localAuth } from './localAuth.js'
 
-// The demo adapter only exists in development. In a production build `import.meta.env.DEV` is false,
-// so this branch and the demo credentials are removed from the bundle.
-const demo = import.meta.env.DEV && !isSupabaseConfigured ? (await import('./demoAdapter.js')).demoAuth : null
-
-export const authMode = isSupabaseConfigured ? 'supabase' : demo ? 'demo' : 'unconfigured'
-export const authService = isSupabaseConfigured ? supabaseAuth : demo
+// Ascend HMS is intentionally a local-first frontend. No remote authentication provider is loaded.
+export const authMode = 'local'
+export const authService = localAuth
