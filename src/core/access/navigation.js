@@ -22,7 +22,7 @@ export const WORKSPACES = [
     ],
   },
   {
-    id: 'nurse', slug: 'nurse', label: 'Nurse', icon: 'heartPulse',
+    id: 'nurse', slug: 'nurse', label: 'Nursing', icon: 'heartPulse',
     roles: ['triage_nurse', 'ward_nurse', 'bed_manager'],
     purpose: 'Triage, vital signs, nursing activities, ward monitoring and admission coordination.',
     menus: [
