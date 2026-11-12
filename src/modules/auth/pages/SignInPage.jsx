@@ -1,45 +1,40 @@
-import { useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { AuthLayout, Button, Heading, PasswordField, Stack, Text, TextField, TextLink, useToast } from '@ui'
-import { describeAuthError, isEmail, useAuth } from '@core/auth'
+import { AuthLayout, Heading, Stack, Text, useToast } from '@ui'
+import { getProfiles } from '@core/storage/localProfiles.js'
+import { useAuth } from '@core/auth'
+import './local-signin.css'
 
 export default function SignInPage() {
   const { signIn } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
   const location = useLocation()
-  const emailRef = useRef(null)
-  const passwordRef = useRef(null)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [errors, setErrors] = useState({})
+  const [profiles, setProfiles] = useState([])
+  const [selected, setSelected] = useState('')
+  const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
 
-  const validate = () => {
-    const next = {}
-    if (!email.trim()) next.email = 'Enter your email address.'
-    else if (!isEmail(email)) next.email = 'Enter a valid email address.'
-    if (!password) next.password = 'Enter your password.'
-    setErrors(next)
-    if (next.email) emailRef.current?.focus()
-    else if (next.password) passwordRef.current?.focus()
-    return Object.keys(next).length === 0
-  }
+  useEffect(() => {
+    let alive = true
+    getProfiles().then((items) => {
+      if (!alive) return
+      const active = items.filter((profile) => profile.active)
+      setProfiles(active)
+      setSelected(active[0]?.id || '')
+    }).catch((error) => toast.error('Unable to load local profiles', error.message)).finally(() => alive && setLoading(false))
+    return () => { alive = false }
+  }, [toast])
 
-  const onSubmit = async (e) => {
-    e.preventDefault()
-    if (busy || !validate()) return
+  const onSubmit = async (event) => {
+    event.preventDefault()
+    if (!selected || busy) return
     setBusy(true)
     try {
-      await signIn(email, password)
+      await signIn(selected)
       navigate(location.state?.from || '/', { replace: true })
-    } catch (err) {
-      const { title, message } = describeAuthError(err)
-      toast.error(title, message)
-      if (err.kind === 'invalid_credentials') {
-        setPassword('')
-        passwordRef.current?.focus()
-      }
+    } catch (error) {
+      toast.error('Unable to open profile', error.message)
       setBusy(false)
     }
   }
@@ -47,43 +42,24 @@ export default function SignInPage() {
   return (
     <AuthLayout>
       <Stack gap="xs">
-        <Heading>Sign in</Heading>
-        <Text tone="muted">Use your hospital email and password.</Text>
+        <Heading>Choose a staff profile</Heading>
+        <Text tone="muted">Open a local demonstration workspace. No account, password or network connection is required.</Text>
       </Stack>
-
-      <form onSubmit={onSubmit} noValidate>
-        <Stack gap="lg">
-          <Stack gap="md">
-            <TextField
-              ref={emailRef}
-              label="Email"
-              name="email"
-              type="email"
-              icon="mail"
-              autoComplete="username"
-              inputMode="email"
-              placeholder="name@hospital.com"
-              autoFocus
-              value={email}
-              error={errors.email}
-              onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors((x) => ({ ...x, email: undefined })) }}
-            />
-            <PasswordField
-              ref={passwordRef}
-              label="Password"
-              name="password"
-              autoComplete="current-password"
-              value={password}
-              error={errors.password}
-              onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors((x) => ({ ...x, password: undefined })) }}
-            />
-            <Text size="sm" style={{ textAlign: 'right' }}><TextLink to="/forgot-password">Forgot password?</TextLink></Text>
-          </Stack>
-          <Button type="submit" fullWidth loading={busy}>Sign in</Button>
-        </Stack>
+      <form className="hms-local-signin" onSubmit={onSubmit}>
+        {loading ? <Text tone="muted">Loading local profiles…</Text> : profiles.length ? (
+          <>
+            <label className="hms-local-signin__label" htmlFor="local-profile">Staff role</label>
+            <select id="local-profile" value={selected} onChange={(event) => setSelected(event.target.value)} disabled={busy}>
+              {profiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.displayName || profile.name} · {profile.department}</option>)}
+            </select>
+            <button className="hms-local-signin__submit" type="submit" disabled={!selected || busy}>{busy ? 'Opening workspace…' : 'Continue to workspace'}</button>
+          </>
+        ) : <Text tone="muted">No active local profiles are available. Restore a local backup or create a profile from the setup screen.</Text>}
       </form>
-
-      <Text tone="subtle" size="sm">Need an account? Ask your hospital administrator to create one.</Text>
+      <div className="hms-local-signin__notice">
+        <strong>Local demonstration mode</strong>
+        <span>Records stay in this browser or desktop installation. This mode does not provide secure staff authentication or synchronise data between devices.</span>
+      </div>
     </AuthLayout>
   )
 }
