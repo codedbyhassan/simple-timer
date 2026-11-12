@@ -4,7 +4,7 @@ import { CashierError, CashierField, CashierNotice, CashierPanel, dateLabel, mon
 import './cashier styles/shared.css'
 import './cashier styles/reconciliation.css'
 
-export default function CashierReconciliationPage({ data, error, commit, can }) {
+export default async async function CashierReconciliationPage({ data, error, commit, can }) {
   const [counted, setCounted] = useState('')
   const [openingFloat, setOpeningFloat] = useState(String(data.cashier.shift.openingFloat || 0))
   const [message, setMessage] = useState('')
@@ -28,7 +28,7 @@ export default function CashierReconciliationPage({ data, error, commit, can }) 
     const at = new Date().toISOString()
     const entry = { id: uid('REC'), shiftId: shift.id, openingFloat: Number(shift.openingFloat || 0), cashCollected, expected, counted: countedValue, variance: Number((countedValue - expected).toFixed(2)), at, reconciledBy: 'Cashier' }
     const cashier = { ...data.cashier, shift: { ...shift, status: 'Reconciled', countedCash: countedValue, reconciledAt: at, reconciliations: [entry, ...(shift.reconciliations || [])] } }
-    if (commit({ ...data, cashier })) {
+    if (await commit({ ...data, cashier })) {
       setMessage(`Reconciliation saved. Variance: ${money(entry.variance)}. Any difference must be reviewed through the actual finance process.`)
       setCounted('')
       setShowReconcile(false)
@@ -42,7 +42,7 @@ export default function CashierReconciliationPage({ data, error, commit, can }) 
     if (shift.status === 'Open') { setActionError('Reconcile the current shift before opening another.'); return }
     if (!Number.isFinite(value) || value < 0) { setActionError('Opening float must be a non-negative amount.'); return }
     const cashier = { ...data.cashier, shift: { id: uid('SHIFT'), status: 'Open', openedAt: new Date().toISOString(), openingFloat: value, countedCash: null, reconciliations: shift.reconciliations || [] } }
-    if (commit({ ...data, cashier })) { setMessage('A new cashier shift was opened.'); setShowNewShift(false) }
+    if (await commit({ ...data, cashier })) { setMessage('A new cashier shift was opened.'); setShowNewShift(false) }
   }
 
   return <>
