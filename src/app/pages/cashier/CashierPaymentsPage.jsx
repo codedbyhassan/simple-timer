@@ -7,7 +7,7 @@ import './cashier styles/payments.css'
 
 const METHODS = ['Cash', 'Mobile money', 'Card', 'Insurance co-payment']
 
-export default async function CashierPaymentsPage({ data, error, commit, can }) {
+export default function CashierPaymentsPage({ data, error, commit, can }) {
   const location = useLocation()
   const [showPayment, setShowPayment] = useState(Boolean(location.state?.invoiceId))
   const available = useMemo(() => data.payments.filter((item) => balance(item) > 0), [data.payments])
@@ -20,7 +20,7 @@ export default async function CashierPaymentsPage({ data, error, commit, can }) 
   const [actionError, setActionError] = useState('')
   const invoice = data.payments.find((item) => item.id === invoiceId)
 
-  const recordPayment = (event) => {
+  const recordPayment = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
