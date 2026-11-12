@@ -12,7 +12,7 @@ const criticalValues = (data, order) => (testFor(data, order.testId)?.components
   flag: resultFlag(component, order.resultValues?.[component.key] ?? ''),
 })).filter((item) => item.flag === 'Critical')
 
-export default async async function LabCriticalPage({ data, error, commit, can }) {
+export default function LabCriticalPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [recipient, setRecipient] = useState('')
@@ -26,7 +26,7 @@ export default async async function LabCriticalPage({ data, error, commit, can }
   const pending = selected ? selected.resultStatus !== 'Verified' : false
   const details = selected ? criticalValues(data, selected) : []
 
-  const saveNotification = () => {
+  const saveNotification = async () => {
     setMessage('')
     setActionError('')
     if (!selected || !can('lab.verify')) { setActionError('Your role cannot document critical-result notification.'); return }
@@ -45,7 +45,7 @@ export default async async function LabCriticalPage({ data, error, commit, can }
     }
   }
 
-  const saveAcknowledgement = () => {
+  const saveAcknowledgement = async () => {
     setMessage('')
     setActionError('')
     if (!selected || !can('lab.verify')) { setActionError('Your role cannot record critical-result acknowledgement.'); return }
