@@ -48,6 +48,8 @@ def login(page, role):
     if workspace in MULTI_ROLE_WORKSPACES:
         page.locator('.hms-local-signin__role-card').filter(has_text=ROLE_LABELS[role]).click()
     page.wait_for_selector('.hms-shell', timeout=8000)
+    page.wait_for_timeout(250)
+    print(f'LOGIN DEBUG {role}: {page.url} | {page.locator("body").inner_text()[:180]!r}')
 
 def logout(page):
     page.click('button[aria-label="Account menu"]')
