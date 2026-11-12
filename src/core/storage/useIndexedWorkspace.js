@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react'
-import { appendAuditEvent, initialiseWorkspace, readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { appendAuditEvent, initialiseWorkspace, mergeChanged, readDocument, subscribeToDocument, updateDocument } from './localDatabase.js'
 
 export const HOSPITAL_WORKSPACE_KEY = 'hospital.workspace.v2'
 
@@ -7,6 +7,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
   const [data, setData] = useState(defaults)
   const [error, setError] = useState('')
   const [loaded, setLoaded] = useState(false)
+  const baseRef = useRef(defaults)
 
   useEffect(() => {
     let alive = true
@@ -14,6 +15,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
       try {
         const value = await initialiseWorkspace(HOSPITAL_WORKSPACE_KEY, defaults)
         if (alive) {
+          baseRef.current = value
           setData(value)
           setError('')
           setLoaded(true)
@@ -29,7 +31,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
     const refresh = async () => {
       try {
         const value = await readDocument(HOSPITAL_WORKSPACE_KEY)
-        if (alive && value) setData(value)
+        if (alive && value) { baseRef.current = value; setData(value) }
       } catch (refreshError) {
         if (alive) setError(refreshError instanceof Error ? refreshError.message : 'Unable to refresh local data.')
       }
@@ -40,9 +42,10 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
 
   const commit = useCallback(async (next) => {
     try {
-      await writeDocument(HOSPITAL_WORKSPACE_KEY, next)
+      const saved = await updateDocument(HOSPITAL_WORKSPACE_KEY, (current) => mergeChanged(baseRef.current, next, current || defaults), defaults)
+      baseRef.current = saved
       try { await appendAuditEvent({ action: 'Updated operational records', resource: 'Hospital workspace', category: 'Operations' }) } catch { /* The clinical write remains saved; audit failures are surfaced separately. */ }
-      setData(next)
+      setData(saved)
       setError('')
       return true
     } catch (saveError) {
