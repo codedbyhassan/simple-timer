@@ -13,11 +13,14 @@ This project has no backend. Validation focuses on the local browser/Electron ex
 
 ## First-run behaviour
 
-- [ ] A clean browser profile opens the local role profile selector.
+- [ ] A clean browser profile opens the workspace selector.
+- [ ] All eight main workspace cards appear when all corresponding role profiles are active.
+- [ ] Reception, Nursing, Pharmacy, Finance and Administration open role-dashboard cards when multiple roles are active.
+- [ ] Doctor, Laboratory and Claims route directly to their single-role dashboards.
+- [ ] Inactive roles and workspaces without active roles are not offered.
 - [ ] No network or environment configuration is required.
 - [ ] A first-run database is created in IndexedDB.
-- [ ] All supported local staff roles can be selected.
-- [ ] The selected role receives only its configured workspace navigation.
+- [ ] Each role receives only its configured workspace navigation.
 - [ ] Empty operational screens show an actionable empty state, not invented records.
 
 ## Persistence and data integrity
@@ -39,7 +42,7 @@ This project has no backend. Validation focuses on the local browser/Electron ex
 - [ ] Consultation creates laboratory orders and prescriptions.
 - [ ] Laboratory specimen and result changes appear in the doctor results view.
 - [ ] Pharmacy dispensing updates prescription status and stock.
-- [ ] Cashier charges and payments update local balances and receipts.
+- [ ] Finance charges and payments update local balances and receipts.
 - [ ] Refund requests appear in the administration approval queue.
 - [ ] Claims mappings are shared between administration and claims preparation.
 - [ ] Ward and bed records are shared between administration and nursing.
