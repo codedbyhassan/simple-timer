@@ -44,7 +44,7 @@ export default function useIndexedCollection(key, defaults = []) {
       setError(saveError instanceof Error ? saveError.message : 'Unable to save local records.')
       return false
     }
-  }, [key])
+  }, [key, defaults])
 
   return { records, loaded, error, commit }
 }
