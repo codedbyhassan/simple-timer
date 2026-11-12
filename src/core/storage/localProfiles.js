@@ -55,6 +55,7 @@ export async function signOutLocal() {
 
 export async function saveProfiles(profiles) {
   if (!Array.isArray(profiles)) throw new Error('Profiles must be a list.')
+  if (!profiles.some((profile) => profile.role === 'hospital_admin' && profile.active)) throw new Error('At least one active hospital administrator profile must remain.')
   await updateDocument(LOCAL_PROFILES_KEY, () => profiles, [])
   try { await appendAuditEvent({ action: 'Saved local staff profiles', resource: `${profiles.length} profiles`, category: 'Access' }) } catch { /* Profile data is already saved. */ }
 }
