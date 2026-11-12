@@ -20,6 +20,8 @@ export default function useHospitalSettings() {
       try {
         const stored = await readDocument('admin.settings')
         if (alive) setSettings({ ...DEFAULT_VALUES, ...(stored && typeof stored === 'object' ? stored : {}) })
+      } catch {
+        // Defaults remain available when the local settings document cannot be read.
       } finally {
         if (alive) setLoaded(true)
       }
