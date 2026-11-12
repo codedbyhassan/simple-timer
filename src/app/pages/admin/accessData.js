@@ -1,21 +1,3 @@
-export const ADMIN_ACCESS_USERS = [
-  { id: 'staff-001', name: 'Ama Mensah', email: 'ama.mensah@ascend.example', department: 'Administration', role: 'hospital_admin', status: 'Active', lastSeen: 'Today, 10:42' },
-  { id: 'staff-002', name: 'Kojo Asante', email: 'kojo.asante@ascend.example', department: 'Reception', role: 'receptionist', status: 'Active', lastSeen: 'Today, 10:15' },
-  { id: 'staff-003', name: 'Abena Owusu', email: 'abena.owusu@ascend.example', department: 'Nursing', role: 'triage_nurse', status: 'Active', lastSeen: 'Today, 09:58' },
-  { id: 'staff-004', name: 'Kwame Boateng', email: 'kwame.boateng@ascend.example', department: 'Medical', role: 'doctor', status: 'Active', lastSeen: 'Today, 09:43' },
-  { id: 'staff-005', name: 'Esi Addo', email: 'esi.addo@ascend.example', department: 'Laboratory', role: 'lab_technician', status: 'Active', lastSeen: 'Today, 09:32' },
-  { id: 'staff-006', name: 'Yaw Ofori', email: 'yaw.ofori@ascend.example', department: 'Pharmacy', role: 'pharmacist', status: 'Active', lastSeen: 'Today, 08:51' },
-  { id: 'staff-007', name: 'Akosua Tetteh', email: 'akosua.tetteh@ascend.example', department: 'Finance', role: 'cashier', status: 'Active', lastSeen: 'Today, 08:39' },
-  { id: 'staff-008', name: 'Kofi Appiah', email: 'kofi.appiah@ascend.example', department: 'Claims', role: 'claims_officer', status: 'Invited', lastSeen: 'Not signed in' },
-  { id: 'staff-009', name: 'Mabel Nkrumah', email: 'mabel.nkrumah@ascend.example', department: 'Management', role: 'management_viewer', status: 'Active', lastSeen: 'Yesterday, 16:20' },
-  { id: 'staff-010', name: 'Daniel Quaye', email: 'daniel.quaye@ascend.example', department: 'Medical Records', role: 'records_officer', status: 'Suspended', lastSeen: '04 Nov, 14:02' },
-  { id: 'staff-011', name: 'Efua Sarpong', email: 'efua.sarpong@ascend.example', department: 'Nursing', role: 'ward_nurse', status: 'Active', lastSeen: 'Today, 08:22' },
-  { id: 'staff-012', name: 'Nana Bediako', email: 'nana.bediako@ascend.example', department: 'Finance', role: 'finance_officer', status: 'Active', lastSeen: 'Today, 08:17' },
-  { id: 'staff-013', name: 'Adwoa Kusi', email: 'adwoa.kusi@ascend.example', department: 'Pharmacy', role: 'pharmacy_assistant', status: 'Active', lastSeen: 'Today, 07:55' },
-  { id: 'staff-014', name: 'Kwesi Antwi', email: 'kwesi.antwi@ascend.example', department: 'Stores', role: 'store_keeper', status: 'Active', lastSeen: 'Yesterday, 17:11' },
-  { id: 'staff-015', name: 'Akua Dapaah', email: 'akua.dapaah@ascend.example', department: 'Facilities', role: 'bed_manager', status: 'Active', lastSeen: 'Today, 07:46' },
-]
-
 export const ADMIN_ACCESS_ROLES = [
   { code: 'hospital_admin', label: 'Hospital administrator', description: 'Hospital configuration, user access and operational oversight.', permissions: ['admin.manage_users', 'admin.manage_config', 'admin.manage_catalogue', 'audit.view', 'audit.review_break_glass', 'system.view_sla', 'reports.view', 'reports.export', 'finance.manage_prices', 'finance.approve_refund', 'claims.manage_mappings', 'inventory.view', 'inventory.approve_adjustment'] },
   { code: 'records_officer', label: 'Records officer', description: 'Patient records, registration and document workflows.', permissions: ['patients.search', 'patients.view', 'patients.create', 'patients.update', 'appointments.view', 'encounters.open'] },
