@@ -6,7 +6,7 @@ import './lab styles/inventory.css'
 
 const EMPTY_RECEIPT = { name: '', category: 'Collection supplies', unit: 'unit', quantity: '', reorderLevel: '', lot: '', expiresAt: '', reason: '' }
 
-export default function LabInventoryPage({ data, error, commit, can }) {
+export default async async function LabInventoryPage({ data, error, commit, can }) {
   const [receipt, setReceipt] = useState(EMPTY_RECEIPT)
   const [adjustment, setAdjustment] = useState({ stockId: '', quantity: '', reason: '' })
   const [issue, setIssue] = useState({ stockId: '', quantity: '', reference: '', reason: '' })
@@ -28,7 +28,7 @@ export default function LabInventoryPage({ data, error, commit, can }) {
       movements: [movement, ...data.lab.movements],
       activity: [{ id: uid('LACT'), kind: 'Stock', message: activityMessage, at: now }, ...data.lab.activity],
     }
-    if (commit({ ...data, lab })) { setMessage(activityMessage); setActionError('') }
+    if (await commit({ ...data, lab })) { setMessage(activityMessage); setActionError('') }
   }
 
   const receive = (event) => {
@@ -43,7 +43,7 @@ export default function LabInventoryPage({ data, error, commit, can }) {
     const item = { id: uid('LST'), name: receipt.name.trim(), category: receipt.category, unit: receipt.unit.trim() || 'unit', quantity, reorderLevel: Math.max(0, Number(receipt.reorderLevel) || 0), lot: receipt.lot.trim(), expiresAt: receipt.expiresAt }
     const movement = { id: uid('LMOV'), stockId: item.id, type: 'Receipt', quantity, reference: item.lot, reason: receipt.reason.trim(), at: now }
     const lab = { ...data.lab, stock: [item, ...data.lab.stock], movements: [movement, ...data.lab.movements], activity: [{ id: uid('LACT'), kind: 'Stock', message: `${quantity} ${item.unit}(s) received · ${item.name}`, at: now }, ...data.lab.activity] }
-    if (commit({ ...data, lab })) { setReceipt(EMPTY_RECEIPT); setMessage(`${item.name} receipt recorded.`); setShowReceipt(false) }
+    if (await commit({ ...data, lab })) { setReceipt(EMPTY_RECEIPT); setMessage(`${item.name} receipt recorded.`); setShowReceipt(false) }
   }
 
   const adjust = (event) => {
