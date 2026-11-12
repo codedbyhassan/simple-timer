@@ -11,7 +11,7 @@ export const TOMORROW = localDate(new Date(today.getFullYear(), today.getMonth()
 
 const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60_000).toISOString()
 
-export const RECEPTION_SEED = {
+const RECEPTION_SEED_REFERENCE = {
   patients: [
     { id: 'ASC-PAT-001284', firstName: 'Ama Serwaa', lastName: 'Mensah', sex: 'Female', dateOfBirth: '1992-03-18', phone: '024 555 0184', address: 'Adabraka, Accra', coverage: 'NHIS', memberNumber: '1234567890', membershipType: 'Principal member', dependent: false, principalName: '', expiry: '2027-08-31', nextOfKin: 'Kofi Mensah · 024 555 0112', otherInsurance: '', createdAt: minutesAgo(180), lastVisit: '2026-11-03' },
     { id: 'ASC-PAT-001311', firstName: 'Kofi', lastName: 'Boateng', sex: 'Male', dateOfBirth: '2018-06-07', phone: '020 418 2201', address: 'Osu, Accra', coverage: 'NHIS', memberNumber: '2087654321', membershipType: 'Dependent', dependent: true, principalName: 'Efua Boateng', expiry: '2026-11-15', nextOfKin: 'Efua Boateng · 020 418 2201', otherInsurance: '', createdAt: minutesAgo(1520), lastVisit: '2026-10-28' },
@@ -53,6 +53,10 @@ export const RECEPTION_SEED = {
     { id: 'DOC-1004', patientId: 'ASC-PAT-001402', name: 'Laboratory report', category: 'Lab reports', fileName: 'lab-report.pdf', type: 'application/pdf', size: 384_000, addedAt: '2026-10-27', stored: false },
     { id: 'DOC-1005', patientId: 'ASC-PAT-001526', name: 'Insurance membership', category: 'ID and NHIS cards', fileName: 'insurance-card.jpg', type: 'image/jpeg', size: 612_000, addedAt: '2026-10-21', stored: false },
   ],
+}
+
+export const RECEPTION_SEED = {
+  patients: [], appointments: [], queue: [], payments: [], documents: [],
 }
 
 export const DOCUMENT_CATEGORIES = ['Referrals', 'ID and NHIS cards', 'Lab reports', 'Imaging', 'Consent forms', 'Other']
