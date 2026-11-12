@@ -56,7 +56,7 @@ function CataloguePage({ menu }) {
       </div>
     </>
   )
-
+}
 
 function MappingsPage({ menu }) {
   const { data, loaded, error, commit } = useClaimsWorkspace()
@@ -84,7 +84,7 @@ function MappingsPage({ menu }) {
       </div>
     </>
   )
-
+}
 
 function SettingsPage({ menu }) {
   const defaults = SETTINGS_DEFAULTS
@@ -133,7 +133,7 @@ function SettingsPage({ menu }) {
       </div>
     </>
   )
-
+}
 
 function ReportsPage({ menu }) {
   const { data, loaded } = useReceptionWorkspace()
@@ -150,7 +150,7 @@ function ReportsPage({ menu }) {
       </section></div>
     </>
   )
-
+}
 
 function RefundsPage({ menu }) {
   const { records, loaded, error, commit } = useAdminCollection('hms.admin.refunds.v1', REFUNDS_SEED)
@@ -239,7 +239,7 @@ function InventoryPage({ menu }) {
       </div>
     </>
   )
-
+}
 
 function AuditPage({ menu }) {
   const { records, loaded, error } = useAdminCollection('audit', AUDIT_SEED)
@@ -317,7 +317,7 @@ function BackupPage({ menu }) {
       </section></div>
     </>
   )
-
+}
 
 export default function AdminOperationsPage({ menu }) {
   const pages = {
