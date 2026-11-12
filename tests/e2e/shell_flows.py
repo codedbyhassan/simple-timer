@@ -7,24 +7,6 @@ OUT = os.path.join(os.getcwd(), 'artifacts', 'shots')
 os.makedirs(OUT, exist_ok=True)
 results = []
 
-ROLE_LABELS = {
-    'receptionist': 'Receptionist',
-    'records_officer': 'Records officer',
-    'triage_nurse': 'Triage nurse',
-    'ward_nurse': 'Ward nurse',
-    'doctor': 'Doctor',
-    'lab_technician': 'Laboratory technician',
-    'pharmacist': 'Pharmacist',
-    'pharmacy_assistant': 'Pharmacy assistant',
-    'store_keeper': 'Store keeper',
-    'bed_manager': 'Bed manager',
-    'cashier': 'Cashier',
-    'finance_officer': 'Finance officer',
-    'claims_officer': 'Claims officer',
-    'hospital_admin': 'Hospital administrator',
-    'management_viewer': 'Management viewer',
-}
-
 def check(name, condition, detail=''):
     results.append((name, bool(condition), detail))
     print(('PASS' if condition else 'FAIL'), name, detail)
@@ -49,14 +31,12 @@ def login(page, role):
         page.locator(f'.hms-local-signin__role-card[data-role="{role}"]').click()
     page.wait_for_selector('.hms-shell', timeout=8000)
     page.wait_for_timeout(250)
-    print(f'LOGIN DEBUG {role}: {page.url} | {page.locator("body").inner_text()[:180]!r}')
 
 def logout(page):
     page.click('button[aria-label="Account menu"]')
     page.click('[role=menuitem]:has-text("Log out")')
     page.wait_for_url('**/signin')
     page.wait_for_selector('.hms-local-signin__card', timeout=8000)
-    print(f'LOGOUT DEBUG: {page.url} | {page.locator("body").inner_text()[:100]!r}')
 
 def nav_labels(page):
     return [text.strip() for text in page.locator('.hms-rail__item').all_inner_texts()]
