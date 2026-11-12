@@ -6,7 +6,7 @@ import './lab styles/catalogue.css'
 
 const EMPTY_TEST = { code: '', name: '', category: 'Haematology', specimenType: '', turnaroundHours: '4', fee: '', trackedStock: true, component: '', unit: '', low: '', high: '', criticalLow: '', criticalHigh: '' }
 
-export default function LabCataloguePage({ data, error, commit, can }) {
+export default async async function LabCataloguePage({ data, error, commit, can }) {
   const [values, setValues] = useState(EMPTY_TEST)
   const [query, setQuery] = useState('')
   const [message, setMessage] = useState('')
@@ -50,7 +50,7 @@ export default function LabCataloguePage({ data, error, commit, can }) {
     }
     const now = new Date().toISOString()
     const lab = { ...data.lab, catalogue: [test, ...data.lab.catalogue], activity: [{ id: uid('LACT'), kind: 'Catalogue', message: `Catalogue test added · ${test.name}`, at: now }, ...data.lab.activity] }
-    if (commit({ ...data, lab })) {
+    if (await commit({ ...data, lab })) {
       setValues(EMPTY_TEST)
       setMessage(`${name} added to the test catalogue.`)
       setShowAdd(false)
@@ -65,7 +65,7 @@ export default function LabCataloguePage({ data, error, commit, can }) {
       catalogue: data.lab.catalogue.map((item) => item.id === test.id ? { ...item, active: item.active === false } : item),
       activity: [{ id: uid('LACT'), kind: 'Catalogue', message: `${test.name} ${test.active === false ? 'activated' : 'deactivated'}`, at: now }, ...data.lab.activity],
     }
-    if (commit({ ...data, lab })) setMessage(`${test.name} ${test.active === false ? 'activated' : 'deactivated'}.`)
+    if (await commit({ ...data, lab })) setMessage(`${test.name} ${test.active === false ? 'activated' : 'deactivated'}.`)
   }
 
   return <>
