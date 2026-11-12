@@ -76,6 +76,7 @@ export default function App() {
                 {adminWorkspace && adminUsersMenu ? <Route path="/admin/users/:userId" element={<Guarded workspace={adminWorkspace} menu={adminUsersMenu}><UserDetailPage /></Guarded>} /> : null}
                 {receptionWorkspace && receptionPatientsMenu ? <Route path="/reception/patients/:patientId" element={<Guarded workspace={receptionWorkspace} menu={receptionPatientsMenu}><PatientRecordPage /></Guarded>} /> : null}
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/patient/:id" element={<Guarded permission="patients.view"><PatientRecordPage /></Guarded>} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
