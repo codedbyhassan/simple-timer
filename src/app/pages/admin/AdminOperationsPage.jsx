@@ -149,7 +149,7 @@ function ReportsPage({ menu }) {
   )
 }
 
-function RefundsPage({ menu }) {
+async async function RefundsPage({ menu }) {
   const { records, loaded, error, commit } = useAdminCollection('hms.admin.refunds.v1', REFUNDS_SEED)
   const { data: workspace, error: workspaceError, commit: commitWorkspace } = useCashierWorkspace()
   const [filter, setFilter] = useState('Pending')
@@ -173,10 +173,10 @@ function RefundsPage({ menu }) {
         refunds: workspace.cashier.refunds.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: now, reviewedBy: 'Administrator' } : item),
         activity: [{ id: uid('CACT'), message: `Refund request ${refund.id} ${status.toLowerCase()} in the admin queue.`, at: now }, ...workspace.cashier.activity],
       }
-      commitWorkspace({ ...workspace, cashier })
+      await commitWorkspace({ ...workspace, cashier })
       return
     }
-    commit(records.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: new Date().toLocaleString() } : item))
+    await commit(records.map((item) => item.id === refund.id ? { ...item, status, reviewedAt: new Date().toLocaleString() } : item))
   }
   const pendingAmount = allRecords.filter((refund) => refund.status === 'Pending').reduce((sum, refund) => sum + Number(refund.amount), 0)
 
