@@ -36,7 +36,7 @@ function medicineConflicts(medicine, allergies) {
   }))
 }
 
-export default function DoctorConsultationPage({ data, error, commit, can }) {
+export default async async async async async function DoctorConsultationPage({ data, error, commit, can }) {
   const location = useLocation()
   const requestedPatientId = new URLSearchParams(location.search).get('patientId')
   const entries = data.queue.filter((entry) => ['Waiting for clinician', 'In consultation', 'Investigations'].includes(entry.stage))
@@ -84,7 +84,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
         ...data.doctor,
         drafts: [...data.doctor.drafts.filter((draft) => draft.encounterId !== selected.id), savedDraft],
       }
-      commit({ ...data, doctor })
+      await commit({ ...data, doctor })
     }, 350)
     return () => window.clearTimeout(timer)
   }, [form, selected, data, commit])
@@ -105,7 +105,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
     const draft = draftFor(selected, data.doctor.drafts.find((item) => item.encounterId === selected.id))
     const started = { ...draft, startedAt: draft.startedAt || new Date().toISOString() }
     const doctor = { ...data.doctor, drafts: [...data.doctor.drafts.filter((item) => item.encounterId !== selected.id), started] }
-    if (commit({ ...data, queue, doctor })) {
+    if (await commit({ ...data, queue, doctor })) {
       setDraftState({ encounterId: selected.id, value: started })
       setMessage(`${patient?.firstName || 'Patient'} consultation is open. Changes save automatically on this device.`)
       setActionError('')
@@ -139,7 +139,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
     }) }
     const doctor = { ...data.doctor, drafts: [...data.doctor.drafts.filter((item) => item.encounterId !== selected.id), { ...nextForm, encounterId: selected.id, patientId: selected.patientId, updatedAt: now }] }
     const queue = data.queue.map((entry) => entry.id === selected.id ? { ...entry, stage: 'Investigations' } : entry)
-    if (commit({ ...data, lab, doctor, queue })) {
+    if (await commit({ ...data, lab, doctor, queue })) {
       setDraftState({ encounterId: selected.id, value: nextForm })
       setMessage(`${orders.length} investigation${orders.length === 1 ? '' : 's'} sent to the laboratory worklist.`)
       setActionError('')
@@ -176,7 +176,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
     const pharmacy = { ...data.pharmacy, prescriptions: [prescription, ...data.pharmacy.prescriptions] }
     const nextForm = { ...form, prescriptions: form.prescriptions.map((item) => draftItems.includes(item) ? { ...item, prescriptionId: prescription.id } : item) }
     const doctor = { ...data.doctor, drafts: [...data.doctor.drafts.filter((item) => item.encounterId !== selected.id), { ...nextForm, encounterId: selected.id, patientId: selected.patientId, updatedAt: now }] }
-    if (commit({ ...data, pharmacy, doctor })) {
+    if (await commit({ ...data, pharmacy, doctor })) {
       setDraftState({ encounterId: selected.id, value: nextForm })
       setMessage(`${prescription.id} sent to the pharmacy queue.`)
       setActionError('')
@@ -214,7 +214,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
       }
       nurse = { ...nurse, admissions: [admission, ...(nurse.admissions || [])] }
     }
-    if (commit({ ...data, queue, doctor: updatedDoctor, nurse })) {
+    if (await commit({ ...data, queue, doctor: updatedDoctor, nurse })) {
       setDraftState({ encounterId: selected.id, value: finalized })
       setMessage(form.disposition === 'Admit' ? 'Consultation finalised and admission request added to the shared nurse workspace.' : 'Consultation finalised. The encounter is now read-only.')
       setActionError('')
