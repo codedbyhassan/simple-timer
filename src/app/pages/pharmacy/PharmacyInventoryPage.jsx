@@ -10,7 +10,7 @@ const dateFromToday = (offset) => {
   return date.toISOString().slice(0, 10)
 }
 
-export default function PharmacyInventoryPage({ data, error, commit, can }) {
+export default async async function PharmacyInventoryPage({ data, error, commit, can }) {
   const [receive, setReceive] = useState({ medicineId: data.pharmacy.medicines[0]?.id || '', lot: '', quantity: '', expiresAt: dateFromToday(180), reason: '' })
   const [adjust, setAdjust] = useState({ batchId: '', quantity: '', reason: '' })
   const [message, setMessage] = useState('')
@@ -44,7 +44,7 @@ export default function PharmacyInventoryPage({ data, error, commit, can }) {
       movements: [movement, ...data.pharmacy.movements],
       activity: [{ id: uid('ACT-PH'), type: 'Stock', message: `${quantity} ${selectedMedicine.unit}(s) received · ${selectedMedicine.name}`, at: now }, ...data.pharmacy.activity],
     }
-    if (commit({ ...data, pharmacy })) {
+    if (await commit({ ...data, pharmacy })) {
       setReceive((current) => ({ ...current, lot: '', quantity: '', reason: '' }))
       setMessage(`${selectedMedicine.name} receipt recorded.`)
       setShowReceipt(false)
@@ -70,7 +70,7 @@ export default function PharmacyInventoryPage({ data, error, commit, can }) {
       movements: [movement, ...data.pharmacy.movements],
       activity: [{ id: uid('ACT-PH'), type: 'Stock', message: `Stock adjusted by ${delta} for ${medicineFor(data, selectedBatch.medicineId)?.name || selectedBatch.id}`, at: now }, ...data.pharmacy.activity],
     }
-    if (commit({ ...data, pharmacy })) {
+    if (await commit({ ...data, pharmacy })) {
       setAdjust({ batchId: '', quantity: '', reason: '' })
       setMessage('Stock adjustment recorded in the ledger.')
       setShowAdjustment(false)
