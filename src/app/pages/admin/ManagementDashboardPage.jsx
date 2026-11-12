@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom'
 import { Icon, PageHeader, StatusBadge } from '@ui'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
 import useNurseWorkspace from '../nurse/useNurseWorkspace.js'
@@ -10,13 +9,13 @@ import useHospitalSettings from '@core/storage/useHospitalSettings.js'
 import useMinuteClock from '@core/storage/useMinuteClock.js'
 import './admin styles/managementdashboard.css'
 
-const Metric = ({ label, value, detail, to, icon }) => (
-  <Link className="hms-management__metric" to={to}>
+const Metric = ({ label, value, detail, icon }) => (
+  <div className="hms-management__metric">
     <span className="hms-management__metric-icon"><Icon name={icon} size={18} /></span>
     <span className="hms-management__metric-label">{label}</span>
     <strong>{value}</strong>
     <small>{detail}</small>
-  </Link>
+  </div>
 )
 
 export default function ManagementDashboardPage({ menu }) {
@@ -53,14 +52,14 @@ export default function ManagementDashboardPage({ menu }) {
       <section className="hms-management">
         <div className="hms-management__notice"><span><Icon name="database" size={17} /></span><div><strong>Local data overview</strong><p>Figures update from IndexedDB records on this device. Nothing is synchronised with another installation.</p></div><StatusBadge tone="neutral">On this device</StatusBadge></div>
         <div className="hms-management__grid">
-          <Metric label="Patient records" value={loaded ? data.patients.length : '—'} detail="Registered patients" to="/reception/patients" icon="users" />
-          <Metric label="Appointments today" value={loaded ? todayAppointments.length : '—'} detail={today} to="/reception/appointments" icon="calendar" />
+          <Metric label="Patient records" value={loaded ? data.patients.length : '—'} detail="Registered patients" icon="users" />
+          <Metric label="Appointments today" value={loaded ? todayAppointments.length : '—'} detail={today} icon="calendar" />
           <Metric label="Open encounters" value={loaded ? openQueue.length : '—'} detail="Not yet closed" to="/reception/opd" icon="clipboardList" />
           <Metric label="Beds occupied" value={loaded ? `${occupiedBeds}/${beds.length}` : '—'} detail="Current bed records" to="/nurse/wards" icon="bed" />
-          <Metric label="Pending lab orders" value={loaded ? pendingLabs.length : '—'} detail="Awaiting verification or completion" to="/lab/worklist" icon="flask" />
-          <Metric label="Open prescriptions" value={loaded ? pendingPrescriptions.length : '—'} detail="Awaiting dispensing" to="/pharmacy/queue" icon="pill" />
+          <Metric label="Pending lab orders" value={loaded ? pendingLabs.length : '—'} detail="Awaiting verification or completion" icon="flask" />
+          <Metric label="Open prescriptions" value={loaded ? pendingPrescriptions.length : '—'} detail="Awaiting dispensing" icon="pill" />
           <Metric label="Outstanding balance" value={loaded ? `GHS ${unpaid.toFixed(2)}` : '—'} detail="Calculated from saved invoices" to="/cashier/charges" icon="wallet" />
-          <Metric label="Claims ready" value={loaded ? readyClaims : '—'} detail="Locally prepared records" to="/claims/list" icon="fileText" />
+          <Metric label="Claims ready" value={loaded ? readyClaims : '—'} detail="Locally prepared records" icon="fileText" />
         </div>
         {loaded && (waitingAlerts.length > 0 || labAlerts.length > 0 || occupancyAlert) ? <section className="hms-management__attention" aria-label="Operational attention"><div><strong>Operational attention</strong><span>Based on the local thresholds in Operating settings.</span></div>{waitingAlerts.length ? <StatusBadge tone="warning">{waitingAlerts.length} waiting over {waitLimit} min</StatusBadge> : null}{labAlerts.length ? <StatusBadge tone="warning">{labAlerts.length} lab orders over {labLimit} min</StatusBadge> : null}{occupancyAlert ? <StatusBadge tone="critical">Bed occupancy {Math.round(occupancy)}%</StatusBadge> : null}</section> : null}
         {loaded && data.patients.length === 0 ? (
