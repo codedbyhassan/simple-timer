@@ -17,12 +17,12 @@ export default async async function NurseWardBoardPage({ data, error, commit, ca
   const pending = nurse.admissions.filter((request) => request.status === 'Awaiting bed').length
   const discharges = nurse.discharges.filter((item) => item.status === 'Discharged').length
 
-  const markReady = (bed) => {
+  const markReady = async (bed) => {
     if (!can('nursing.observe') || bed.status !== 'Cleaning') return
     const beds = nurse.beds.map((item) => item.id === bed.id ? { ...item, status: 'Available', since: '' } : item)
     if (await commit({ ...data, nurse: { ...nurse, beds } })) setMessage(`${bed.id} is now marked available.`)
   }
-  const startDischarge = (bed) => {
+  const startDischarge = async (bed) => {
     if (!can('nursing.observe') || !bed.patientId) return
     const existing = nurse.discharges.find((record) => record.patientId === bed.patientId && record.status !== 'Discharged')
     if (existing) { setMessage('A discharge checklist is already in progress for this patient.'); return }
