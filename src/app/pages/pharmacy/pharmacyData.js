@@ -15,7 +15,7 @@ const medicines = [
   { id: 'MED-005', name: 'Amlodipine 5 mg', form: 'Tablet', category: 'Cardiovascular', unit: 'tablet', reorderLevel: 35, nhiaCode: 'NHIA-MED-0873', ingredients: ['amlodipine'], unitPrice: 0.8 },
 ]
 
-export const PHARMACY_SEED = {
+const PHARMACY_SEED_REFERENCE = {
   ...RECEPTION_SEED,
   pharmacy: {
     medicines,
@@ -79,6 +79,10 @@ export const PHARMACY_SEED = {
     ],
     reviewedAlerts: [],
   },
+}
+
+export const PHARMACY_SEED = {
+  ...PHARMACY_SEED_REFERENCE, pharmacy: { ...PHARMACY_SEED_REFERENCE.pharmacy, medicines: [], batches: [], prescriptions: [], movements: [], activity: [], reviewedAlerts: [] },
 }
 
 export const PHARMACY_TODAY = TODAY
