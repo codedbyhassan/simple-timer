@@ -9,13 +9,13 @@ const examples = {
   'G-DRG': ['OPD-GEN-01', 'OPD-PED-01', 'IPD-MED-01'],
   'Department specialty': ['GEN-MED', 'PAED', 'OBGYN', 'DENT'],
 }
-export default async function ClaimsMappingPage({ data, error, commit, can }) {
+export default function ClaimsMappingPage({ data, error, commit, can }) {
   const [targets, setTargets] = useState(Object.fromEntries(data.claims.mappings.map((item) => [item.id, item.target || ''])))
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
   const [editingMappingId, setEditingMappingId] = useState('')
   const editingMapping = data.claims.mappings.find((item) => item.id === editingMappingId)
-  const saveMapping = (mapping) => {
+  const saveMapping = async (mapping) => {
     setMessage('')
     setActionError('')
     if (!can('claims.manage_mappings')) { setActionError('Your role cannot manage claim reference mappings.'); return }
