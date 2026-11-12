@@ -24,8 +24,10 @@ export function NotificationsProvider({ children }) {
     }
     load()
     const refresh = async () => {
-      const stored = await readDocument(STORAGE_KEY)
-      if (alive && Array.isArray(stored)) setItems(stored)
+      try {
+        const stored = await readDocument(STORAGE_KEY)
+        if (alive && Array.isArray(stored)) setItems(stored)
+      } catch { /* The current in-memory list remains available. */ }
     }
     const unsubscribe = subscribeToDocument(STORAGE_KEY, refresh)
     return () => { alive = false; unsubscribe() }
