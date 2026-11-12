@@ -6,7 +6,7 @@ import './lab styles/inventory.css'
 
 const EMPTY_RECEIPT = { name: '', category: 'Collection supplies', unit: 'unit', quantity: '', reorderLevel: '', lot: '', expiresAt: '', reason: '' }
 
-export default async async function LabInventoryPage({ data, error, commit, can }) {
+export default function LabInventoryPage({ data, error, commit, can }) {
   const [receipt, setReceipt] = useState(EMPTY_RECEIPT)
   const [adjustment, setAdjustment] = useState({ stockId: '', quantity: '', reason: '' })
   const [issue, setIssue] = useState({ stockId: '', quantity: '', reference: '', reason: '' })
@@ -20,7 +20,7 @@ export default async async function LabInventoryPage({ data, error, commit, can 
   const movements = [...data.lab.movements].filter((movement) => filter === 'All' || movement.type === filter).sort((a, b) => b.at.localeCompare(a.at))
   const alerts = data.lab.stock.filter((item) => item.quantity <= item.reorderLevel).length
 
-  const writeMovement = (nextStock, movement, activityMessage) => {
+  const writeMovement = async (nextStock, movement, activityMessage) => {
     const now = movement.at
     const lab = {
       ...data.lab,
@@ -31,7 +31,7 @@ export default async async function LabInventoryPage({ data, error, commit, can 
     if (await commit({ ...data, lab })) { setMessage(activityMessage); setActionError('') }
   }
 
-  const receive = (event) => {
+  const receive = async (event) => {
     event.preventDefault()
     setMessage('')
     setActionError('')
