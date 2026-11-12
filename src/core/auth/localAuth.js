@@ -1,4 +1,5 @@
-import { getCurrentProfile, selectProfile, signOutLocal } from '@core/storage/localProfiles.js'
+import { getCurrentProfile, LOCAL_PROFILES_KEY, selectProfile, signOutLocal } from '@core/storage/localProfiles.js'
+import { subscribeToDocument } from '@core/storage/localDatabase.js'
 import { ROLE_PERMISSIONS } from './rolePermissions.js'
 
 const listeners = new Set()
@@ -12,7 +13,11 @@ export const localAuth = {
   },
   onAuthChange(listener) {
     listeners.add(listener)
-    return () => listeners.delete(listener)
+    const unsubscribe = subscribeToDocument(LOCAL_PROFILES_KEY, async () => {
+      current = await getCurrentProfile()
+      emit(current ? 'USER_UPDATED' : 'SIGNED_OUT', current)
+    })
+    return () => { listeners.delete(listener); unsubscribe() }
   },
   async signIn(profileId) {
     current = await selectProfile(profileId)
@@ -25,7 +30,7 @@ export const localAuth = {
     emit('SIGNED_OUT', null)
   },
   async getAccess() {
-    if (!current) current = await getCurrentProfile()
+    current = await getCurrentProfile()
     if (!current) throw new Error('Select a local staff profile to continue.')
     return {
       displayName: current.displayName || current.name,
