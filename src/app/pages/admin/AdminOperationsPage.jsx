@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChartCard, Icon, MetricCard, PageHeader, PillBarChart, SegmentedBar, StatusBadge } from '@ui'
+import { ChartCard, Icon, MetricCard, PageHeader, SegmentedBar, StatusBadge } from '@ui'
 import useAdminCollection from './useAdminCollection.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
+import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
 import { uid } from '../cashier/CashierShared.jsx'
+import { exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
   BACKUP_JOBS,
@@ -148,6 +150,74 @@ function SettingsPage({ menu }) {
   const defaults = SETTINGS_DEFAULTS
   const [values, setValues] = useState({})
   const [savedValues, setSavedValues] = useState({})
+  const [loaded, setLoaded] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let alive = true
+    readDocument('admin.settings').then((stored) => {
+      if (!alive) return
+      const next = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+      setValues(next)
+      setSavedValues(next)
+    }).catch((loadError) => alive && setError(loadError instanceof Error ? loadError.message : 'Unable to load local settings.')).finally(() => alive && setLoaded(true))
+    return () => { alive = false }
+  }, [])
+
+  const groups = [...new Set(defaults.map((setting) => setting.group))]
+  const valueOf = (setting) => values[setting.id] ?? setting.value
+  const dirtyCount = defaults.filter((setting) => valueOf(setting) !== (savedValues[setting.id] ?? setting.value)).length
+  const update = (id, value) => { setValues((current) => ({ ...current, [id]: value })); setSaved(false); setError('') }
+  const save = async () => {
+    if (saving) return
+    const invalid = defaults.find((setting) => setting.type === 'number' && (!Number.isFinite(Number(valueOf(setting))) || Number(valueOf(setting)) < 0))
+    if (invalid) { setError(`${invalid.label} must be a valid non-negative number.`); return }
+    setSaving(true)
+    try {
+      const next = Object.fromEntries(defaults.map((setting) => [setting.id, valueOf(setting)]))
+      await writeDocument('admin.settings', next)
+      setValues(next)
+      setSavedValues(next)
+      setSaved(true)
+      setError('')
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : 'Unable to save local settings.')
+    } finally { setSaving(false) }
+  }
+  const reset = () => { setValues(savedValues); setSaved(false); setError('') }
+
+  return (
+    <>
+      <PageHeader title={menu.label} description={menu.summary} actions={<button type="button" className="hms-admin-ops__primary-action" onClick={save} disabled={!loaded || saving}><Icon name="check" size={16} />{saving ? 'Saving…' : 'Save settings'}</button>} />
+      <div className="hms-admin-ops hms-admin-ops--settings">
+        <div className="hms-admin-ops__settings-intro"><span className="hms-admin-ops__settings-icon"><Icon name="sliders" size={21} /></span><div><h2>Local operating preferences</h2><p>These values are stored in this installation. A setting only affects a workflow when that workflow explicitly reads it.</p></div><StatusBadge tone={dirtyCount ? 'warning' : 'neutral'}>{dirtyCount} unsaved changes</StatusBadge></div>
+        {!loaded ? <div className="hms-admin-ops__empty">Loading local settings…</div> : groups.map((group) => (
+          <section className="hms-admin-ops__surface hms-admin-ops__settings-group" key={group}>
+            <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Configuration</span><h2>{group}</h2></div></div>
+            {defaults.filter((setting) => setting.group === group).map((setting) => (
+              <div className="hms-admin-ops__setting" key={setting.id}>
+                <div><strong>{setting.label}</strong><p>{setting.description}</p></div>
+                {setting.type === 'toggle' ? (
+                  <button type="button" role="switch" aria-checked={Boolean(valueOf(setting))} className={`hms-admin-ops__switch${valueOf(setting) ? ' is-on' : ''}`} onClick={() => update(setting.id, !valueOf(setting))}><span /></button>
+                ) : (
+                  <label className="hms-admin-ops__number"><input type="number" min="0" step="any" value={valueOf(setting)} onChange={(event) => update(setting.id, event.target.value)} aria-label={setting.label} /><span>{setting.unit}</span></label>
+                )}
+              </div>
+            ))}
+          </section>
+        ))}
+        {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
+        {saved ? <div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16} />Settings saved in IndexedDB on this device.</div> : null}
+        <div className="hms-admin-ops__settings-actions"><button type="button" className="hms-admin-ops__quiet-action" onClick={reset} disabled={!loaded || !dirtyCount}>Discard changes</button><button type="button" className="hms-admin-ops__primary-action" onClick={save} disabled={!loaded || saving}><Icon name="check" size={16} />Save settings</button></div>
+      </div>
+    </>
+  )
+}) {
+  const defaults = SETTINGS_DEFAULTS
+  const [values, setValues] = useState({})
+  const [savedValues, setSavedValues] = useState({})
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   useEffect(() => {
@@ -210,6 +280,33 @@ function SettingsPage({ menu }) {
 }
 
 function ReportsPage({ menu }) {
+  const { records: patients, loaded: patientsLoaded } = useAdminCollection('reports.patients', [])
+  const { data: workspace, loaded: workspaceLoaded } = useReceptionWorkspace()
+  const patientCount = workspace.patients.length
+  const appointmentCount = workspace.appointments.length
+  const encounterCount = workspace.queue.length
+  const reportRows = [
+    { label: 'Patient directory', count: patientCount, destination: '/reception/patients' },
+    { label: 'Appointments', count: appointmentCount, destination: '/reception/appointments' },
+    { label: 'Encounters', count: encounterCount, destination: '/reception/opd' },
+  ]
+  const ready = patientsLoaded && workspaceLoaded
+  return (
+    <>
+      <PageHeader title={menu.label} description="Operational summaries calculated from the records stored in this local installation." />
+      <div className="hms-admin-ops">
+        <section className="hms-admin-ops__surface">
+          <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown. No sample charts or generated activity are included.</p></div></div>
+          {!ready ? <div className="hms-admin-ops__empty">Reading local records…</div> : (
+            <div className="hms-admin-ops__report-grid">
+              {reportRows.map((item) => <Link to={item.destination} className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19} /></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated now</span><span>Open records <Icon name="chevronRight" size={14} /></span></div></Link>)}
+            </div>
+          )}
+        </section>
+      </div>
+    </>
+  )
+}) {
   const [category, setCategory] = useState('All reports')
   const categories = ['All reports', ...new Set(REPORTS.map((report) => report.category))]
   const reports = category === 'All reports' ? REPORTS : REPORTS.filter((report) => report.category === category)
@@ -394,6 +491,60 @@ function AuditPage({ menu }) {
 }
 
 function BackupPage({ menu }) {
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
+  const [lastExport, setLastExport] = useState('')
+  const downloadBackup = async () => {
+    if (busy) return
+    setBusy(true); setError(''); setMessage('')
+    try {
+      const backup = await exportLocalDatabase()
+      const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const anchor = document.createElement('a')
+      anchor.href = url
+      anchor.download = `ascend-hms-local-backup-${new Date().toISOString().slice(0, 10)}.json`
+      anchor.click()
+      URL.revokeObjectURL(url)
+      setLastExport(new Date().toLocaleString())
+      setMessage(`${backup.documents.length} local data collections exported. Store the file somewhere safe.`)
+    } catch (exportError) {
+      setError(exportError instanceof Error ? exportError.message : 'Unable to export local data.')
+    } finally { setBusy(false) }
+  }
+  const restoreBackup = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || busy) return
+    if (!window.confirm('Restore this backup? All current local Ascend HMS records and profiles will be replaced by the backup contents. Export a backup of the current data first if you need to keep it.')) return
+    setBusy(true); setError(''); setMessage('')
+    try {
+      const backup = JSON.parse(await file.text())
+      await importLocalDatabase(backup)
+      setMessage(`Restored ${backup.documents.length} local data collections. Reload the application to refresh every screen.`)
+    } catch (restoreError) {
+      setError(restoreError instanceof Error ? restoreError.message : 'Unable to restore this backup.')
+    } finally { setBusy(false) }
+  }
+  return (
+    <>
+      <PageHeader title={menu.label} description="Create and restore a backup of this browser or desktop installation." />
+      <div className="hms-admin-ops">
+        <section className="hms-admin-ops__surface">
+          <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local data protection</span><h2>Backup and restore</h2><p>Ascend HMS does not run scheduled or cloud backups. Export a local backup file and store it outside this device.</p></div></div>
+          <div className="hms-admin-ops__backup-grid">
+            <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="download" size={21} /></span><h3>Export local data</h3><p>Download an archive containing IndexedDB records, local staff profiles, preferences and application data.</p><button type="button" className="hms-admin-ops__primary-action" onClick={downloadBackup} disabled={busy}><Icon name="download" size={16} />{busy ? 'Working…' : 'Download backup'}</button>{lastExport ? <small>Last exported: {lastExport}</small> : null}</article>
+            <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="upload" size={21} /></span><h3>Restore from file</h3><p>Replace the local database with a previously exported Ascend HMS backup file.</p><label className="hms-admin-ops__primary-action"> <Icon name="upload" size={16} />Choose backup file<input type="file" accept="application/json,.json" onChange={restoreBackup} disabled={busy} hidden /></label></article>
+          </div>
+          {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
+          {message ? <div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16} />{message}</div> : null}
+          <p className="hms-admin-ops__subtle">Local data is not encrypted by this export routine. Protect backup files with appropriate device and file security. This frontend is not a secure clinical record system.</p>
+        </section>
+      </div>
+    </>
+  )
+}) {
   const completed = BACKUP_JOBS.filter((job) => job.status === 'Completed').length
   const failed = BACKUP_JOBS.filter((job) => job.status === 'Failed').length
   return (
