@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { AuthLayout, Heading, Stack, Text, useToast } from '@ui'
 import { getProfiles } from '@core/storage/localProfiles.js'
 import { WORKSPACES, workspaceHome } from '@core/access/navigation.js'
@@ -12,7 +12,6 @@ export default function SignInPage() {
   const { signIn } = useAuth()
   const toast = useToast()
   const navigate = useNavigate()
-  const location = useLocation()
   const [profiles, setProfiles] = useState([])
   const [workspaceId, setWorkspaceId] = useState('')
   const [loading, setLoading] = useState(true)
