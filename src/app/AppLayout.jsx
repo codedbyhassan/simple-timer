@@ -33,7 +33,7 @@ export default function AppLayout() {
     )
   }
 
-  // The workspace is read from the address. Shared pages (profile, settings, patient record) use the first one.
+  // The workspace is read from the address. Shared pages (profile and settings) use the first available workspace.
   const slug = pathname.split('/')[1]
   const fromUrl = findWorkspaceBySlug(slug)
   const current = access.workspaces.find((w) => w === fromUrl) || access.workspaces[0]
