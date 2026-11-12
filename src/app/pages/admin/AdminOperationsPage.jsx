@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ChartCard, Icon, MetricCard, PageHeader, SegmentedBar, StatusBadge } from '@ui'
+import { Icon, MetricCard, PageHeader, SegmentedBar, StatusBadge } from '@ui'
 import useAdminCollection from './useAdminCollection.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
@@ -11,9 +11,6 @@ import { uid } from '../cashier/CashierShared.jsx'
 import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
-  CATALOGUE_SEED,
-  INVENTORY_SEED,
-  MAPPINGS_SEED,
   REFUNDS_SEED,
   SETTINGS_DEFAULTS,
 } from './operationalData.js'
