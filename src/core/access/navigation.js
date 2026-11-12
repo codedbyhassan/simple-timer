@@ -113,7 +113,7 @@ export const WORKSPACES = [
       m('overview', 'Management dashboard', 'layoutDashboard', ['admin.manage_config', 'reports.view'], 'The hospital-wide management overview.'),
       m('profile', 'Hospital profile', 'building', ['admin.manage_config'], 'Hospital information and configuration.'),
       m('facilities', 'Departments, wards, beds', 'network', ['admin.manage_config'], 'Configure departments, wards and beds, including bed capacity.'),
-      m('users', 'Local staff profiles', 'keyRound', ['admin.manage_users'], 'Manage local staff profiles and frontend role access. These profiles are not secure authentication.'),
+      m('users', 'Local role profiles', 'keyRound', ['admin.manage_users'], 'Manage local role profiles and frontend access. These are not secure accounts.'),
       m('catalogue', 'Service catalogue and prices', 'tag', ['finance.manage_prices', 'admin.manage_catalogue'], 'Service and pricing configuration.'),
       m('mappings', 'Reference mappings', 'link', ['claims.manage_mappings', 'admin.manage_catalogue'], 'Reference and code mapping configuration.'),
       m('settings', 'Operating settings', 'sliders', ['admin.manage_config'], 'Local operating preferences. A value affects a workflow only when that workflow reads it.'),
