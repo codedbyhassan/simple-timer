@@ -88,7 +88,7 @@ function UserForm({ initial, onSave, onCancel, saving, error, isNew }) {
       {error ? <p className="hms-user-detail__error" role="alert">{error}</p> : null}
       <div className="hms-user-detail__form-actions">
         <button type="button" className="hms-user-detail__button is-secondary" onClick={onCancel} disabled={saving}>Cancel</button>
-        <button type="submit" className="hms-user-detail__button is-primary" disabled={saving}>{saving ? 'Saving…' : isNew ? 'Create user' : 'Save changes'}</button>
+        <button type="submit" className="hms-user-detail__button is-primary" disabled={saving}>{saving ? 'Saving…' : isNew ? 'Create profile' : 'Save changes'}</button>
       </div>
     </form>
   )
@@ -151,18 +151,18 @@ export default function UserDetailPage() {
     if (loaded && user && !editing) setInitial({ ...EMPTY_USER, ...user })
   }, [editing, loaded, user])
 
-  const saveUser = (form) => {
+  const saveUser = async (form) => {
     const clean = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]))
-    if (!clean.name || !clean.email || !clean.department || !clean.role) {
-      setError('Complete the required name, email, department and role fields.')
+    if (!clean.name || !clean.department || !clean.role) {
+      setError('Complete the required name, department and role fields.')
       return
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean.email)) {
+    if (clean.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean.email)) {
       setError('Enter a valid email address.')
       return
     }
-    if (users.some((item) => item.email.toLowerCase() === clean.email.toLowerCase() && item.id !== user?.id)) {
-      setError('A user with this email address already exists.')
+    if (clean.email && users.some((item) => item.email?.toLowerCase() === clean.email.toLowerCase() && item.id !== user?.id)) {
+      setError('A profile with this email address already exists.')
       return
     }
 
@@ -174,18 +174,18 @@ export default function UserDetailPage() {
       lastSeen: user?.lastSeen || 'Not signed in',
     }
     const nextUsers = user ? users.map((item) => item.id === user.id ? record : item) : [...users, record]
-    const success = commit(nextUsers)
+    const success = await commit(nextUsers)
     setSaving(false)
     if (success) navigate(`/admin/users/${encodeURIComponent(record.id)}`, { replace: true })
-    else setError(storageError || 'Unable to save this user.')
+    else setError(storageError || 'Unable to save this local profile.')
   }
 
-  const deleteUser = () => {
+  const deleteUser = async () => {
     if (!user) return
     if (!window.confirm(`Delete ${user.name} from the staff directory on this device?`)) return
-    const success = commit(users.filter((item) => item.id !== user.id))
+    const success = await commit(users.filter((item) => item.id !== user.id))
     if (success) navigate('/admin/users', { replace: true })
-    else setError(storageError || 'Unable to delete this user.')
+    else setError(storageError || 'Unable to remove this local profile.')
   }
 
   const beginEdit = () => {
@@ -211,7 +211,7 @@ export default function UserDetailPage() {
     )
   }
 
-  const menu = { label: isNew ? 'Add user' : user.name, summary: isNew ? 'Create a staff account and assign a role.' : `${roleLabel(user.role)} · ${user.department}` }
+  const menu = { label: isNew ? 'Add user' : user.name, summary: isNew ? 'Create a local staff profile and assign a workspace role.' : `${roleLabel(user.role)} · ${user.department}` }
 
   return (
     <>
@@ -231,7 +231,7 @@ export default function UserDetailPage() {
         {!isNew ? <ReadonlyDetails user={user} /> : null}
         {error && !editing ? <p className="hms-user-detail__error" role="alert">{error}</p> : null}
       </div>
-      <Dialog open={editing} title={isNew ? 'New staff account' : 'Edit staff details'} description="Enter the account details and choose a role for this staff member." onClose={cancelEdit} size="large">
+      <Dialog open={editing} title={isNew ? 'New local staff profile' : 'Edit staff details'} description="Enter the account details and choose a role for this staff member." onClose={cancelEdit} size="large">
         <UserForm initial={initial} onSave={saveUser} onCancel={cancelEdit} saving={saving} error={error} isNew={isNew} />
       </Dialog>
     </>
