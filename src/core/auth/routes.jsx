@@ -1,6 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom'
-import { Spinner } from '@ui'
-import { authService } from './authService.js'
+import { Button, EmptyState, Spinner } from '@ui'
 import { useAuth } from './AuthProvider.jsx'
 
 const Splash = () => (
@@ -11,11 +10,10 @@ const Splash = () => (
 
 // Pages that need a signed-in user.
 export function ProtectedRoute({ children }) {
-  const { status } = useAuth()
+  const { status, error } = useAuth()
   const location = useLocation()
   if (status === 'loading') return <Splash />
-  // A password reset link signs the person in. Until they choose a new password they stay on the reset page.
-  if (status === 'signedIn' && authService.isRecovery()) return <Navigate to="/reset-password" replace />
+  if (status === 'error') return <div style={{ minHeight: '100vh', display: 'grid', placeItems: 'center', padding: 24 }}><div style={{ maxWidth: 480 }}><EmptyState icon="database" title="Local database unavailable" action={<Button onClick={() => window.location.reload()}>Retry</Button>}>{error?.message || 'Ascend HMS could not open IndexedDB. Check that browser storage is enabled and available.'}</EmptyState></div></div>
   if (status === 'signedOut') return <Navigate to="/signin" replace state={{ from: location.pathname }} />
   return children
 }
@@ -24,6 +22,6 @@ export function ProtectedRoute({ children }) {
 export function GuestRoute({ children }) {
   const { status } = useAuth()
   if (status === 'loading') return <Splash />
-  if (status === 'signedIn' && !authService.isRecovery()) return <Navigate to="/" replace />
+  if (status === 'signedIn') return <Navigate to="/" replace />
   return children
 }
