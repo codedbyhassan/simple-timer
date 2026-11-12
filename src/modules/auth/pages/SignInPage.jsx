@@ -4,6 +4,7 @@ import { AuthLayout, Heading, Stack, Text, useToast } from '@ui'
 import { getProfiles } from '@core/storage/localProfiles.js'
 import { WORKSPACES, workspaceHome } from '@core/access/navigation.js'
 import { roleLabel } from '@core/access/roles.js'
+import { ROLE_PERMISSIONS } from '@core/auth/rolePermissions.js'
 import { useAuth } from '@core/auth'
 import './local-signin.css'
 
@@ -40,7 +41,7 @@ export default function SignInPage() {
     setBusyRole(role)
     try {
       await signIn(profile.id)
-      navigate(workspaceHome(workspace), { replace: true, state: { from: location.state?.from || null } })
+      navigate(workspaceHome(workspace, (permission) => (ROLE_PERMISSIONS[role] || []).includes(permission)), { replace: true })
     } catch (error) {
       toast.error('Unable to open workspace', error.message)
       setBusyRole('')
