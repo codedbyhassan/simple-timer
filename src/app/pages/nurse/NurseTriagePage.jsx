@@ -28,7 +28,7 @@ function getWarnings(values) {
   })
 }
 
-export default function NurseTriagePage({ data, error, commit, can }) {
+export default async async function NurseTriagePage({ data, error, commit, can }) {
   const [selectedId, setSelectedId] = useState('')
   const [drafts, setDrafts] = useState({})
   const [message, setMessage] = useState('')
@@ -62,7 +62,7 @@ export default function NurseTriagePage({ data, error, commit, can }) {
   const saveDraft = () => {
     if (!selected || !can('nursing.triage')) return
     const queue = data.queue.map((entry) => entry.id === selected.id ? { ...entry, triageDraft: values, triageDraftAt: new Date().toISOString() } : entry)
-    if (commit({ ...data, queue })) setMessage('Triage draft saved on this device.')
+    if (await commit({ ...data, queue })) setMessage('Triage draft saved on this device.')
   }
   const completeTriage = (event) => {
     event.preventDefault()
@@ -86,7 +86,7 @@ export default function NurseTriagePage({ data, error, commit, can }) {
       ...data.nurse,
       activity: [{ id: uid('ACT'), kind: 'Triage', message: `${nameOf(patient)} triage completed · ${finalPriority} handover`, at: triage.recordedAt }, ...data.nurse.activity],
     }
-    if (commit({ ...data, queue, nurse })) {
+    if (await commit({ ...data, queue, nurse })) {
       setMessage(`${nameOf(patient)} handed over to the clinician queue.`)
       setFormError('')
       setDrafts((current) => { const next = { ...current }; delete next[selected.id]; return next })
