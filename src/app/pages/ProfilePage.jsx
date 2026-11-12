@@ -33,7 +33,7 @@ export default function ProfilePage() {
           </div>
         </Card>
         <Card title="Access mode" description="Profiles and permissions are stored in IndexedDB on this device. They do not authenticate a real staff member and do not sync to another installation.">
-          <Button size="md" intent="secondary" onClick={switchProfile}>Switch role profile</Button>
+          <Button size="md" intent="secondary" onClick={switchProfile}>Switch workspace or role</Button>
         </Card>
       </div>
     </>
