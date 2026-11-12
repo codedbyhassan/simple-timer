@@ -4,7 +4,7 @@ import { PharmacyEmpty, PharmacyError, PharmacyField, PharmacyNotice, PharmacyPa
 import './pharmacy styles/shared.css'
 import './pharmacy styles/formulary.css'
 
-export default async function PharmacyFormularyPage({ data, error, commit, can }) {
+export default function PharmacyFormularyPage({ data, error, commit, can }) {
   const [codes, setCodes] = useState({})
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
@@ -12,7 +12,7 @@ export default async function PharmacyFormularyPage({ data, error, commit, can }
   const pending = data.pharmacy.medicines.filter((medicine) => !medicine.nhiaCode)
   const medicines = data.pharmacy.medicines.filter((medicine) => `${medicine.name} ${medicine.category} ${medicine.nhiaCode}`.toLowerCase().includes(query.toLowerCase().trim()))
 
-  const save = (medicine) => {
+  const save = async (medicine) => {
     setMessage('')
     setActionError('')
     if (!can('pharmacy.manage_formulary')) { setActionError('Your role cannot update formulary mappings.'); return }
