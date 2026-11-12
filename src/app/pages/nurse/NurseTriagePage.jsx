@@ -28,7 +28,7 @@ function getWarnings(values) {
   })
 }
 
-export default async async function NurseTriagePage({ data, error, commit, can }) {
+export default function NurseTriagePage({ data, error, commit, can }) {
   const [selectedId, setSelectedId] = useState('')
   const [drafts, setDrafts] = useState({})
   const [message, setMessage] = useState('')
@@ -59,12 +59,12 @@ export default async async function NurseTriagePage({ data, error, commit, can }
     setMessage('')
     setFormError('')
   }
-  const saveDraft = () => {
+  const saveDraft = async () => {
     if (!selected || !can('nursing.triage')) return
     const queue = data.queue.map((entry) => entry.id === selected.id ? { ...entry, triageDraft: values, triageDraftAt: new Date().toISOString() } : entry)
     if (await commit({ ...data, queue })) setMessage('Triage draft saved on this device.')
   }
-  const completeTriage = (event) => {
+  const completeTriage = async (event) => {
     event.preventDefault()
     if (!selected || !can('nursing.triage')) { setFormError('Your role does not have permission to complete triage.'); return }
     if (![values.temperature, values.pulse, values.respiratoryRate, values.oxygenSaturation, values.systolic, values.diastolic, values.weight, values.height, values.glucose, values.complaint].some((value) => String(value || '').trim()) && values.redFlags.length === 0) {
