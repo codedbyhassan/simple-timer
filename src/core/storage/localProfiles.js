@@ -44,8 +44,10 @@ export async function selectProfile(profileId) {
   const profile = profiles.find((item) => item.id === profileId && item.active)
   if (!profile) throw new Error('That local profile is unavailable or inactive.')
   const updated = { ...profile, lastSeen: new Date().toLocaleString(), lastSelectedAt: new Date().toISOString() }
-  await updateDocument(LOCAL_PROFILES_KEY, (current) => (Array.isArray(current) ? current : []).map((item) => item.id === profileId ? updated : item), [])
+  // Persist the selected session before updating the profile directory. The directory subscription
+  // re-reads the active session, so this ordering prevents it from observing the previous user.
   await updateDocument(LOCAL_SESSION_KEY, () => ({ profileId: profile.id, selectedAt: updated.lastSelectedAt }), null)
+  await updateDocument(LOCAL_PROFILES_KEY, (current) => (Array.isArray(current) ? current : []).map((item) => item.id === profileId ? updated : item), [])
   return updated
 }
 
