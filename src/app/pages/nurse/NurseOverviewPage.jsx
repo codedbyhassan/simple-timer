@@ -1,13 +1,17 @@
 import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
 import { NurseEmpty, NurseErrorNotice, NursePatientIdentity, NurseTaskRow, elapsedLabel, patientFor, statusTone } from './NurseShared.jsx'
+import useHospitalSettings from '@core/storage/useHospitalSettings.js'
 import './nurse styles/shared.css'
 import './nurse styles/overview.css'
 
 export default function NurseOverviewPage({ data, error, can }) {
   const nurse = data.nurse
+  const { settings } = useHospitalSettings()
+  const waitLimit = Math.max(1, Number(settings.patient_wait_warning) || 25)
   const awaitingTriage = data.queue.filter((entry) => ['Registered', 'Waiting for triage'].includes(entry.stage))
   const readyForClinician = data.queue.filter((entry) => entry.stage === 'Waiting for clinician')
+  const overdueTriage = awaitingTriage.filter((entry) => entry.arrivedAt && Number.isFinite(Date.parse(entry.arrivedAt)) && Date.now() - Date.parse(entry.arrivedAt) >= waitLimit * 60000).length
   const openTasks = nurse.tasks.filter((task) => task.status !== 'Completed')
   const occupiedBeds = nurse.beds.filter((bed) => bed.status === 'Occupied').length
   const pendingAdmissions = nurse.admissions.filter((item) => item.status === 'Awaiting bed').length
@@ -19,7 +23,7 @@ export default function NurseOverviewPage({ data, error, can }) {
       <NurseErrorNotice error={error} />
       <section className="hms-nurse__welcome"><div><span className="hms-nurse__eyebrow">{new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' })} · Nursing station</span><h2>Care team, at a glance</h2><p>Keep arrivals moving, stay ahead of due observations and coordinate the ward handover.</p></div><span className="hms-nurse__welcome-icon"><Icon name="heartPulse" size={27} /></span></section>
       <div className="hms-nurse__metrics">
-        <MetricCard label="Awaiting triage" value={awaitingTriage.length} icon="heartPulse" caption="Checked in, waiting for nursing" />
+        <MetricCard label="Awaiting triage" value={awaitingTriage.length} icon="heartPulse" caption={`${overdueTriage} beyond ${waitLimit} min target`} />
         <MetricCard label="Ready for clinician" value={readyForClinician.length} icon="stethoscope" caption="Triage handover completed" />
         <MetricCard label="Open nursing tasks" value={openTasks.length} icon="checkSquare" caption={`${openTasks.filter((task) => task.status === 'Overdue').length} overdue`} />
         <MetricCard label="Occupied beds" value={`${occupiedBeds} / ${nurse.beds.length}`} icon="bed" caption={`${pendingAdmissions} admission requests waiting`} />
