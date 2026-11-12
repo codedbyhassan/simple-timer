@@ -7,6 +7,7 @@ import usePharmacyWorkspace from '../pharmacy/usePharmacyWorkspace.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useClaimsWorkspace from '../claims/useClaimsWorkspace.js'
 import useHospitalSettings from '@core/storage/useHospitalSettings.js'
+import useMinuteClock from '@core/storage/useMinuteClock.js'
 import './admin styles/managementdashboard.css'
 
 const Metric = ({ label, value, detail, to, icon }) => (
@@ -26,6 +27,7 @@ export default function ManagementDashboardPage({ menu }) {
   const cashier = useCashierWorkspace()
   const claims = useClaimsWorkspace()
   const { settings, loaded: settingsLoaded } = useHospitalSettings()
+  const now = useMinuteClock()
   const data = reception.data
   const today = new Date().toISOString().slice(0, 10)
   const todayAppointments = data.appointments.filter((item) => item.date === today)
@@ -39,8 +41,8 @@ export default function ManagementDashboardPage({ menu }) {
   const waitLimit = Math.max(1, Number(settings.patient_wait_warning) || 25)
   const bedLimit = Math.min(100, Math.max(1, Number(settings.bed_occupancy_warning) || 85))
   const labLimit = Math.max(1, Number(settings.lab_turnaround_target) || 150)
-  const waitingAlerts = openQueue.filter((item) => item.arrivedAt && Number.isFinite(Date.parse(item.arrivedAt)) && Date.now() - Date.parse(item.arrivedAt) >= waitLimit * 60000)
-  const labAlerts = pendingLabs.filter((item) => item.orderedAt && Number.isFinite(Date.parse(item.orderedAt)) && Date.now() - Date.parse(item.orderedAt) >= labLimit * 60000)
+  const waitingAlerts = openQueue.filter((item) => item.arrivedAt && Number.isFinite(Date.parse(item.arrivedAt)) && now - Date.parse(item.arrivedAt) >= waitLimit * 60000)
+  const labAlerts = pendingLabs.filter((item) => item.orderedAt && Number.isFinite(Date.parse(item.orderedAt)) && now - Date.parse(item.orderedAt) >= labLimit * 60000)
   const occupancy = beds.length ? occupiedBeds / beds.length * 100 : 0
   const occupancyAlert = beds.length > 0 && occupancy >= bedLimit
   const loaded = [reception, nursing, laboratory, pharmacy, cashier, claims].every((item) => item.loaded) && settingsLoaded
