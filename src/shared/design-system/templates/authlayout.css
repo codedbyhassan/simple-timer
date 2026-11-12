@@ -18,3 +18,10 @@
   user-select: none;
   pointer-events: none;
 }
+
+@media (max-width: 860px) {
+  .hms-auth { grid-template-columns: minmax(0, 1fr); }
+  .hms-auth__side { min-height: 100vh; min-height: 100dvh; padding: var(--space-4); }
+  .hms-auth__panel { display: none; }
+  .hms-auth__card { max-width: 620px; }
+}
