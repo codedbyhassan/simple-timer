@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { initialiseWorkspace, readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
+import { appendAuditEvent, initialiseWorkspace, readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
 
 export const HOSPITAL_WORKSPACE_KEY = 'hospital.workspace.v2'
 
@@ -41,6 +41,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
   const commit = useCallback(async (next) => {
     try {
       await writeDocument(HOSPITAL_WORKSPACE_KEY, next)
+      try { await appendAuditEvent({ action: 'Updated operational records', resource: 'Hospital workspace', category: 'Operations' }) } catch { /* The clinical write remains saved; audit failures are surfaced separately. */ }
       setData(next)
       setError('')
       return true
