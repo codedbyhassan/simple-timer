@@ -53,7 +53,7 @@ export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
     if (result.error) { setFormError(result.error); return }
     if (await commit(result.data)) { setMessage(result.message); setSelectedPatientId(patientId) }
   }
-  const createPatient = async async (event) => {
+  const createPatient = async (event) => {
     event.preventDefault()
     if (!can('patients.create')) { setFormError('Your role does not have permission to register patients.'); return }
     if (values.coverage === 'NHIS' && values.memberNumber && !/^\d{8}(\d{2})?$/.test(values.memberNumber)) { setFormError('NHIS membership numbers must contain 8 or 10 digits.'); setStep(1); return }
