@@ -7,7 +7,7 @@ import './nurse styles/tasks.css'
 
 const EMPTY_TASK = { patientId: '', wardId: '', type: TASK_TYPES[0], note: '', priority: 'Routine' }
 
-export default async async function NurseTasksPage({ data, error, commit, can }) {
+export default function NurseTasksPage({ data, error, commit, can }) {
   const [filter, setFilter] = useState('Open')
   const [showForm, setShowForm] = useState(false)
   const [values, setValues] = useState(EMPTY_TASK)
