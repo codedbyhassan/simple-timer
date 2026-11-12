@@ -10,7 +10,7 @@ import './pharmacy styles/dispensing.css'
 
 const remainingFor = (item) => Math.max(0, item.prescribedQuantity - item.dispensedQuantity)
 
-export default async async function PharmacyDispensingPage({ data, error, commit, can }) {
+export default function PharmacyDispensingPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selection, setSelection] = useState({ key: '', id: '' })
   const [quantities, setQuantities] = useState({})
@@ -91,7 +91,7 @@ export default async async function PharmacyDispensingPage({ data, error, commit
     if (!validation) setDialogOpen(true)
   }
 
-  const startReview = () => {
+  const startReview = async () => {
     if (!prescription || !can('pharmacy.verify') || prescription.status !== 'New') return
     const now = new Date().toISOString()
     const pharmacy = {
@@ -105,7 +105,7 @@ export default async async function PharmacyDispensingPage({ data, error, commit
     }
   }
 
-  const dispense = () => {
+  const dispense = async () => {
     const validation = validate()
     if (validation) { setDialogOpen(false); setActionError(validation); return }
     const now = new Date().toISOString()
