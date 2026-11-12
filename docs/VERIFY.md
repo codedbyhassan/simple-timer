@@ -13,7 +13,7 @@ This project has no backend. Validation focuses on the local browser/Electron ex
 
 ## First-run behaviour
 
-- [ ] A clean browser profile opens the local staff profile selector.
+- [ ] A clean browser profile opens the local role profile selector.
 - [ ] No network or environment configuration is required.
 - [ ] A first-run database is created in IndexedDB.
 - [ ] All supported local staff roles can be selected.
@@ -22,7 +22,7 @@ This project has no backend. Validation focuses on the local browser/Electron ex
 
 ## Persistence and data integrity
 
-- [ ] Reload preserves local profiles and selected profile.
+- [ ] Reload preserves local role profiles, selected profile, theme and sidebar preference.
 - [ ] Reload preserves patient, appointment, encounter, clinical, laboratory, pharmacy, inventory, cashier and claims records.
 - [ ] Two tabs on the same browser profile receive IndexedDB updates.
 - [ ] Concurrent edits to different records do not overwrite unrelated changes.
@@ -61,3 +61,26 @@ Test at 320px, 375px, 680px, 768px, 1024px, 1280px, 1440px and 1920px.
 ## Security and intended use
 
 Local profiles and browser-side permission checks are not secure authentication. Anyone with access to the same browser profile or desktop installation may access local records. This frontend is not suitable for storing real patient data or processing real payments without a separate security and compliance review.
+
+## Browser smoke test
+
+Install Playwright and Chromium once:
+
+```bash
+python -m pip install playwright
+python -m playwright install chromium
+```
+
+Start the Vite server in one terminal:
+
+```bash
+npm run dev -- --host 127.0.0.1 --port 5199
+```
+
+Run the local-first browser checks in another terminal:
+
+```bash
+python tests/e2e/shell_flows.py
+```
+
+The CI workflow runs these checks in Chromium after lint, contrast and production/development builds.
