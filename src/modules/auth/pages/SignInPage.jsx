@@ -44,7 +44,7 @@ export default function SignInPage() {
     <AuthLayout>
       <Stack gap="xs">
         <Heading>Choose a staff profile</Heading>
-        <Text tone="muted">Select a local staff role to open its workspace. This does not verify a real person’s identity.</Text>
+        <Text tone="muted">Select a local role profile to open its workspace. This does not verify a real person’s identity.</Text>
       </Stack>
       <form className="hms-local-signin" onSubmit={onSubmit}>
         {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
