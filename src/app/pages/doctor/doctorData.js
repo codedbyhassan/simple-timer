@@ -1,7 +1,7 @@
 import { LAB_SEED } from '../lab/labData.js'
 import { NURSE_SEED } from '../nurse/nurseData.js'
 
-export const DOCTOR_SEED = {
+const DOCTOR_SEED_REFERENCE = {
   ...LAB_SEED,
   nurse: NURSE_SEED.nurse,
   doctor: {
@@ -13,6 +13,10 @@ export const DOCTOR_SEED = {
       { id: 'DACT-002', kind: 'Results', message: 'Review verified and critical results in the results inbox.' },
     ],
   },
+}
+
+export const DOCTOR_SEED = {
+  ...DOCTOR_SEED_REFERENCE, doctor: { ...DOCTOR_SEED_REFERENCE.doctor, drafts: [], reviewedResults: [], referrals: [], activity: [] },
 }
 
 export const DIAGNOSIS_OPTIONS = [
