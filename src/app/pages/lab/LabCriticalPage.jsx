@@ -12,7 +12,7 @@ const criticalValues = (data, order) => (testFor(data, order.testId)?.components
   flag: resultFlag(component, order.resultValues?.[component.key] ?? ''),
 })).filter((item) => item.flag === 'Critical')
 
-export default function LabCriticalPage({ data, error, commit, can }) {
+export default async async function LabCriticalPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [recipient, setRecipient] = useState('')
@@ -39,7 +39,7 @@ export default function LabCriticalPage({ data, error, commit, can }) {
       notifications: [{ id: uid('LNOT'), orderId: selected.id, kind: 'Critical result notification', message: `Critical result for ${selected.id} communicated to ${recipient.trim()} by ${channel}.`, at: now, recipient: selected.orderedBy, read: false }, ...data.lab.notifications],
       activity: [{ id: uid('LACT'), kind: 'Critical', message: `Critical result communicated to ${recipient.trim()} · ${selected.id}`, at: now }, ...data.lab.activity],
     }
-    if (commit({ ...data, lab })) {
+    if (await commit({ ...data, lab })) {
       setMessage(`Notification record saved for ${selected.id}. Record the clinician's acknowledgement separately.`)
       setActionError('')
     }
@@ -59,7 +59,7 @@ export default function LabCriticalPage({ data, error, commit, can }) {
       acknowledgedCritical: [...new Set([...data.lab.acknowledgedCritical, selected.id])],
       activity: [{ id: uid('LACT'), kind: 'Critical', message: `Critical result acknowledged by ${acknowledgedBy.trim()} · ${selected.id}`, at: now }, ...data.lab.activity],
     }
-    if (commit({ ...data, lab })) setMessage(`Clinician acknowledgement recorded for ${selected.id}. Result verification is now available.`)
+    if (await commit({ ...data, lab })) setMessage(`Clinician acknowledgement recorded for ${selected.id}. Result verification is now available.`)
   }
 
   return <>
