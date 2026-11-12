@@ -10,7 +10,7 @@ import './pharmacy styles/dispensing.css'
 
 const remainingFor = (item) => Math.max(0, item.prescribedQuantity - item.dispensedQuantity)
 
-export default function PharmacyDispensingPage({ data, error, commit, can }) {
+export default async async function PharmacyDispensingPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selection, setSelection] = useState({ key: '', id: '' })
   const [quantities, setQuantities] = useState({})
@@ -99,7 +99,7 @@ export default function PharmacyDispensingPage({ data, error, commit, can }) {
       prescriptions: data.pharmacy.prescriptions.map((rx) => rx.id === prescription.id ? { ...rx, status: 'In progress', verifiedAt: now } : rx),
       activity: [{ id: uid('ACT-PH'), type: 'Queue', message: `${prescription.id} review started`, at: now }, ...data.pharmacy.activity],
     }
-    if (commit({ ...data, pharmacy })) {
+    if (await commit({ ...data, pharmacy })) {
       setMessage(`${prescription.id} is now in progress.`)
       setActionError('')
     }
@@ -171,7 +171,7 @@ export default function PharmacyDispensingPage({ data, error, commit, can }) {
       movements: [...movementRows, ...data.pharmacy.movements],
       activity: [{ id: uid('ACT-PH'), type: 'Dispense', message: `${chosenLines.length} item${chosenLines.length === 1 ? '' : 's'} dispensed for ${prescription.id}${nextStatus === 'Partial' ? ' · partial supply' : ''}`, at: now }, ...data.pharmacy.activity],
     }
-    if (commit({ ...data, queue: updatedQueue, payments: [charge, ...data.payments], pharmacy })) {
+    if (await commit({ ...data, queue: updatedQueue, payments: [charge, ...data.payments], pharmacy })) {
       setMessage(`${prescription.id} recorded as ${nextStatus.toLowerCase()}. Stock movements and a cashier charge were added.`)
       setDialogOpen(false)
       setShowDispenseForm(false)
