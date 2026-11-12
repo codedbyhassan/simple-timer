@@ -2,16 +2,18 @@ import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
 import { NurseEmpty, NurseErrorNotice, NursePatientIdentity, NurseTaskRow, elapsedLabel, patientFor, statusTone } from './NurseShared.jsx'
 import useHospitalSettings from '@core/storage/useHospitalSettings.js'
+import useMinuteClock from '@core/storage/useMinuteClock.js'
 import './nurse styles/shared.css'
 import './nurse styles/overview.css'
 
 export default function NurseOverviewPage({ data, error, can }) {
   const nurse = data.nurse
   const { settings } = useHospitalSettings()
+  const now = useMinuteClock()
   const waitLimit = Math.max(1, Number(settings.patient_wait_warning) || 25)
   const awaitingTriage = data.queue.filter((entry) => ['Registered', 'Waiting for triage'].includes(entry.stage))
   const readyForClinician = data.queue.filter((entry) => entry.stage === 'Waiting for clinician')
-  const overdueTriage = awaitingTriage.filter((entry) => entry.arrivedAt && Number.isFinite(Date.parse(entry.arrivedAt)) && Date.now() - Date.parse(entry.arrivedAt) >= waitLimit * 60000).length
+  const overdueTriage = awaitingTriage.filter((entry) => entry.arrivedAt && Number.isFinite(Date.parse(entry.arrivedAt)) && now - Date.parse(entry.arrivedAt) >= waitLimit * 60000).length
   const openTasks = nurse.tasks.filter((task) => task.status !== 'Completed')
   const occupiedBeds = nurse.beds.filter((bed) => bed.status === 'Occupied').length
   const pendingAdmissions = nurse.admissions.filter((item) => item.status === 'Awaiting bed').length
