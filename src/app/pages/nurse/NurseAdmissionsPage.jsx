@@ -4,7 +4,7 @@ import { NurseEmpty, NurseErrorNotice, NurseField, NurseMessage, NursePatientIde
 import './nurse styles/shared.css'
 import './nurse styles/admissions.css'
 
-export default function NurseAdmissionsPage({ data, error, commit, can }) {
+export default async async function NurseAdmissionsPage({ data, error, commit, can }) {
   const [patientId, setPatientId] = useState('')
   const [wardId, setWardId] = useState('')
   const [reason, setReason] = useState('')
@@ -24,7 +24,7 @@ export default function NurseAdmissionsPage({ data, error, commit, can }) {
     if (!patientId || !wardId || !reason.trim()) { setFormError('Select a patient, ward and reason for admission.'); return }
     const request = { id: uid('ADM'), patientId, requestedAt: new Date().toISOString(), department: nurse.wards.find((ward) => ward.id === wardId)?.name || 'Inpatient', reason: reason.trim(), priority, status: 'Awaiting bed', wardId, bedId: '' }
     const nextNurse = { ...nurse, admissions: [request, ...nurse.admissions] }
-    if (commit({ ...data, nurse: nextNurse })) {
+    if (await commit({ ...data, nurse: nextNurse })) {
       setPatientId('')
       setWardId('')
       setReason('')
@@ -48,7 +48,7 @@ export default function NurseAdmissionsPage({ data, error, commit, can }) {
       tasks: [{ id: uid('TASK'), patientId: request.patientId, wardId: bed.wardId, type: 'Vital-sign round', note: 'Initial ward observation', dueAt: now, status: 'Due', priority: request.priority }, ...nurse.tasks],
       activity: [{ id: uid('ACT'), kind: 'Admission', message: `${nameOf(patient)} placed in bed ${bed.id}`, at: now }, ...nurse.activity],
     }
-    if (commit({ ...data, nurse: nextNurse })) {
+    if (await commit({ ...data, nurse: nextNurse })) {
       setMessage(`${nameOf(patient)} admitted to bed ${bed.id}.`)
       setFormError('')
       setBedDialogRequestId('')
