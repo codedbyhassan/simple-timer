@@ -28,7 +28,7 @@ function download(xml, name) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export default function ClaimsExportsPage({ data, error, commit, can }) {
+export default async function ClaimsExportsPage({ data, error, commit, can }) {
   const ready = data.claims.records.filter((claim) => claim.status === 'Ready')
   const [selected, setSelected] = useState([])
   const [actionError, setActionError] = useState('')
@@ -51,7 +51,7 @@ export default function ClaimsExportsPage({ data, error, commit, can }) {
         batches: [batch, ...data.claims.batches],
         activity: [{ id: uid('CACT'), message: `Export batch ${batch.id} prepared for download (${batch.count} claim(s)).`, at: now }, ...data.claims.activity],
       }
-      if (commit({ ...data, claims })) {
+      if (await commit({ ...data, claims })) {
         download(xml, `${batch.id}.xml`)
         setSelected([])
         setMessage(`Downloaded XML for ${batch.count} claim(s). SHA-256: ${fileHash}. This file is not certified for CLAIM-it.`)
