@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useState } from 'react'
-import { appendAuditEvent, readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { appendAuditEvent, mergeChanged, readDocument, subscribeToDocument, updateDocument } from './localDatabase.js'
 
 export default function useIndexedCollection(key, defaults = []) {
   const [records, setRecords] = useState(defaults)
   const [loaded, setLoaded] = useState(false)
   const [error, setError] = useState('')
+  const baseRef = useRef(defaults)
 
   useEffect(() => {
     let alive = true
     const load = async () => {
       try {
         const saved = await readDocument(key)
-        if (alive) setRecords(Array.isArray(saved) ? saved : defaults)
+        if (alive) { baseRef.current = Array.isArray(saved) ? saved : defaults; setRecords(baseRef.current) }
       } catch (loadError) {
         if (alive) setError(loadError instanceof Error ? loadError.message : 'Unable to load local records.')
       } finally {
@@ -22,7 +23,7 @@ export default function useIndexedCollection(key, defaults = []) {
     const refresh = async () => {
       try {
         const saved = await readDocument(key)
-        if (alive && Array.isArray(saved)) setRecords(saved)
+        if (alive && Array.isArray(saved)) { baseRef.current = saved; setRecords(saved) }
       } catch (loadError) {
         if (alive) setError(loadError instanceof Error ? loadError.message : 'Unable to refresh local records.')
       }
@@ -33,9 +34,10 @@ export default function useIndexedCollection(key, defaults = []) {
 
   const commit = useCallback(async (next) => {
     try {
-      await writeDocument(key, next)
+      const saved = await updateDocument(key, (current) => mergeChanged(baseRef.current, next, current || defaults), defaults)
+      baseRef.current = saved
       try { await appendAuditEvent({ action: 'Updated local configuration', resource: key, category: 'Administration' }) } catch { /* Keep the primary save successful if the audit write fails. */ }
-      setRecords(next)
+      setRecords(saved)
       setError('')
       return true
     } catch (saveError) {
