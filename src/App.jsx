@@ -35,7 +35,7 @@ const Router = __HMS_TARGET__ === 'electron' ? HashRouter : BrowserRouter
 const adminWorkspace = WORKSPACES.find((workspace) => workspace.id === 'admin')
 const adminUsersMenu = adminWorkspace?.menus.find((menu) => menu.slug === 'users')
 const adminOperationsSlugs = ['catalogue', 'mappings', 'settings', 'reports', 'refunds', 'inventory', 'audit', 'backup']
-const adminDetailSlugs = ['catalogue', 'mappings', 'reports', 'refunds', 'inventory', 'backup']
+const adminDetailSlugs = ['catalogue', 'mappings']
 const receptionWorkspace = WORKSPACES.find((workspace) => workspace.id === 'reception')
 const receptionPatientsMenu = receptionWorkspace?.menus.find((menu) => menu.slug === 'patients')
 
