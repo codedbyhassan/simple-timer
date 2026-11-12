@@ -7,7 +7,7 @@ import './nurse styles/tasks.css'
 
 const EMPTY_TASK = { patientId: '', wardId: '', type: TASK_TYPES[0], note: '', priority: 'Routine' }
 
-export default function NurseTasksPage({ data, error, commit, can }) {
+export default async async function NurseTasksPage({ data, error, commit, can }) {
   const [filter, setFilter] = useState('Open')
   const [showForm, setShowForm] = useState(false)
   const [values, setValues] = useState(EMPTY_TASK)
@@ -26,7 +26,7 @@ export default function NurseTasksPage({ data, error, commit, can }) {
       tasks: data.nurse.tasks.map((item) => item.id === task.id ? { ...item, status, completedAt: status === 'Completed' ? now : '' } : item),
       activity: [{ id: uid('ACT'), kind: 'Task', message: `${task.type} · ${nameOf(patientFor(data, task.patientId))} ${status === 'Completed' ? 'completed' : 'updated'}`, at: now }, ...data.nurse.activity],
     }
-    if (commit({ ...data, nurse })) setMessage(status === 'Completed' ? 'Task marked complete.' : 'Task status updated.')
+    if (await commit({ ...data, nurse })) setMessage(status === 'Completed' ? 'Task marked complete.' : 'Task status updated.')
   }
   const addTask = (event) => {
     event.preventDefault()
@@ -34,7 +34,7 @@ export default function NurseTasksPage({ data, error, commit, can }) {
     if (!values.patientId || !values.wardId) { setFormError('Select a patient and ward for this task.'); return }
     const task = { ...values, id: uid('TASK'), note: values.note.trim() || 'Nursing follow-up', dueAt: new Date().toISOString(), status: 'Due', createdAt: new Date().toISOString() }
     const nurse = { ...data.nurse, tasks: [task, ...data.nurse.tasks] }
-    if (commit({ ...data, nurse })) {
+    if (await commit({ ...data, nurse })) {
       setValues(EMPTY_TASK)
       setShowForm(false)
       setFormError('')
