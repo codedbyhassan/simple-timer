@@ -135,66 +135,6 @@ function EditableRecord({ module, menu }) {
       </Dialog>
     </>
   )
-}) {
-  const { recordId } = useParams()
-  const navigate = useNavigate()
-  const detail = DETAILS[module]
-  const { records, loaded, error: storageError, commit } = useAdminCollection(detail.key, detail.defaults)
-  const isNew = recordId === 'new'
-  const record = useMemo(() => records.find((item) => item[detail.id] === recordId), [records, recordId, detail.id])
-  const [editing, setEditing] = useState(isNew)
-  const [formError, setFormError] = useState('')
-  const title = detail.title(record)
-
-  const save = (values) => {
-    if (module === 'catalogue' && (!values.name?.trim() || !values.category?.trim() || !values.code?.trim() || !Number.isFinite(Number(values.price)))) {
-      setFormError('Enter a service name, category, code, and valid price.')
-      return
-    }
-    if (module === 'mappings' && (!values.source?.trim() || !values.sourceCode?.trim())) {
-      setFormError('Source name and source code are required.')
-      return
-    }
-    const updated = {
-      ...values,
-      ...(module === 'catalogue' ? {
-        id: record?.id || `svc-${globalThis.crypto?.randomUUID?.() || Date.now()}`,
-        price: Number(values.price),
-        status: values.claimCode?.trim() ? values.status === 'Needs mapping' ? 'Active' : values.status : 'Needs mapping',
-        updated: new Date().toLocaleDateString(),
-      } : {
-        id: record?.id || `map-${globalThis.crypto?.randomUUID?.() || Date.now()}`,
-        status: values.targetCode?.trim() ? 'Mapped' : 'Needs review',
-        reviewed: new Date().toLocaleDateString(),
-      }),
-    }
-    const next = record ? records.map((item) => item.id === record.id ? updated : item) : [...records, updated]
-    if (commit(next)) navigate(`/admin/${module}/${encodeURIComponent(updated.id)}`, { replace: true })
-  }
-
-  const remove = () => {
-    if (!window.confirm(`Remove ${title} from this browser's ${module} list?`)) return
-    if (commit(records.filter((item) => item.id !== record.id))) navigate(`/admin/${module}`, { replace: true })
-  }
-
-  if (!loaded) return <div className="hms-admin-ops__empty">Loading record…</div>
-  if (storageError) return <div className="hms-admin-ops__error" role="alert">{storageError}</div>
-  if (!isNew && !record) return <><PageHeader title="Record not found" /><div className="hms-admin-ops__empty"><Link to={`/admin/${module}`}>Return to {menu.label}</Link></div></>
-
-  return (
-    <>
-      <PageHeader title={isNew ? `Add ${module === 'catalogue' ? 'service' : 'mapping'}` : title} description={menu.summary} actions={<div className="hms-admin-ops__detail-actions"><Link className="hms-admin-ops__quiet-action" to={`/admin/${module}`}><Icon name="arrowLeft" size={16} />Back to {menu.label}</Link>{!editing && !isNew ? <button className="hms-admin-ops__primary-action" type="button" onClick={() => setEditing(true)}><Icon name="edit" size={16} />Edit</button> : null}{!isNew && !editing ? <button className="hms-admin-ops__quiet-action is-danger" type="button" onClick={remove}><Icon name="trash" size={16} />Delete</button> : null}</div>} />
-      <div className="hms-admin-ops">
-        <section className="hms-admin-ops__surface hms-admin-ops__record-detail">
-          <div className="hms-admin-ops__record-heading"><span className="hms-admin-ops__record-icon"><Icon name={module === 'catalogue' ? 'tag' : 'link'} size={21} /></span><div><span className="hms-admin-ops__eyebrow">{module === 'catalogue' ? record?.category || 'New service' : record?.type || 'New mapping'}</span><h2>{title}</h2><p>{record?.code || record?.sourceCode || 'New record'}</p></div>{record?.status ? <StatusBadge tone={record.status === 'Mapped' || record.status === 'Active' ? 'success' : 'warning'}>{record.status}</StatusBadge> : null}</div>
-          {record ? <RecordDetails module={module} record={record} /> : null}
-        </section>
-      </div>
-      <Dialog open={editing} title={isNew ? `Add ${module === 'catalogue' ? 'service' : 'mapping'}` : `Edit ${title}`} description="Update the record details." onClose={() => isNew ? navigate(`/admin/${module}`) : setEditing(false)} size="large">
-        <RecordForm record={record || { name: '', category: '', code: '', claimCode: '', price: '', source: '', sourceCode: '', target: '', targetCode: '', type: 'Service tariff' }} module={module} onSave={save} onCancel={() => isNew ? navigate(`/admin/${module}`) : setEditing(false)} error={formError || storageError} />
-      </Dialog>
-    </>
-  )
 }
 
 function RefundDetail({ menu }) {
