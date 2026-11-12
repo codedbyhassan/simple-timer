@@ -14,7 +14,7 @@ export const ROLE_LABELS = {
   claims_officer: 'Claims officer',
   store_keeper: 'Store keeper',
   bed_manager: 'Bed manager',
-  management_viewer: 'Management',
+  management_viewer: 'Management viewer',
 }
 
 export const roleLabel = (code) => ROLE_LABELS[code] || code.replace(/_/g, ' ')
