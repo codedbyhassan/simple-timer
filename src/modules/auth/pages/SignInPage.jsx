@@ -25,7 +25,7 @@ export default function SignInPage() {
       setSelected(active[0]?.id || '')
     }).catch((error) => alive && setProfileError(error instanceof Error ? error.message : 'Unable to load local profiles.')).finally(() => alive && setLoading(false))
     return () => { alive = false }
-  }, [toast])
+  }, [])
 
   const onSubmit = async (event) => {
     event.preventDefault()
