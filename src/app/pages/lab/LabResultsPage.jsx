@@ -5,7 +5,7 @@ import { LabEmpty, LabError, LabField, LabNotice, LabPanel, LabPatient, LabStatu
 import './lab styles/shared.css'
 import './lab styles/results.css'
 
-export default function LabResultsPage({ data, error, commit, can }) {
+export default async async function LabResultsPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [drafts, setDrafts] = useState({})
@@ -53,7 +53,7 @@ export default function LabResultsPage({ data, error, commit, can }) {
       activity: [{ id: uid('LACT'), kind: 'Result', message: `${test?.name || 'Result'} entered for ${selected.id}${critical ? ' · critical value detected' : ''}`, at: now }, ...data.lab.activity],
       notifications: critical ? [{ id: uid('LNOT'), orderId: selected.id, kind: 'Critical result', message: `Critical result entered for ${selected.id}. Clinician notification and acknowledgement are required.`, at: now, recipient: selected.orderedBy, read: false }, ...data.lab.notifications] : data.lab.notifications,
     }
-    if (commit({ ...data, lab })) {
+    if (await commit({ ...data, lab })) {
       setDrafts((current) => { const next = { ...current }; delete next[selected.id]; return next })
       setMessage(critical ? 'Result saved. A critical-result follow-up was added; notify the clinician and record acknowledgement before verification.' : 'Result saved for separate verification.')
       setShowResultEntry(false)
@@ -91,7 +91,7 @@ export default function LabResultsPage({ data, error, commit, can }) {
       activity: [{ id: uid('LACT'), kind: 'Verification', message: `Result verified · ${selected.id}`, at: now }, ...data.lab.activity],
       notifications: [{ id: uid('LNOT'), orderId: selected.id, kind: 'Verified result', message: `Verified result is available for ${selected.id}.`, at: now, recipient: selected.orderedBy, read: false }, ...data.lab.notifications],
     }
-    if (commit({ ...data, queue, payments: [payment, ...data.payments], lab })) setMessage('Result verified. A laboratory charge and clinician notification were added to the shared workspace.')
+    if (await commit({ ...data, queue, payments: [payment, ...data.payments], lab })) setMessage('Result verified. A laboratory charge and clinician notification were added to the shared workspace.')
   }
 
   return <>
