@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Icon, PageHeader, StatusBadge } from '@ui'
-import { appendAuditEvent, readDocument, writeDocument } from '@core/storage/localDatabase.js'
+import { appendAuditEvent, readDocument, subscribeToDocument, writeDocument } from '@core/storage/localDatabase.js'
 import './admin styles/hospitalprofile.css'
 
 const FIELDS = [
@@ -17,16 +17,24 @@ export default function HospitalProfilePage({ menu }) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [saved, setSaved] = useState(false)
+  const [dirty, setDirty] = useState(false)
 
   useEffect(() => {
     let alive = true
-    readDocument('admin.hospital-profile').then((profile) => {
-      if (alive && profile && typeof profile === 'object') setValues({ ...EMPTY_PROFILE, ...profile })
-    }).catch((loadError) => alive && setError(loadError instanceof Error ? loadError.message : 'Unable to load the local facility profile.')).finally(() => alive && setLoaded(true))
-    return () => { alive = false }
-  }, [])
+    const refresh = async () => {
+      try {
+        const profile = await readDocument('admin.hospital-profile')
+        if (alive && !dirty && profile && typeof profile === 'object') setValues({ ...EMPTY_PROFILE, ...profile })
+      } catch (loadError) {
+        if (alive) setError(loadError instanceof Error ? loadError.message : 'Unable to load the local facility profile.')
+      } finally { if (alive) setLoaded(true) }
+    }
+    refresh()
+    const unsubscribe = subscribeToDocument('admin.hospital-profile', refresh)
+    return () => { alive = false; unsubscribe() }
+  }, [dirty])
 
-  const update = (key, value) => { setValues((current) => ({ ...current, [key]: value })); setSaved(false) }
+  const update = (key, value) => { setValues((current) => ({ ...current, [key]: value })); setSaved(false); setDirty(true) }
   const save = async (event) => {
     event.preventDefault()
     if (saving) return
@@ -34,7 +42,7 @@ export default function HospitalProfilePage({ menu }) {
     try {
       await writeDocument('admin.hospital-profile', values)
       await appendAuditEvent({ action: 'Updated facility profile', resource: values.registeredName || 'Hospital profile', category: 'Administration' })
-      setSaved(true)
+      setSaved(true); setDirty(false)
     } catch (saveError) {
       setError(saveError instanceof Error ? saveError.message : 'Unable to save the facility profile.')
     } finally { setSaving(false) }
