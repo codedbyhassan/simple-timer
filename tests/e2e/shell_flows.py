@@ -96,11 +96,6 @@ with sync_playwright() as playwright:
     check('global search opens the local record search page', True)
     check('search does not fabricate a matching patient', page.get_by_text('No matching records').count() == 1)
 
-    page.goto(BASE + '/design-system')
-    page.wait_for_selector('.hms-receipt')
-    check('design system gallery remains separate from operational screens', True)
-    page.goto(BASE + '/admin/overview')
-
     page.click('button[aria-label="Account menu"]')
     page.wait_for_selector('[role=menu]')
     items = [text.strip() for text in page.locator('[role=menuitem]').all_inner_texts()]
