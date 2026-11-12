@@ -122,14 +122,14 @@ with sync_playwright() as playwright:
     page.wait_for_timeout(150)
     check('top bar toggle returns to light mode', page.evaluate("document.documentElement.dataset.theme") == 'light')
 
-    page.click('button[aria-label="Notifications"]')
+    page.click('button[aria-label^="Notifications"]')
     page.wait_for_selector('text=You are up to date.')
     check('new local installation has no fabricated notifications', True)
     page.keyboard.press('Escape')
     page.evaluate("""() => {
       window.__hmsNotify({tier:'important',title:'Local test event',message:'This notification is stored in IndexedDB.'});
     }""")
-    page.wait_for_selector('.hms-count')
+    page.wait_for_selector('.hms-bell__count')
     page.reload()
     page.wait_for_selector('.hms-shell')
     page.click('button[aria-label="Notifications"]')
