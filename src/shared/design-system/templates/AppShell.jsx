@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
+import useLocalPreferences from '@core/storage/useLocalPreferences.js'
 import { NavLink } from 'react-router-dom'
 import Icon from '../icons/Icon.jsx'
 import Avatar from '../primitives/Avatar.jsx'
@@ -10,8 +11,6 @@ import markNavy from '../brand/mark-navy.png'
 import markWhite from '../brand/mark-white.png'
 import './appshell.css'
 
-const RAIL_KEY = 'hms.rail'
-const readRail = () => { try { return localStorage.getItem(RAIL_KEY) === 'compact' } catch { return false } }
 
 function SideRail({ sections, switcher, compact, onToggle }) {
   return (
@@ -86,14 +85,14 @@ function TopBar({ search, notifications, user, menuItems }) {
 }
 
 export default function AppShell({ sections, switcher, search, notifications, user, menuItems, strip, children }) {
-  const [compact, setCompact] = useState(readRail)
+  const { preferences, updatePreference } = useLocalPreferences()
+  const compact = preferences.rail === 'compact'
   const shell = useRef(null)
   const header = useRef(null)
   const content = useRef(null)
-  const toggle = () => setCompact((c) => {
-    try { localStorage.setItem(RAIL_KEY, c ? 'expanded' : 'compact') } catch { /* ignore */ }
-    return !c
-  })
+  const toggle = async () => {
+    try { await updatePreference('rail', compact ? 'expanded' : 'compact') } catch { /* Keep the last saved rail preference. */ }
+  }
 
   // The side rail and the header stay put; only the content scrolls. The header floats over the content so its
   // blur has something to blur, so the content needs to know how tall the header is and how wide the scrollbar is.
