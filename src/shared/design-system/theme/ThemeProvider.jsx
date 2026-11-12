@@ -1,21 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import useLocalPreferences from '@core/storage/useLocalPreferences.js'
 
-const KEY = 'hms.theme'
 const ThemeContext = createContext(null)
-
-const read = () => {
-  try { return localStorage.getItem(KEY) || 'system' } catch { return 'system' }
-}
 const systemDark = () => typeof matchMedia === 'function' && matchMedia('(prefers-color-scheme: dark)').matches
 
 export function ThemeProvider({ children }) {
-  const [choice, setChoice] = useState(read)
+  const { preferences, updatePreference } = useLocalPreferences()
+  const choice = preferences.theme || 'system'
   const [prefersDark, setPrefersDark] = useState(systemDark)
 
   useEffect(() => {
     if (typeof matchMedia !== 'function') return undefined
     const mq = matchMedia('(prefers-color-scheme: dark)')
-    const on = (e) => setPrefersDark(e.matches)
+    const on = (event) => setPrefersDark(event.matches)
     mq.addEventListener('change', on)
     return () => mq.removeEventListener('change', on)
   }, [])
@@ -28,10 +25,9 @@ export function ThemeProvider({ children }) {
     if (meta) meta.setAttribute('content', resolved === 'dark' ? '#000000' : '#ffffff')
   }, [resolved])
 
-  const setTheme = useCallback((next) => {
-    setChoice(next)
-    try { localStorage.setItem(KEY, next) } catch { /* storage unavailable */ }
-  }, [])
+  const setTheme = useCallback(async (next) => {
+    try { await updatePreference('theme', next) } catch { /* Keep the last saved theme when IndexedDB is unavailable. */ }
+  }, [updatePreference])
 
   const toggle = useCallback(() => setTheme(resolved === 'dark' ? 'light' : 'dark'), [resolved, setTheme])
   const value = useMemo(() => ({ choice, resolved, setTheme, toggle }), [choice, resolved, setTheme, toggle])
