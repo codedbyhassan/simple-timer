@@ -37,13 +37,12 @@ function SearchBox({ value, onChange, placeholder }) {
 }
 
 function CataloguePage({ menu }) {
-  const { data, loaded, error, commit } = useCashierWorkspace()
+  const { data, loaded, error } = useCashierWorkspace()
   const records = (data.cashier?.prices || []).map((item) => ({ ...item, price: Number(item.amount || 0), code: item.code || '', claimCode: item.claimCode || '', status: item.status || 'Active', category: item.category || 'Uncategorised' }))
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All services')
   const categories = ['All services', ...new Set(records.map((record) => record.category))]
   const filtered = records.filter((record) => `${record.name} ${record.code} ${record.claimCode} ${record.category}`.toLowerCase().includes(query.toLowerCase()) && (category === 'All services' || record.category === category))
-  const save = async (next) => commit({ ...data, cashier: { ...data.cashier, prices: next.map((item) => ({ ...item, amount: Number(item.price ?? item.amount ?? 0) })) } })
   return (
     <>
       <PageHeader title={menu.label} description="Service prices used by the cashier are managed from this shared local catalogue." actions={<Link className="hms-admin-ops__primary-action" to="/admin/catalogue/new"><Icon name="plus" size={17} />Add service</Link>} />
@@ -201,18 +200,15 @@ function SettingsPage({ menu }) {
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
-
   useEffect(() => {
     let alive = true
     readDocument('admin.settings').then((stored) => {
       if (!alive) return
       const next = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
-      setValues(next)
-      setSavedValues(next)
+      setValues(next); setSavedValues(next)
     }).catch((loadError) => alive && setError(loadError instanceof Error ? loadError.message : 'Unable to load local settings.')).finally(() => alive && setLoaded(true))
     return () => { alive = false }
   }, [])
-
   const groups = [...new Set(defaults.map((setting) => setting.group))]
   const valueOf = (setting) => values[setting.id] ?? setting.value
   const dirtyCount = defaults.filter((setting) => valueOf(setting) !== (savedValues[setting.id] ?? setting.value)).length
@@ -226,38 +222,19 @@ function SettingsPage({ menu }) {
       const next = Object.fromEntries(defaults.map((setting) => [setting.id, valueOf(setting)]))
       await writeDocument('admin.settings', next)
       await appendAuditEvent({ action: 'Updated hospital settings', resource: 'Local operating preferences', category: 'Administration' })
-      setValues(next)
-      setSavedValues(next)
-      setSaved(true)
-      setError('')
-    } catch (saveError) {
-      setError(saveError instanceof Error ? saveError.message : 'Unable to save local settings.')
-    } finally { setSaving(false) }
+      setValues(next); setSavedValues(next); setSaved(true); setError('')
+    } catch (saveError) { setError(saveError instanceof Error ? saveError.message : 'Unable to save local settings.') }
+    finally { setSaving(false) }
   }
   const reset = () => { setValues(savedValues); setSaved(false); setError('') }
-
   return (
     <>
       <PageHeader title={menu.label} description={menu.summary} actions={<button type="button" className="hms-admin-ops__primary-action" onClick={save} disabled={!loaded || saving}><Icon name="check" size={16} />{saving ? 'Saving…' : 'Save settings'}</button>} />
       <div className="hms-admin-ops hms-admin-ops--settings">
         <div className="hms-admin-ops__settings-intro"><span className="hms-admin-ops__settings-icon"><Icon name="sliders" size={21} /></span><div><h2>Local operating preferences</h2><p>These values are stored in this installation. A setting only affects a workflow when that workflow explicitly reads it.</p></div><StatusBadge tone={dirtyCount ? 'warning' : 'neutral'}>{dirtyCount} unsaved changes</StatusBadge></div>
-        {!loaded ? <div className="hms-admin-ops__empty">Loading local settings…</div> : groups.map((group) => (
-          <section className="hms-admin-ops__surface hms-admin-ops__settings-group" key={group}>
-            <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Configuration</span><h2>{group}</h2></div></div>
-            {defaults.filter((setting) => setting.group === group).map((setting) => (
-              <div className="hms-admin-ops__setting" key={setting.id}>
-                <div><strong>{setting.label}</strong><p>{setting.description}</p></div>
-                {setting.type === 'toggle' ? (
-                  <button type="button" role="switch" aria-checked={Boolean(valueOf(setting))} className={`hms-admin-ops__switch${valueOf(setting) ? ' is-on' : ''}`} onClick={() => update(setting.id, !valueOf(setting))}><span /></button>
-                ) : (
-                  <label className="hms-admin-ops__number"><input type="number" min="0" step="any" value={valueOf(setting)} onChange={(event) => update(setting.id, event.target.value)} aria-label={setting.label} /><span>{setting.unit}</span></label>
-                )}
-              </div>
-            ))}
-          </section>
-        ))}
+        {!loaded ? <div className="hms-admin-ops__empty">Loading local settings…</div> : groups.map((group) => <section className="hms-admin-ops__surface hms-admin-ops__settings-group" key={group}><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Configuration</span><h2>{group}</h2></div></div>{defaults.filter((setting) => setting.group === group).map((setting) => <div className="hms-admin-ops__setting" key={setting.id}><div><strong>{setting.label}</strong><p>{setting.description}</p></div>{setting.type === 'toggle' ? <button type="button" role="switch" aria-checked={Boolean(valueOf(setting))} className={`hms-admin-ops__switch${valueOf(setting) ? ' is-on' : ''}`} onClick={() => update(setting.id, !valueOf(setting))}><span /></button> : <label className="hms-admin-ops__number"><input type="number" min="0" step="any" value={valueOf(setting)} onChange={(event) => update(setting.id, event.target.value)} aria-label={setting.label} /><span>{setting.unit}</span></label>}</div>)}</section>)}
         {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
-        {saved ? <div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16} />Settings saved in IndexedDB on this device.</div> : null}
+        {saved ? <div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16} />Settings saved in IndexedDB.</div> : null}
         <div className="hms-admin-ops__settings-actions"><button type="button" className="hms-admin-ops__quiet-action" onClick={reset} disabled={!loaded || !dirtyCount}>Discard changes</button><button type="button" className="hms-admin-ops__primary-action" onClick={save} disabled={!loaded || saving}><Icon name="check" size={16} />Save settings</button></div>
       </div>
     </>
@@ -328,29 +305,18 @@ function SettingsPage({ menu }) {
 }
 
 function ReportsPage({ menu }) {
-  const { data: workspace, loaded: workspaceLoaded } = useReceptionWorkspace()
-  const patientCount = workspace.patients.length
-  const appointmentCount = workspace.appointments.length
-  const encounterCount = workspace.queue.length
-  const reportRows = [
-    { label: 'Patient directory', count: patientCount, destination: '/reception/patients' },
-    { label: 'Appointments', count: appointmentCount, destination: '/reception/appointments' },
-    { label: 'Encounters', count: encounterCount, destination: '/reception/opd' },
+  const { data, loaded } = useReceptionWorkspace()
+  const rows = [
+    { label: 'Patient directory', count: data.patients.length, destination: '/reception/patients' },
+    { label: 'Appointments', count: data.appointments.length, destination: '/reception/appointments' },
+    { label: 'Encounters', count: data.queue.length, destination: '/reception/opd' },
   ]
-  const ready = workspaceLoaded
   return (
     <>
-      <PageHeader title={menu.label} description="Operational summaries calculated from the records stored in this local installation." />
-      <div className="hms-admin-ops">
-        <section className="hms-admin-ops__surface">
-          <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown. No sample charts or generated activity are included.</p></div></div>
-          {!ready ? <div className="hms-admin-ops__empty">Reading local records…</div> : (
-            <div className="hms-admin-ops__report-grid">
-              {reportRows.map((item) => <Link to={item.destination} className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19} /></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated now</span><span>Open records <Icon name="chevronRight" size={14} /></span></div></Link>)}
-            </div>
-          )}
-        </section>
-      </div>
+      <PageHeader title={menu.label} description="Operational summaries calculated from records saved in this local installation." />
+      <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown. No sample charts or generated activity are included.</p></div></div>
+        {!loaded ? <div className="hms-admin-ops__empty">Reading local records…</div> : <div className="hms-admin-ops__report-grid">{rows.map((item)=><Link to={item.destination} className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19}/></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated now</span><span>Open records <Icon name="chevronRight" size={14}/></span></div></Link>)}</div>}
+      </section></div>
     </>
   )
 }) {
@@ -474,11 +440,10 @@ function InventoryPage({ menu }) {
   return (
     <>
       <PageHeader title={menu.label} description="Inventory totals derived from laboratory stock and pharmacy batches stored in IndexedDB." />
-      <div className="hms-admin-ops">
-        <div className="hms-admin-ops__metrics hms-admin-ops__metrics--three"><MetricCard label="Inventory lines" value={loaded?records.length:'—'} icon="packageBox" caption="Configured lab and pharmacy items"/><MetricCard label="Reorder attention" value={loaded?low.length:'—'} icon="alertTriangle" caption="Low or unavailable"/><MetricCard label="Stock valuation" value={loaded?`GHS ${valuation.toFixed(2)}`:'—'} icon="creditCard" caption="Where unit cost is recorded"/></div>
+      <div className="hms-admin-ops"><div className="hms-admin-ops__metrics hms-admin-ops__metrics--three"><MetricCard label="Inventory lines" value={loaded?records.length:'—'} icon="packageBox" caption="Configured lab and pharmacy items"/><MetricCard label="Reorder attention" value={loaded?low.length:'—'} icon="alertTriangle" caption="Low or unavailable"/><MetricCard label="Stock valuation" value={loaded?`GHS ${valuation.toFixed(2)}`:'—'} icon="creditCard" caption="Where unit cost is recorded"/></div>
         <section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Shared stock records</span><h2>Inventory items</h2><p>Stock changes are made in the responsible laboratory or pharmacy workspace.</p></div><StatusBadge tone={low.length?'warning':'neutral'}>{low.length} need attention</StatusBadge></div>
           <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search item, ID or location"/><select aria-label="Filter inventory" value={filter} onChange={(event)=>setFilter(event.target.value)}>{['All stock','In stock','Low stock','Out of stock'].map((item)=><option key={item}>{item}</option>)}</select></div>
-          {!loaded?<div className="hms-admin-ops__empty">Loading local stock…</div>:<div className="hms-admin-ops__table-wrap"><table className="hms-admin-ops__table"><thead><tr><th>Item</th><th>Location</th><th>On hand</th><th>Reorder at</th><th>Unit cost</th><th>Status</th></tr></thead><tbody>{filtered.map((item)=><tr key={item.id}><td><strong>{item.name}</strong><small className="hms-admin-ops__cell-sub">{item.id} · {item.category}</small></td><td>{item.location}</td><td className="hms-admin-ops__amount">{item.onHand} {item.unit}</td><td>{item.reorder||'—'}</td><td>{item.unitCost? `GHS ${item.unitCost.toFixed(2)}`:'—'}</td><td><StatusBadge tone={tone(item.status)}>{item.status}</StatusBadge></td></tr>)}</tbody></table>{filtered.length===0?<div className="hms-admin-ops__empty">No inventory records are configured. Add stock in the laboratory or pharmacy workspace.</div>:null}</div>}
+          {!loaded?<div className="hms-admin-ops__empty">Loading local stock…</div>:<div className="hms-admin-ops__table-wrap"><table className="hms-admin-ops__table"><thead><tr><th>Item</th><th>Location</th><th>On hand</th><th>Reorder at</th><th>Unit cost</th><th>Status</th></tr></thead><tbody>{filtered.map((item)=><tr key={item.id}><td><strong>{item.name}</strong><small className="hms-admin-ops__cell-sub">{item.id} · {item.category}</small></td><td>{item.location}</td><td className="hms-admin-ops__amount">{item.onHand} {item.unit}</td><td>{item.reorder||'—'}</td><td>{item.unitCost?`GHS ${item.unitCost.toFixed(2)}`:'—'}</td><td><StatusBadge tone={tone(item.status)}>{item.status}</StatusBadge></td></tr>)}</tbody></table>{filtered.length===0?<div className="hms-admin-ops__empty">No inventory records are configured. Add stock in the laboratory or pharmacy workspace.</div>:null}</div>}
         </section>
       </div>
     </>
@@ -575,46 +540,35 @@ function BackupPage({ menu }) {
       const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
       const url = URL.createObjectURL(blob)
       const anchor = document.createElement('a')
-      anchor.href = url
-      anchor.download = `ascend-hms-local-backup-${new Date().toISOString().slice(0, 10)}.json`
-      anchor.click()
+      anchor.href = url; anchor.download = `ascend-hms-local-backup-${new Date().toISOString().slice(0,10)}.json`; anchor.click()
       URL.revokeObjectURL(url)
       setLastExport(new Date().toLocaleString())
       setMessage(`${backup.documents.length} local data collections exported. Store the file somewhere safe.`)
-    } catch (exportError) {
-      setError(exportError instanceof Error ? exportError.message : 'Unable to export local data.')
-    } finally { setBusy(false) }
+    } catch (exportError) { setError(exportError instanceof Error ? exportError.message : 'Unable to export local data.') }
+    finally { setBusy(false) }
   }
   const restoreBackup = async (event) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
+    const file = event.target.files?.[0]; event.target.value = ''
     if (!file || busy) return
-    if (!window.confirm('Restore this backup? All current local Ascend HMS records and profiles will be replaced by the backup contents. Export a backup of the current data first if you need to keep it.')) return
+    if (!window.confirm('Restore this backup? All current local Ascend HMS records and profiles will be replaced. Export the current data first if you need to keep it.')) return
     setBusy(true); setError(''); setMessage('')
     try {
       const backup = JSON.parse(await file.text())
       await importLocalDatabase(backup)
       await appendAuditEvent({ action: 'Restored local backup', resource: `${backup.documents.length} data collections`, category: 'Backup' })
       setMessage(`Restored ${backup.documents.length} local data collections. Reload the application to refresh every screen.`)
-    } catch (restoreError) {
-      setError(restoreError instanceof Error ? restoreError.message : 'Unable to restore this backup.')
-    } finally { setBusy(false) }
+    } catch (restoreError) { setError(restoreError instanceof Error ? restoreError.message : 'Unable to restore this backup.') }
+    finally { setBusy(false) }
   }
   return (
     <>
       <PageHeader title={menu.label} description="Create and restore a backup of this browser or desktop installation." />
-      <div className="hms-admin-ops">
-        <section className="hms-admin-ops__surface">
-          <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local data protection</span><h2>Backup and restore</h2><p>Ascend HMS does not run scheduled or cloud backups. Export a local backup file and store it outside this device.</p></div></div>
-          <div className="hms-admin-ops__backup-grid">
-            <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="download" size={21} /></span><h3>Export local data</h3><p>Download an archive containing IndexedDB records, local staff profiles, preferences and application data.</p><button type="button" className="hms-admin-ops__primary-action" onClick={downloadBackup} disabled={busy}><Icon name="download" size={16} />{busy ? 'Working…' : 'Download backup'}</button>{lastExport ? <small>Last exported: {lastExport}</small> : null}</article>
-            <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="upload" size={21} /></span><h3>Restore from file</h3><p>Replace the local database with a previously exported Ascend HMS backup file.</p><label className="hms-admin-ops__primary-action"> <Icon name="upload" size={16} />Choose backup file<input type="file" accept="application/json,.json" onChange={restoreBackup} disabled={busy} hidden /></label></article>
-          </div>
-          {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
-          {message ? <div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16} />{message}</div> : null}
-          <p className="hms-admin-ops__subtle">Local data is not encrypted by this export routine. Protect backup files with appropriate device and file security. This frontend is not a secure clinical record system.</p>
-        </section>
-      </div>
+      <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local data protection</span><h2>Backup and restore</h2><p>Ascend HMS does not run scheduled or cloud backups. Export a local backup file and store it outside this device.</p></div></div>
+        <div className="hms-admin-ops__backup-grid"><article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="download" size={21}/></span><h3>Export local data</h3><p>Download an archive containing IndexedDB records, local staff profiles, preferences and application data.</p><button type="button" className="hms-admin-ops__primary-action" onClick={downloadBackup} disabled={busy}><Icon name="download" size={16}/>{busy?'Working…':'Download backup'}</button>{lastExport?<small>Last exported: {lastExport}</small>:null}</article>
+          <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="upload" size={21}/></span><h3>Restore from file</h3><p>Replace the local database with a previously exported Ascend HMS backup file.</p><label className="hms-admin-ops__primary-action"><Icon name="upload" size={16}/>Choose backup file<input type="file" accept="application/json,.json" onChange={restoreBackup} disabled={busy} hidden/></label></article></div>
+        {error?<div className="hms-admin-ops__error" role="alert">{error}</div>:null}{message?<div className="hms-admin-ops__success" role="status"><Icon name="checkCircle" size={16}/>{message}</div>:null}
+        <p className="hms-admin-ops__subtle">Exported JSON files are not encrypted by this application. Protect backup files with appropriate device and file security.</p>
+      </section></div>
     </>
   )
 }) {
