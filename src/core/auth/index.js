@@ -1,5 +1,3 @@
 export { AuthProvider, useAuth } from './AuthProvider.jsx'
 export { ProtectedRoute, GuestRoute } from './routes.jsx'
 export { authService, authMode } from './authService.js'
-export { describeAuthError } from './errors.js'
-export { MIN_PASSWORD_LENGTH, passwordChecks, isEmail } from './passwordPolicy.js'
