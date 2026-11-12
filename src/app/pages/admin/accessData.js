@@ -13,7 +13,7 @@ export const ADMIN_ACCESS_ROLES = [
   { code: 'claims_officer', label: 'Claims officer', description: 'Claims preparation, mapping, export and import review.', permissions: ['patients.search', 'patients.view', 'claims.view', 'claims.build', 'claims.enter_ccc', 'claims.export', 'claims.import_report', 'claims.manage_mappings', 'finance.view'] },
   { code: 'store_keeper', label: 'Store keeper', description: 'Inventory receiving, issuing and stock control.', permissions: ['inventory.view', 'inventory.receive', 'inventory.adjust'] },
   { code: 'bed_manager', label: 'Bed manager', description: 'Facility bed and ward capacity administration.', permissions: ['admin.manage_config', 'nursing.observe'] },
-  { code: 'management_viewer', label: 'Management', description: 'Read-only hospital reporting and management overview.', permissions: ['reports.view', 'reports.export'] },
+  { code: 'management_viewer', label: 'Management viewer', description: 'Read-only hospital reporting and management overview.', permissions: ['reports.view', 'reports.export'] },
 ]
 
 const groupForPermission = (code) => {
