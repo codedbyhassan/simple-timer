@@ -139,9 +139,5 @@ export default function AdminRecordDetailPage({ menu, module: moduleProp }) {
   const { module: routeModule } = useParams()
   const module = moduleProp || routeModule
   if (module === 'catalogue' || module === 'mappings') return <EditableRecord module={module} menu={menu} />
-  if (module === 'refunds') return <RefundDetail menu={menu} />
-  if (module === 'inventory') return <InventoryDetail menu={menu} />
-  if (module === 'reports') return <ReportDetail menu={menu} />
-  if (module === 'backup') return <BackupDetail menu={menu} />
   return null
 }
