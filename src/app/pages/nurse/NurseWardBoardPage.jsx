@@ -7,7 +7,7 @@ import './nurse styles/wards.css'
 
 const WARD_FILTER_ALL = 'All wards'
 
-export default function NurseWardBoardPage({ data, error, commit, can }) {
+export default async async function NurseWardBoardPage({ data, error, commit, can }) {
   const [wardFilter, setWardFilter] = useState(WARD_FILTER_ALL)
   const [message, setMessage] = useState('')
   const nurse = data.nurse
@@ -20,7 +20,7 @@ export default function NurseWardBoardPage({ data, error, commit, can }) {
   const markReady = (bed) => {
     if (!can('nursing.observe') || bed.status !== 'Cleaning') return
     const beds = nurse.beds.map((item) => item.id === bed.id ? { ...item, status: 'Available', since: '' } : item)
-    if (commit({ ...data, nurse: { ...nurse, beds } })) setMessage(`${bed.id} is now marked available.`)
+    if (await commit({ ...data, nurse: { ...nurse, beds } })) setMessage(`${bed.id} is now marked available.`)
   }
   const startDischarge = (bed) => {
     if (!can('nursing.observe') || !bed.patientId) return
@@ -36,7 +36,7 @@ export default function NurseWardBoardPage({ data, error, commit, can }) {
       updatedAt: new Date().toISOString(),
       checks: { clinicalSummary: false, medicines: false, billing: false, outcome: false },
     }
-    if (commit({ ...data, nurse: { ...nurse, discharges: [record, ...nurse.discharges] } })) setMessage(`Discharge checklist started for bed ${bed.id}.`)
+    if (await commit({ ...data, nurse: { ...nurse, discharges: [record, ...nurse.discharges] } })) setMessage(`Discharge checklist started for bed ${bed.id}.`)
   }
 
   return <>
