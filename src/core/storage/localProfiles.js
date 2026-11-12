@@ -43,8 +43,10 @@ export async function selectProfile(profileId) {
   const profiles = await getProfiles()
   const profile = profiles.find((item) => item.id === profileId && item.active)
   if (!profile) throw new Error('That local profile is unavailable or inactive.')
-  await updateDocument(LOCAL_SESSION_KEY, () => ({ profileId: profile.id, selectedAt: new Date().toISOString() }), null)
-  return profile
+  const updated = { ...profile, lastSeen: new Date().toLocaleString(), lastSelectedAt: new Date().toISOString() }
+  await updateDocument(LOCAL_PROFILES_KEY, (current) => (Array.isArray(current) ? current : []).map((item) => item.id === profileId ? updated : item), [])
+  await updateDocument(LOCAL_SESSION_KEY, () => ({ profileId: profile.id, selectedAt: updated.lastSelectedAt }), null)
+  return updated
 }
 
 export async function signOutLocal() {
