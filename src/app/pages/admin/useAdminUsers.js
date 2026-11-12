@@ -1,39 +1,46 @@
-import { useCallback, useEffect, useState } from 'react'
-import { ADMIN_ACCESS_USERS } from './accessData.js'
+import { useEffect, useState } from 'react'
+import { getProfiles, saveProfiles } from '@core/storage/localProfiles.js'
 
-const STORAGE_KEY = 'hms.admin.users.v1'
+const toUser = (profile) => ({
+  ...profile,
+  name: profile.displayName || profile.name,
+  email: profile.email || '',
+  status: profile.active === false ? 'Suspended' : 'Active',
+  lastSeen: profile.lastSeen || 'Not signed in',
+})
 
 export default function useAdminUsers() {
-  const [users, setUsers] = useState(ADMIN_ACCESS_USERS)
+  const [users, setUsers] = useState([])
   const [storageError, setStorageError] = useState('')
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(STORAGE_KEY)
-      if (saved !== null) {
-        const parsed = JSON.parse(saved)
-        if (!Array.isArray(parsed)) throw new Error('Stored user data is not a list.')
-        setUsers(parsed)
-      }
-      setLoaded(true)
-    } catch (error) {
-      setStorageError(error instanceof Error ? error.message : 'Unable to load saved users.')
-      setLoaded(true)
-    }
+    let alive = true
+    getProfiles().then((profiles) => {
+      if (alive) setUsers(profiles.map(toUser))
+    }).catch((error) => {
+      if (alive) setStorageError(error instanceof Error ? error.message : 'Unable to load local profiles.')
+    }).finally(() => alive && setLoaded(true))
+    return () => { alive = false }
   }, [])
 
-  const commit = useCallback((nextUsers) => {
+  const commit = async (nextUsers) => {
     try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUsers))
+      const profiles = nextUsers.map((user) => ({
+        ...user,
+        displayName: user.name,
+        name: user.name,
+        active: user.status !== 'Suspended',
+      }))
+      await saveProfiles(profiles)
       setUsers(nextUsers)
       setStorageError('')
       return true
     } catch (error) {
-      setStorageError(error instanceof Error ? error.message : 'Unable to save users on this device.')
+      setStorageError(error instanceof Error ? error.message : 'Unable to save local profiles.')
       return false
     }
-  }, [])
+  }
 
   return { users, loaded, storageError, commit }
 }
