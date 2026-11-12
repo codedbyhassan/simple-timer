@@ -13,8 +13,6 @@
     "preview": "vite preview",
     "lint": "eslint src electron",
     "check:contrast": "node scripts/check-contrast.mjs",
-    "db:build": "node scripts/build-all-migrations.mjs",
-    "db:test": "bash supabase/tests/run.sh",
     "build:electron": "vite build --mode electron",
     "electron:dev": "concurrently -k \"vite --mode electron --port 5173\" \"wait-on tcp:5173 && cross-env ELECTRON_DEV_URL=http://localhost:5173 electron .\"",
     "electron:start": "npm run build:electron && electron .",
