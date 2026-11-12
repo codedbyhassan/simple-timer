@@ -1,5 +1,5 @@
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
-import { AppShell, Button, CriticalStrip, EmptyState, NotificationCenter, Spinner, WorkspaceSwitcher, useToast } from '@ui'
+import { AppShell, Button, CriticalStrip, EmptyState, NotificationCenter, Spinner, WorkspaceSwitcher } from '@ui'
 import { useAuth } from '@core/auth'
 import { useAccess } from '@core/access/AccessProvider.jsx'
 import { findWorkspaceBySlug, menuPath, visibleMenus, workspaceHome } from '@core/access/navigation.js'
@@ -10,7 +10,6 @@ export default function AppLayout() {
   const { user, signOut } = useAuth()
   const access = useAccess()
   const notes = useNotifications()
-  const toast = useToast()
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
