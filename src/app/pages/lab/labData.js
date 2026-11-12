@@ -43,7 +43,7 @@ const catalogue = [
   },
 ]
 
-export const LAB_SEED = {
+const LAB_SEED_REFERENCE = {
   ...PHARMACY_SEED,
   lab: {
     catalogue,
@@ -87,6 +87,10 @@ export const LAB_SEED = {
     notifications: [],
     acknowledgedCritical: [],
   },
+}
+
+export const LAB_SEED = {
+  ...LAB_SEED_REFERENCE, lab: { ...LAB_SEED_REFERENCE.lab, catalogue: [], orders: [], specimens: [], stock: [], movements: [], recollectionTasks: [], activity: [], notifications: [], acknowledgedCritical: [] },
 }
 
 export const LAB_TODAY = new Date().toISOString().slice(0, 10)
