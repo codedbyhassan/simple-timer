@@ -44,7 +44,7 @@ export default function SignInPage() {
     <AuthLayout>
       <Stack gap="xs">
         <Heading>Choose a staff profile</Heading>
-        <Text tone="muted">Open a local demonstration workspace. No account, password or network connection is required.</Text>
+        <Text tone="muted">Select a local staff role to open its workspace. This does not verify a real person’s identity.</Text>
       </Stack>
       <form className="hms-local-signin" onSubmit={onSubmit}>
         {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
@@ -56,7 +56,7 @@ export default function SignInPage() {
             </select>
             <button className="hms-local-signin__submit" type="submit" disabled={!selected || busy}>{busy ? 'Opening workspace…' : 'Continue to workspace'}</button>
           </>
-        ) : <Text tone="muted">No active local profiles are available. Restore a local backup or create a profile from the setup screen.</Text>}
+        ) : <Text tone="muted">No active profiles are available. Restore a backup containing an active hospital administrator profile.</Text>}
       </form>
       <div className="hms-local-signin__notice">
         <strong>Local demonstration mode</strong>
