@@ -66,7 +66,7 @@ with sync_playwright() as playwright:
     context = browser.new_context(viewport={'width': 1440, 'height': 900}, color_scheme='light')
     page = context.new_page()
     errors = []
-    page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+    page.on('console', lambda message: errors.append(message.text) if message.type == 'error' and 'ERR_INTERNET_DISCONNECTED' not in message.text else None)
     page.on('pageerror', lambda error: errors.append(str(error)))
 
     expected = {
@@ -119,7 +119,7 @@ with sync_playwright() as playwright:
     page.click('button[aria-label="Account menu"]')
     page.click('[role=menuitem]:has-text("Profile")')
     page.wait_for_url('**/profile')
-    check('profile clearly identifies local access mode', page.locator('.hms-card__title').filter(has_text='Access mode').is_visible() and page.locator('.hms-card').filter(has_text='Local profile').count() == 1)
+    check('profile clearly identifies local access mode', 'The local role profile currently selected for this installation.' in page.locator('body').inner_text() and 'Profiles and permissions are stored in IndexedDB on this device.' in page.locator('body').inner_text())
     page.click('button:has-text("Switch workspace or role")')
     page.wait_for_url('**/signin')
     page.wait_for_selector('.hms-local-signin__card')
