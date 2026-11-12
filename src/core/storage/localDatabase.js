@@ -130,21 +130,13 @@ export async function importLocalDatabase(backup) {
   notify('*')
 }
 
-export async function initialiseWorkspace(key, defaults, legacyStorageKey = null) {
+export async function initialiseWorkspace(key, defaults) {
   return updateDocument(key, (saved) => {
-    let legacy = null
-    if (saved == null && legacyStorageKey) {
-      try {
-        const raw = localStorage.getItem(legacyStorageKey)
-        legacy = raw ? JSON.parse(raw) : null
-      } catch { legacy = null }
-    }
-    const source = saved ?? legacy
-    if (!source || typeof source !== 'object' || Array.isArray(source)) return defaults
-    const merged = { ...defaults, ...source }
+    if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return defaults
+    const merged = { ...defaults, ...saved }
     Object.entries(defaults).forEach(([name, value]) => {
-      if (value && typeof value === 'object' && !Array.isArray(value) && source[name] && typeof source[name] === 'object' && !Array.isArray(source[name])) {
-        merged[name] = { ...value, ...source[name] }
+      if (value && typeof value === 'object' && !Array.isArray(value) && saved[name] && typeof saved[name] === 'object' && !Array.isArray(saved[name])) {
+        merged[name] = { ...value, ...saved[name] }
       }
     })
     return merged
