@@ -1,4 +1,4 @@
-import { readDocument, updateDocument } from './localDatabase.js'
+import { appendAuditEvent, readDocument, updateDocument } from './localDatabase.js'
 
 export const LOCAL_PROFILES_KEY = 'local.profiles'
 export const LOCAL_SESSION_KEY = 'local.session'
@@ -54,4 +54,5 @@ export async function signOutLocal() {
 export async function saveProfiles(profiles) {
   if (!Array.isArray(profiles)) throw new Error('Profiles must be a list.')
   await updateDocument(LOCAL_PROFILES_KEY, () => profiles, [])
+  try { await appendAuditEvent({ action: 'Saved local staff profiles', resource: `${profiles.length} profiles`, category: 'Access' }) } catch { /* Profile data is already saved. */ }
 }
