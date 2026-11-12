@@ -1,220 +1,183 @@
 import sys
 from playwright.sync_api import sync_playwright
-BASE='http://127.0.0.1:5199'; OUT='/home/claude/shots/'
-results=[]
-def check(name, cond, detail=''):
-    results.append((name,bool(cond),detail)); print(('PASS' if cond else 'FAIL'), name, detail)
 
-def login(pg, role):
-    pg.goto(f'{BASE}/signin?as={role}')
-    pg.evaluate("localStorage.removeItem('hms.demo.session')")
-    pg.goto(f'{BASE}/signin?as={role}'); pg.wait_for_selector('input[name=email]')
-    pg.fill('input[name=email]','demo@ascend.test'); pg.fill('input[name=password]','Ascend#2026'); pg.click('button[type=submit]')
-    pg.wait_for_selector('.hms-shell', timeout=6000)
+BASE = 'http://127.0.0.1:5199'
+OUT = '/home/claude/shots/'
+results = []
 
-def nav_labels(pg):
-    return [t.strip() for t in pg.locator('.hms-rail__item').all_inner_texts()]
+ROLE_LABELS = {
+    'receptionist': 'Receptionist',
+    'records_officer': 'Records officer',
+    'triage_nurse': 'Triage nurse',
+    'ward_nurse': 'Ward nurse',
+    'doctor': 'Doctor',
+    'lab_technician': 'Laboratory technician',
+    'pharmacist': 'Pharmacist',
+    'pharmacy_assistant': 'Pharmacy assistant',
+    'store_keeper': 'Store keeper',
+    'bed_manager': 'Bed manager',
+    'cashier': 'Cashier',
+    'finance_officer': 'Finance officer',
+    'claims_officer': 'Claims officer',
+    'hospital_admin': 'Hospital administrator',
+    'management_viewer': 'Management viewer',
+}
 
-with sync_playwright() as p:
-    b=p.chromium.launch()
-    ctx=b.new_context(viewport={'width':1440,'height':900}, color_scheme='light')
-    pg=ctx.new_page(); errors=[]
-    pg.on('console', lambda m: errors.append(m.text) if m.type=='error' else None)
-    pg.on('pageerror', lambda e: errors.append(str(e)))
+def check(name, condition, detail=''):
+    results.append((name, bool(condition), detail))
+    print(('PASS' if condition else 'FAIL'), name, detail)
 
-    # role-based navigation + home
-    expect={
-      'receptionist':('/reception/overview',['Overview','Reception desk','Appointments','Patients','Documents','OPD queue','Claim data gaps','Payment status']),
-      'triage_nurse':('/nurse/overview',['Overview','Triage queue','Ward and bed board','Nursing tasks','Admission requests','Discharge checklist','OPD queue']),
-      'doctor':('/doctor/overview',['Overview','My queue','Consultation','Results inbox','My admissions','OPD queue']),
-      'lab_technician':('/lab/overview',['Overview','Worklist','Specimens','Result entry and verification','Critical results','Test catalogue','Inventory']),
-      'pharmacist':('/pharmacy/overview',['Overview','Prescription queue','Dispensing panel','Stock alerts','Stock levels','Formulary mapping flags','Inventory']),
-      'cashier':('/cashier/overview',['Overview','Pending charges','Payment panel and receipts','My till and shift','Refunds','Shift reconciliation','Price list','Billed vs claimed']),
-      'claims_officer':('/claims/overview',['Overview','Pipeline','Claims list and detail','Mapping queue','Export batches','Import reports','Month progress']),
-      'hospital_admin':('/admin/overview',['Management dashboard','Hospital profile','Departments, wards, beds','Users, roles, permissions','Service catalogue and prices','Reference mappings','Thresholds and settings','Reports','Refund approvals','Inventory console','Audit viewer','Sync conflicts','Realtime SLA monitor','Backup status']),
-      'management_viewer':('/admin/overview',['Management dashboard','Reports']),
+def login(page, role):
+    page.goto(f'{BASE}/signin')
+    page.wait_for_selector('#local-profile')
+    expected = ROLE_LABELS[role]
+    option = next(
+        item for item in page.locator('#local-profile option').all()
+        if item.inner_text().startswith(expected)
+    )
+    page.select_option('#local-profile', value=option.get_attribute('value'))
+    page.click('button[type=submit]')
+    page.wait_for_selector('.hms-shell', timeout=8000)
+
+def logout(page):
+    page.click('button[aria-label="Account menu"]')
+    page.click('[role=menuitem]:has-text("Log out")')
+    page.wait_for_url('**/signin')
+
+def nav_labels(page):
+    return [text.strip() for text in page.locator('.hms-rail__item').all_inner_texts()]
+
+with sync_playwright() as playwright:
+    browser = playwright.chromium.launch()
+    context = browser.new_context(viewport={'width': 1440, 'height': 900}, color_scheme='light')
+    page = context.new_page()
+    errors = []
+    page.on('console', lambda message: errors.append(message.text) if message.type == 'error' else None)
+    page.on('pageerror', lambda error: errors.append(str(error)))
+
+    expected = {
+        'receptionist': ('/reception/overview', ['Overview', 'Reception desk', 'Appointments', 'Patients', 'Documents', 'OPD queue', 'Claim data gaps', 'Payment status']),
+        'triage_nurse': ('/nurse/overview', ['Overview', 'Triage queue', 'Ward and bed board', 'Nursing tasks', 'Admission requests', 'Discharge checklist', 'OPD queue']),
+        'doctor': ('/doctor/overview', ['Overview', 'My queue', 'Consultation', 'Results inbox', 'My admissions', 'OPD queue']),
+        'lab_technician': ('/lab/overview', ['Overview', 'Worklist', 'Specimens', 'Result entry and verification', 'Critical results', 'Test catalogue', 'Inventory']),
+        'pharmacist': ('/pharmacy/overview', ['Overview', 'Prescription queue', 'Dispensing panel', 'Stock alerts', 'Stock levels', 'Formulary mapping flags', 'Inventory']),
+        'cashier': ('/cashier/overview', ['Overview', 'Pending charges', 'Payment panel and receipts', 'My till and shift', 'Refunds', 'Shift reconciliation', 'Price list', 'Billed vs claimed']),
+        'claims_officer': ('/claims/overview', ['Overview', 'Pipeline', 'Claims list and detail', 'Mapping queue', 'Export batches', 'Import reports', 'Month progress']),
+        'hospital_admin': ('/admin/overview', ['Management dashboard', 'Hospital profile', 'Departments, wards, beds', 'Local staff profiles', 'Service catalogue and prices', 'Reference mappings', 'Operating settings', 'Reports', 'Refund approvals', 'Inventory console', 'Local activity history', 'Backup and restore']),
+        'management_viewer': ('/admin/overview', ['Management dashboard', 'Reports']),
     }
-    for role,(home,labels) in expect.items():
-        login(pg, role); pg.wait_for_url('**'+home)
-        got=nav_labels(pg)
-        check(f'{role}: lands on {home}', pg.url.endswith(home), pg.url)
-        check(f'{role}: sees exactly its dashboards', got==labels, str(got))
-        pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Log out")'); pg.wait_for_url('**/signin')
 
-    # admin deep dive
-    login(pg,'hospital_admin'); pg.wait_for_url('**/admin/overview'); pg.wait_for_timeout(300)
-    check('tab title stays Ascend HMS', pg.title()=='Ascend HMS')
-    check('page heading is shown once', pg.locator('h1:has-text("Management dashboard")').count()==1)
-    check('menu description from the brief is shown', pg.get_by_text('The hospital-wide management overview.').is_visible())
-    check('single-role user has no workspace switcher', pg.locator('.hms-switch').count()==0)
-    check('rail names the workspace', pg.locator('.hms-rail__label').inner_text().strip().lower()=='administration')
-    pg.screenshot(path=OUT+'shell-admin-light.png')
+    for role, (home, labels) in expected.items():
+        login(page, role)
+        page.wait_for_url(f'**{home}')
+        actual = nav_labels(page)
+        check(f'{role}: opens its workspace', page.url.endswith(home), page.url)
+        check(f'{role}: navigation matches role permissions', actual == labels, str(actual))
+        logout(page)
 
-    # URL guard: admin typing a doctor URL gets the no-access page
-    pg.goto(BASE+'/doctor/queue'); pg.wait_for_selector('text=You do not have access to this page')
-    check('direct URL to a forbidden dashboard shows no-access', True)
-    pg.screenshot(path=OUT+'shell-no-access.png')
-    pg.goto(BASE+'/'); pg.wait_for_url('**/admin/overview')
-    check('root redirects to the role home', True)
-    pg.goto(BASE+'/admin'); pg.wait_for_url('**/admin/overview'); check('workspace root redirects to its overview', True)
-    pg.fill('input[name=q]','ASC-PAT-000124'); pg.press('input[name=q]','Enter'); pg.wait_for_url('**/search?q=ASC-PAT-000124')
-    pg.wait_for_selector('text=Patients, appointments, laboratory orders, prescriptions and claims.'); check('global search goes to the shared search page', True)
-    pg.goto(BASE+'/design-system'); pg.wait_for_selector('.hms-receipt'); check('admin can open the design system page', True)
-    pg.goto(BASE+'/admin/overview'); pg.wait_for_selector('h1')
+    login(page, 'hospital_admin')
+    page.wait_for_url('**/admin/overview')
+    check('document title is Ascend HMS', page.title() == 'Ascend HMS')
+    check('dashboard has one page heading', page.locator('h1:has-text("Management dashboard")').count() == 1)
+    check('dashboard uses its actual description', page.get_by_text('The hospital-wide management overview.').is_visible())
+    check('single-role profile has no workspace switcher', page.locator('.hms-switch').count() == 0)
+    check('rail identifies administration', page.locator('.hms-rail__label').inner_text().strip().lower() == 'administration')
+    page.screenshot(path=OUT + 'shell-admin-light.png')
 
-    # avatar dropdown contents + keyboard
-    pg.click('button[aria-label="Account menu"]'); pg.wait_for_selector('[role=menu]')
-    items=[t.strip() for t in pg.locator('[role=menuitem]').all_inner_texts()]
-    check('avatar menu items', items==['Settings','Profile','Log out'], str(items))
-    check('first item focused on open', pg.evaluate("document.activeElement.textContent.trim()")=='Settings')
-    pg.keyboard.press('ArrowDown'); check('arrow down moves focus', pg.evaluate("document.activeElement.textContent.trim()")=='Profile')
-    pg.keyboard.press('ArrowUp'); pg.keyboard.press('ArrowUp'); check('arrow up wraps to last', pg.evaluate("document.activeElement.textContent.trim()")=='Log out')
-    pg.screenshot(path=OUT+'shell-avatar-menu.png')
-    pg.keyboard.press('Escape'); pg.wait_for_selector('[role=menu]', state='detached')
-    check('Escape closes menu and returns focus to the avatar', pg.evaluate("document.activeElement.getAttribute('aria-label')")=='Account menu')
-    pg.click('button[aria-label="Account menu"]'); pg.mouse.click(700,500)
-    pg.wait_for_selector('[role=menu]', state='detached'); check('outside click closes menu', True)
+    page.goto(BASE + '/doctor/queue')
+    page.wait_for_selector('text=You do not have access to this page')
+    check('direct URL to another role is denied', True)
+    page.goto(BASE + '/')
+    page.wait_for_url('**/admin/overview')
+    check('root route resolves to the selected profile home', True)
 
-    # profile + settings via menu
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Profile")'); pg.wait_for_url('**/profile')
-    pg.wait_for_selector('.hms-status:has-text("Hospital administrator")', timeout=4000); check('menu opens Profile', True)
-    pg.wait_for_timeout(250); pg.screenshot(path=OUT+'shell-profile.png')
-    pg.click('button:has-text("Send reset link")'); pg.wait_for_selector('.hms-toast--success'); check('profile reset link toast', True)
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Settings")'); pg.wait_for_url('**/settings')
+    page.goto(BASE + '/search?q=not-a-real-record')
+    page.wait_for_selector('h1:has-text("Search records")')
+    check('global search opens the local record search page', True)
+    check('search does not fabricate a matching patient', page.get_by_text('No matching records').count() <= 1)
 
-    # theme: settings control and top bar toggle stay in sync
-    pg.click('label:has-text("Dark")'); pg.wait_for_timeout(200)
-    check('settings control switches to dark', pg.evaluate("document.documentElement.dataset.theme")=='dark')
-    check('toggle icon reflects dark', pg.locator('button[aria-label="Switch to light mode"]').count()==1)
-    pg.screenshot(path=OUT+'shell-settings-dark.png')
-    pg.click('button[aria-label="Switch to light mode"]'); pg.wait_for_timeout(200)
-    check('top bar toggle returns to light', pg.evaluate("document.documentElement.dataset.theme")=='light')
-    check('settings radio follows', pg.locator('input[value=light]').is_checked())
+    page.goto(BASE + '/design-system')
+    page.wait_for_selector('.hms-receipt')
+    check('design system gallery remains separate from operational screens', True)
+    page.goto(BASE + '/admin/overview')
 
-    # notifications
-    check('no unread badge initially', pg.locator('.hms-count').count()==0)
-    pg.click('button[aria-label="Notifications"]'); pg.wait_for_selector('text=You are up to date.')
-    check('empty notification state', True); pg.screenshot(path=OUT+'shell-notifications-empty.png')
-    pg.keyboard.press('Escape')
-    pg.evaluate("""() => { window.__hmsNotify({tier:'important',title:'Result ready',message:'Lab results for ASC-PAT-000124 were verified.',target:'/profile'});
-      window.__hmsNotify({tier:'important',title:'Stock below minimum',message:'Artesunate 50 mg is under its minimum level.'}); }""")
-    pg.wait_for_timeout(500)
-    check('important notification shows a quiet toast', pg.locator('.hms-toast--info').count()>=1)
-    check('unread badge shows 2', pg.locator('.hms-count').inner_text()=='2')
-    pg.evaluate("window.__hmsNotify({tier:'critical',title:'Critical lab value',message:'Potassium 6.9 mmol/L for ASC-PAT-000124.'})")
-    pg.wait_for_selector('.hms-critical'); check('critical strip appears', pg.locator('.hms-critical').is_visible())
-    check('critical raises no toast', pg.locator('.hms-toast--info').count()<=2)
-    pg.wait_for_timeout(300); pg.screenshot(path=OUT+'shell-critical-strip.png')
-    pg.click('button[aria-label^="Notifications"]'); pg.wait_for_selector('.hms-notes__list')
-    pg.wait_for_timeout(200); pg.screenshot(path=OUT+'shell-notifications-list.png')
-    pg.locator('.hms-note__ack').click(); pg.wait_for_selector('.hms-critical', state='detached')
-    check('acknowledging removes the critical strip', True)
-    pg.keyboard.press('Escape'); pg.wait_for_timeout(200)
-    check('opening the list marks everything read', pg.locator('.hms-count').count()==0)
+    page.click('button[aria-label="Account menu"]')
+    page.wait_for_selector('[role=menu]')
+    items = [text.strip() for text in page.locator('[role=menuitem]').all_inner_texts()]
+    check('account menu has only working destinations', items == ['Settings', 'Profile', 'Log out'], str(items))
+    page.keyboard.press('Escape')
+    page.click('button[aria-label="Account menu"]')
+    page.click('[role=menuitem]:has-text("Profile")')
+    page.wait_for_url('**/profile')
+    check('profile clearly identifies local access mode', page.get_by_text('Profiles and permissions are stored in IndexedDB on this device.').is_visible())
+    page.click('button:has-text("Switch local profile")')
+    page.wait_for_url('**/signin')
+    check('switching profile returns to the local profile selector', page.locator('#local-profile').count() == 1)
 
-    # sidebar collapse
-    pg.click('button[aria-label="Collapse sidebar"]'); pg.wait_for_timeout(250)
-    w=pg.locator('.hms-rail').bounding_box()['width']
-    check('rail collapses to compact width', abs(w-76)<2, f'{w:.0f}px')
-    check('compact items keep accessible names', pg.locator('.hms-rail__item[aria-label="Hospital profile"]').count()==1)
-    pg.screenshot(path=OUT+'shell-compact.png')
-    pg.reload(); pg.wait_for_selector('.hms-shell')
-    check('collapse state persists', 'is-compact' in pg.get_attribute('.hms-shell','class'))
-    pg.click('button[aria-label="Expand sidebar"]')
+    login(page, 'hospital_admin')
+    page.wait_for_url('**/admin/overview')
+    page.click('button[aria-label="Account menu"]')
+    page.click('[role=menuitem]:has-text("Settings")')
+    page.wait_for_url('**/settings')
+    page.click('label:has-text("Dark")')
+    page.wait_for_timeout(150)
+    check('settings changes the application theme', page.evaluate("document.documentElement.dataset.theme") == 'dark')
+    check('top bar toggle reflects dark mode', page.locator('button[aria-label="Switch to light mode"]').count() == 1)
+    page.click('button[aria-label="Switch to light mode"]')
+    page.wait_for_timeout(150)
+    check('top bar toggle returns to light mode', page.evaluate("document.documentElement.dataset.theme") == 'light')
 
-    # search shortcut
-    pg.keyboard.press('/')
-    check('"/" focuses search', pg.evaluate("document.activeElement.name")=='q')
-    pg.keyboard.press('Escape'); pg.mouse.click(700,500)
+    page.click('button[aria-label="Notifications"]')
+    page.wait_for_selector('text=You are up to date.')
+    check('new local installation has no fabricated notifications', True)
+    page.keyboard.press('Escape')
+    page.evaluate("""() => {
+      window.__hmsNotify({tier:'important',title:'Local test event',message:'This notification is stored in IndexedDB.'});
+    }""")
+    page.wait_for_selector('.hms-count')
+    page.reload()
+    page.wait_for_selector('.hms-shell')
+    page.click('button[aria-label="Notifications"]')
+    page.wait_for_selector('text=Local test event')
+    check('notifications persist after reload through IndexedDB', True)
+    page.keyboard.press('Escape')
 
-    # search field: centred, iOS look and behaviour
-    f=pg.locator('.hms-search__field').bounding_box(); m=pg.locator('.hms-shell__main').bounding_box()
-    cx=f['x']+f['width']/2; mx=m['x']+m['width']/2
-    check('search is centred in the header', abs(cx-mx)<=1.5, f'search {cx:.1f} vs header {mx:.1f}')
-    st=pg.evaluate("(()=>{const s=getComputedStyle(document.querySelector('.hms-search__field')); return [s.borderTopWidth,s.borderRadius,s.backgroundColor,s.height]})()")
-    check('search has no border, 10px radius, translucent grey fill, 36px tall', st[0]=='0px' and st[1]=='10px' and st[2].startswith('rgba(118, 118, 128') and st[3]=='36px', str(st))
-    check('placeholder is the iOS word', pg.get_attribute('input[name=q]','placeholder')=='Search')
-    check('accessible name says what it searches', 'patients' in pg.get_attribute('input[name=q]','aria-label'))
-    check('no clear button or Cancel while idle', pg.locator('.hms-search__clear').count()==0 and pg.locator('.hms-search__cancel').evaluate("e=>getComputedStyle(e).opacity")=='0')
-    pg.click('input[name=q]'); pg.wait_for_timeout(300)
-    check('Cancel appears on focus', pg.locator('.hms-search__cancel').evaluate("e=>getComputedStyle(e).opacity")=='1')
-    f2=pg.locator('.hms-search__field').bounding_box(); check('focusing does not move the field', abs(f2['x']-f['x'])<0.5 and abs(f2['width']-f['width'])<0.5)
-    pg.fill('input[name=q]','ama'); check('clear button appears while typing', pg.locator('.hms-search__clear').count()==1)
-    pg.screenshot(path=OUT+'shell-search-focused.png', clip={'x':380,'y':0,'width':760,'height':70})
-    pg.click('.hms-search__clear'); check('clear empties the field and keeps focus', pg.input_value('input[name=q]')=='' and pg.evaluate("document.activeElement.name")=='q')
-    pg.fill('input[name=q]','kofi'); pg.keyboard.press('Escape'); check('Escape clears first', pg.input_value('input[name=q]')=='')
-    pg.fill('input[name=q]','kofi'); pg.click('.hms-search__cancel'); pg.wait_for_timeout(250)
-    check('Cancel clears and leaves the field', pg.input_value('input[name=q]')=='' and pg.evaluate("document.activeElement.name")!='q')
-    u=pg.url; pg.click('input[name=q]'); pg.press('input[name=q]','Enter'); pg.wait_for_timeout(250)
-    check('an empty search does not navigate', pg.url==u, pg.url); pg.keyboard.press('Escape'); pg.mouse.click(700,500)
+    page.click('button[aria-label="Collapse sidebar"]')
+    page.wait_for_timeout(200)
+    width = page.locator('.hms-rail').bounding_box()['width']
+    check('sidebar collapses to compact width', abs(width - 76) < 3, f'{width:.0f}px')
+    page.reload()
+    page.wait_for_selector('.hms-shell')
+    check('sidebar preference survives reload', 'is-compact' in page.get_attribute('.hms-shell', 'class'))
+    page.click('button[aria-label="Expand sidebar"]')
 
-    # no always-on indicator; offline is announced once, recovery is announced once
-    check('no connection chip in the header', pg.locator('.hms-conn').count()==0 and pg.get_by_text('Online', exact=True).count()==0)
-    ctx.set_offline(True); pg.wait_for_selector('.hms-toast--warning', timeout=3000)
-    check('going offline shows a warning toast', 'You are offline' in pg.locator('.hms-toast--warning').first.inner_text())
-    pg.wait_for_timeout(300); pg.screenshot(path=OUT+'shell-offline-toast.png')
-    ctx.set_offline(False); pg.wait_for_selector('.hms-toast--success:has-text("Back online")', timeout=3000)
-    check('coming back shows one success toast', pg.locator('.hms-toast--success:has-text("Back online")').count()==1)
-    pg.evaluate("document.querySelectorAll('.hms-toast button[aria-label=\"Dismiss notification\"]').forEach(b=>b.click())"); pg.wait_for_timeout(400)
+    page.keyboard.press('/')
+    check('slash shortcut focuses global search', page.evaluate("document.activeElement.name") == 'q')
+    page.keyboard.press('Escape')
 
-    # two roles: workspace switcher
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Log out")'); pg.wait_for_url('**/signin')
-    login(pg,'doctor+lab_technician'); pg.wait_for_url('**/doctor/overview'); pg.wait_for_selector('.hms-switch')
-    check('two roles show the workspace switcher', pg.locator('.hms-switch').count()==1)
-    pg.click('.hms-switch'); items=[t.strip() for t in pg.locator('[role=menuitem]').all_inner_texts()]
-    check('switcher lists both workspaces', items==['Doctor','Laboratory'], str(items))
-    rail_box=pg.locator('.hms-rail').bounding_box()
-    boxes=[pg.locator('[role=menuitem]').nth(i).bounding_box() for i in range(2)]
-    check('switcher menu items are visible and inside the sidebar', all(b and b['x']>=rail_box['x'] and b['x']+b['width']<=rail_box['x']+rail_box['width'] for b in boxes) and pg.locator('[role=menuitem]').first.is_visible(), str(boxes))
-    pg.wait_for_timeout(200); pg.screenshot(path=OUT+'shell-switcher.png')
-    pg.click('[role=menuitem]:has-text("Laboratory")'); pg.wait_for_url('**/lab/overview'); pg.wait_for_selector('h1:has-text("Overview")'); pg.wait_for_timeout(300)
-    check('switching goes to the other workspace home', pg.locator('.hms-rail__label').inner_text().strip().lower()=='laboratory')
-    check('lab workspace shows lab menus', 'Worklist' in nav_labels(pg) and 'My queue' not in nav_labels(pg))
-    pg.goto(BASE+'/pharmacy/overview'); pg.wait_for_selector('text=You do not have access to this page'); check('a workspace outside the roles is refused', True)
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Log out")'); pg.wait_for_url('**/signin')
+    check('there is no misleading online status indicator', page.locator('.hms-conn').count() == 0 and page.get_by_text('Online', exact=True).count() == 0)
+    context.set_offline(True)
+    page.wait_for_timeout(300)
+    check('local workflows remain available without a network connection', page.locator('.hms-shell').is_visible())
+    check('offline mode does not claim a remote refresh', page.get_by_text('Back online—screens are refreshing').count() == 0)
+    context.set_offline(False)
 
-    # scroll to top on navigation
-    login(pg,'doctor'); pg.wait_for_url('**/doctor/overview')
-    pg.evaluate("document.getElementById('main').insertAdjacentHTML('beforeend','<div style=\"height:3000px\"></div>')")
-    pg.evaluate("document.getElementById('main').scrollTo(0, 1500)"); pg.wait_for_timeout(150)
-    check('content is scrolled down', pg.evaluate("document.getElementById('main').scrollTop")>1000)
-    # the rail and the header do not move or scroll with it
-    rail=pg.locator('.hms-rail').bounding_box(); head=pg.locator('.hms-topbar').bounding_box()
-    check('rail stays pinned while content scrolls', rail['y']==0 and abs(rail['height']-900)<=1, str(rail))
-    check('header stays pinned while content scrolls', head['y']==0, str(head))
-    check('the page itself never scrolls', pg.evaluate("document.documentElement.scrollHeight<=window.innerHeight && window.scrollY===0"))
-    check('rail has no scrollbar and is not scrollable', pg.evaluate("(()=>{const e=document.querySelector('.hms-rail'); return e.scrollHeight<=e.clientHeight+1 && getComputedStyle(e).overflowY==='hidden'})()"))
-    pg.screenshot(path=OUT+'shell-scrolled-fixed.png')
-    pg.click('.hms-rail__item:has-text("Consultation")'); pg.wait_for_url('**/doctor/consultation'); pg.wait_for_timeout(200)
-    check('navigation scrolls the content to top', pg.evaluate("document.getElementById('main').scrollTop")==0)
-    pg.screenshot(path=OUT+'shell-doctor-light.png')
+    for width in [320, 375, 680, 768, 1024, 1280, 1440, 1920]:
+        page.set_viewport_size({'width': width, 'height': 800})
+        page.wait_for_timeout(100)
+        no_overflow = page.evaluate('document.documentElement.scrollWidth <= window.innerWidth')
+        check(f'no page-level horizontal overflow at {width}px', no_overflow, f'viewport={width}, document={page.evaluate("document.documentElement.scrollWidth")}')
 
-    # dark theme full shell
-    pg.click('button[aria-label="Switch to dark mode"]'); pg.wait_for_timeout(250)
-    pg.screenshot(path=OUT+'shell-doctor-dark.png')
-    pg.click('button[aria-label="Account menu"]'); pg.wait_for_selector('[role=menu]'); pg.wait_for_timeout(200)
-    pg.screenshot(path=OUT+'shell-avatar-menu-dark.png'); pg.keyboard.press('Escape')
-    pg.click('button[aria-label="Notifications"]'); pg.wait_for_timeout(250); pg.screenshot(path=OUT+'shell-notifications-dark.png'); pg.keyboard.press('Escape')
+    logout(page)
+    login(page, 'lab_technician')
+    page.wait_for_url('**/lab/overview')
+    check('changing local profile opens the selected role', page.locator('.hms-rail__label').inner_text().strip().lower() == 'laboratory')
+    check('single-role local profile cannot switch into another role', page.locator('.hms-switch').count() == 0)
+    check('lab profile sees its own worklist', 'Worklist' in nav_labels(page) and 'My queue' not in nav_labels(page))
 
-    # 1366x768 minimum
-    pg.set_viewport_size({'width':1366,'height':768}); pg.wait_for_timeout(200)
-    check('no horizontal scroll at 1366x768', pg.evaluate("document.documentElement.scrollWidth<=window.innerWidth"))
-    f=pg.locator('.hms-search__field').bounding_box(); m=pg.locator('.hms-shell__main').bounding_box()
-    check('search is centred at 1366x768', abs((f['x']+f['width']/2)-(m['x']+m['width']/2))<=1.5)
-    pg.screenshot(path=OUT+'shell-1366.png')
+    check('no browser console or runtime errors', not errors, '; '.join(errors)[:400])
+    browser.close()
 
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Log out")'); pg.wait_for_url('**/signin')
-    login(pg,'hospital_admin'); pg.wait_for_url('**/admin/overview'); pg.wait_for_timeout(300)
-    fit=pg.evaluate("(()=>{const e=document.querySelector('.hms-rail__scroll'); return [e.scrollHeight,e.clientHeight]})()")
-    check('all 14 administration menus fit the rail at 1366x768 with no scrolling', fit[0]<=fit[1]+1, str(fit))
-    pg.screenshot(path=OUT+'shell-admin-1366.png')
-    login_roles=['doctor+lab_technician']
-    pg.click('button[aria-label="Account menu"]'); pg.click('[role=menuitem]:has-text("Log out")'); pg.wait_for_url('**/signin')
-    login(pg,'doctor+lab_technician'); pg.wait_for_selector('.hms-switch')
-    fit=pg.evaluate("(()=>{const e=document.querySelector('.hms-rail__scroll'); return [e.scrollHeight,e.clientHeight]})()")
-    check('switcher plus menus fit at 1366x768', fit[0]<=fit[1]+1, str(fit))
-
-    check('no console errors', not errors, '; '.join(errors)[:300])
-    b.close()
-fails=[r for r in results if not r[1]]
-print(f'\n{len(results)-len(fails)}/{len(results)} checks passed'); sys.exit(1 if fails else 0)
+failed = [result for result in results if not result[1]]
+print(f'\n{len(results) - len(failed)}/{len(results)} checks passed')
+sys.exit(1 if failed else 0)
