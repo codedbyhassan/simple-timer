@@ -27,7 +27,7 @@ const EMPTY_PATIENT = {
   reason: '',
 }
 
-export default async async async function ReceptionDeskPage({ menu, data, error, commit, can }) {
+export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
   const { options: departmentOptions } = useLocalDepartments()
   const [query, setQuery] = useState('')
   const [selectedPatientId, setSelectedPatientId] = useState('')
@@ -47,13 +47,13 @@ export default async async async function ReceptionDeskPage({ menu, data, error,
   }) : []
   const todaysAppointments = data.appointments.filter((appointment) => appointment.date === TODAY && ['Expected', 'Arrived'].includes(appointment.status)).slice(0, 4)
   const set = (key, value) => { setValues((current) => ({ ...current, [key]: value })); setFormError(''); setMessage(''); if (key === 'phone' || key === 'firstName' || key === 'lastName' || key === 'dateOfBirth') setDifferentPerson(false) }
-  const checkIn = (patientId, appointmentId = '', details = {}) => {
+  const checkIn = async (patientId, appointmentId = '', details = {}) => {
     if (!can('encounters.open')) { setFormError('Your role does not have permission to check patients into the OPD queue.'); return }
     const result = createCheckIn(data, patientId, details, appointmentId)
     if (result.error) { setFormError(result.error); return }
     if (await commit(result.data)) { setMessage(result.message); setSelectedPatientId(patientId) }
   }
-  const createPatient = (event) => {
+  const createPatient = async async (event) => {
     event.preventDefault()
     if (!can('patients.create')) { setFormError('Your role does not have permission to register patients.'); return }
     if (values.coverage === 'NHIS' && values.memberNumber && !/^\d{8}(\d{2})?$/.test(values.memberNumber)) { setFormError('NHIS membership numbers must contain 8 or 10 digits.'); setStep(1); return }
