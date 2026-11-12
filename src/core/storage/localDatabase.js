@@ -77,7 +77,7 @@ function openDatabase() {
       request.onsuccess = () => resolve(request.result)
       request.onerror = () => reject(request.error || new Error('Unable to open local database.'))
       request.onblocked = () => reject(new Error('The local database is being upgraded in another tab. Close other Ascend HMS tabs and retry.'))
-    })
+    }).catch((error) => { dbPromise = null; throw error })
   }
   return dbPromise
 }
