@@ -28,7 +28,7 @@ function download(xml, name) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-export default async function ClaimsExportsPage({ data, error, commit, can }) {
+export default function ClaimsExportsPage({ data, error, commit, can }) {
   const ready = data.claims.records.filter((claim) => claim.status === 'Ready')
   const [selected, setSelected] = useState([])
   const [actionError, setActionError] = useState('')
