@@ -157,7 +157,7 @@ export default function AccessManagementPage({ menu }) {
                 </select>
               </label>
             ) : null}
-            {tab === 'users' ? <span className="hms-access__result-count">{users.length} accounts</span> : null}
+            {tab === 'users' ? <span className="hms-access__result-count">{users.length} profiles</span> : null}
           </div>
 
           {!loaded && tab === 'users' ? <div className="hms-access__empty"><strong>Loading users…</strong></div> : null}
