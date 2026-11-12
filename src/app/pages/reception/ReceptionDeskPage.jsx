@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Dialog, Icon, PageHeader } from '@ui'
 import { ErrorNotice, SearchField, EmptyResult, PatientIdentity, AppointmentLine, createCheckIn, FormField, uid, nameOf, patientFor, patientPath } from './ReceptionShared.jsx'
-import { DEPARTMENTS, TODAY } from './receptionData.js'
+import { TODAY } from './receptionData.js'
+import useLocalDepartments from '@core/storage/useLocalDepartments.js'
 import './reception styles/shared.css'
 import './reception styles/desk.css'
 
@@ -22,11 +23,12 @@ const EMPTY_PATIENT = {
   nextOfKin: '',
   otherInsurance: '',
   visitType: 'Walk-in',
-  department: 'General medicine',
+  department: '',
   reason: '',
 }
 
 export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
+  const { options: departmentOptions } = useLocalDepartments()
   const [query, setQuery] = useState('')
   const [selectedPatientId, setSelectedPatientId] = useState('')
   const [step, setStep] = useState(0)
@@ -56,6 +58,7 @@ export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
     if (!can('patients.create')) { setFormError('Your role does not have permission to register patients.'); return }
     if (values.coverage === 'NHIS' && values.memberNumber && !/^\d{8}(\d{2})?$/.test(values.memberNumber)) { setFormError('NHIS membership numbers must contain 8 or 10 digits.'); setStep(1); return }
     if (duplicateMatches.length && !differentPerson) { setFormError('Review the possible duplicate match and confirm if this is a different person.'); setStep(0); return }
+    if (values.visitType === 'Appointment' && !values.department) { setFormError('Configure a department in Administration before booking an appointment.'); setStep(2); return }
     const patient = {
       ...values,
       id: `ASC-PAT-${String(Date.now()).slice(-6)}`,
@@ -136,7 +139,7 @@ export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
                 <FormField label="Next of kin and contact" value={values.nextOfKin} onChange={(value) => set('nextOfKin', value)} />
               </div> : null}
               {step === 2 ? <div className="hms-reception__form-grid">
-                <FormField label="Department or clinic" value={values.department} onChange={(value) => set('department', value)} options={DEPARTMENTS} />
+                <FormField label="Department or clinic" value={values.department} onChange={(value) => set('department', value)} options={[{ value: '', label: departmentOptions.length ? 'Choose department' : 'No departments configured' }, ...departmentOptions]} />
                 <FormField label="Visit type" value={values.visitType} onChange={(value) => set('visitType', value)} options={['Walk-in', 'Appointment', 'Information only']} />
                 <label className="hms-reception__field hms-reception__field--wide"><span>Reason for visit</span><textarea rows="3" value={values.reason} onChange={(event) => set('reason', event.target.value)} placeholder="Brief reason shared by the patient" /></label>
                 <div className="hms-reception__registration-summary"><Icon name="info" size={17} /><span>Patient registration captures administrative details only. Clinical assessment remains with the care team.</span></div>
