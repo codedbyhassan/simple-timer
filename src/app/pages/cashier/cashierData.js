@@ -11,7 +11,7 @@ const paymentTransactions = CLAIMS_SEED.payments.filter((payment) => payment.pai
   cashier: 'Cashier',
 }))
 
-export const CASHIER_SEED = {
+const CASHIER_SEED_REFERENCE = {
   ...CLAIMS_SEED,
   cashier: {
     transactions: paymentTransactions,
@@ -34,4 +34,8 @@ export const CASHIER_SEED = {
     ],
     activity: [],
   },
+}
+
+export const CASHIER_SEED = {
+  ...CASHIER_SEED_REFERENCE, cashier: { ...CASHIER_SEED_REFERENCE.cashier, transactions: [], refunds: [], prices: [], shift: { id: '', status: 'Closed', openedAt: '', openingFloat: 0, countedCash: null, reconciliations: [] }, activity: [] },
 }
