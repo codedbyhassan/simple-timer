@@ -8,7 +8,7 @@ export default function ProfilePage() {
   const { user, signOut } = useAuth()
   const { access, roles } = useAccess()
   const navigate = useNavigate()
-  const displayName = access.displayName || user?.displayName || user?.name || 'Local staff profile'
+  const displayName = access.displayName || user?.displayName || user?.name || 'Local role profile'
 
   const switchProfile = async () => {
     await signOut()
@@ -33,7 +33,7 @@ export default function ProfilePage() {
           </div>
         </Card>
         <Card title="Access mode" description="Profiles and permissions are stored in IndexedDB on this device. They do not authenticate a real staff member and do not sync to another installation.">
-          <Button size="md" intent="secondary" onClick={switchProfile}>Switch local profile</Button>
+          <Button size="md" intent="secondary" onClick={switchProfile}>Switch role profile</Button>
         </Card>
       </div>
     </>
