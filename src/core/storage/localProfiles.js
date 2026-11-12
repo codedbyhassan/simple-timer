@@ -25,10 +25,10 @@ const makeId = () => `local-${globalThis.crypto?.randomUUID?.() || Math.random()
 
 export async function getProfiles() {
   const profiles = await readDocument(LOCAL_PROFILES_KEY)
-  if (Array.isArray(profiles) && profiles.length) return profiles
+  if (Array.isArray(profiles)) return profiles
   const initial = PROFILE_ROLES.map((item) => ({ id: makeId(), ...item, displayName: item.name, active: true, kind: 'local-profile' }))
-  await updateDocument(LOCAL_PROFILES_KEY, (current) => Array.isArray(current) && current.length ? current : initial, initial)
-  return initial
+  await updateDocument(LOCAL_PROFILES_KEY, (current) => Array.isArray(current) ? current : initial, initial)
+  return (await readDocument(LOCAL_PROFILES_KEY)) || initial
 }
 
 export async function getCurrentProfile() {
