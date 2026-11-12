@@ -15,7 +15,7 @@ function resultRows(data, order) {
   }))
 }
 
-export default function DoctorResultsPage({ data, error, commit, can }) {
+export default async function DoctorResultsPage({ data, error, commit, can }) {
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
   const activePatientIds = new Set(data.queue.map((entry) => entry.patientId))
@@ -47,7 +47,7 @@ export default function DoctorResultsPage({ data, error, commit, can }) {
       ...data.doctor,
       reviewedResults: [...(data.doctor.reviewedResults || []), { orderId: order.id, reviewedAt: now, reviewedBy: 'Clinician' }],
     }
-    if (commit({ ...data, lab, doctor })) setMessage(`${critical ? 'Critical acknowledgement' : 'Result review'} recorded for ${order.id}.`)
+    if (await commit({ ...data, lab, doctor })) setMessage(`${critical ? 'Critical acknowledgement' : 'Result review'} recorded for ${order.id}.`)
   }
 
   return <>
