@@ -36,7 +36,7 @@ function medicineConflicts(medicine, allergies) {
   }))
 }
 
-export default async async async async async function DoctorConsultationPage({ data, error, commit, can }) {
+export default function DoctorConsultationPage({ data, error, commit, can }) {
   const location = useLocation()
   const requestedPatientId = new URLSearchParams(location.search).get('patientId')
   const entries = data.queue.filter((entry) => ['Waiting for clinician', 'In consultation', 'Investigations'].includes(entry.stage))
@@ -71,7 +71,7 @@ export default async async async async async function DoctorConsultationPage({ d
 
   useEffect(() => {
     if (!selected || form.status === 'Finalised') return undefined
-    const timer = window.setTimeout(() => {
+    const timer = window.setTimeout(async () => {
       const current = data.doctor.drafts.find((draft) => draft.encounterId === selected.id)
       const comparable = (draft) => {
         const copy = { ...draft }
@@ -98,7 +98,7 @@ export default async async async async async function DoctorConsultationPage({ d
     setMessage('')
     setActionError('')
   }
-  const startConsultation = () => {
+  const startConsultation = async () => {
     if (!selected || !can('clinical.consult')) { setActionError('Your role cannot start consultations.'); return }
     if (!['Waiting for clinician', 'In consultation', 'Investigations'].includes(selected.stage)) { setActionError('This encounter must complete triage handover before consultation.'); return }
     const queue = data.queue.map((entry) => entry.id === selected.id && entry.stage === 'Waiting for clinician' ? { ...entry, stage: 'In consultation' } : entry)
@@ -118,7 +118,7 @@ export default async async async async async function DoctorConsultationPage({ d
     change('orders', [...form.orders, { id: uid('DORD'), testId: orderTest, name: test?.name || 'Investigation', priority: orderPriority }])
     setOrderTest('')
   }
-  const placeOrders = () => {
+  const placeOrders = async () => {
     if (!selected || !can('clinical.order')) { setActionError('Your role cannot order investigations.'); return }
     const draftOrders = form.orders.filter((order) => !order.orderId)
     if (!draftOrders.length) { setActionError('Add at least one new investigation first.'); return }
@@ -161,7 +161,7 @@ export default async async async async async function DoctorConsultationPage({ d
     setDose('')
     setActionError('')
   }
-  const createPrescription = () => {
+  const createPrescription = async () => {
     if (!selected || !can('clinical.prescribe')) { setActionError('Your role cannot prescribe medicines.'); return }
     const draftItems = form.prescriptions.filter((item) => !item.prescriptionId)
     if (!draftItems.length) { setActionError('Add a complete prescription item first.'); return }
@@ -186,7 +186,7 @@ export default async async async async async function DoctorConsultationPage({ d
     if (!form.diagnosisCode) { setActionError('Code a diagnosis before adding a procedure.'); return }
     change('procedures', [...form.procedures, { id: uid('PROC'), name: procedureName, date: procedureDate, diagnosisCode: form.diagnosisCode }])
   }
-  const finalise = () => {
+  const finalise = async () => {
     if (!selected || !can('clinical.finalize')) { setActionError('Your role cannot finalise consultations.'); return }
     const blockers = claimGaps(form, data)
     if (blockers.length) { setActionError(`Cannot finalise: ${blockers.join(' ')}`); return }
