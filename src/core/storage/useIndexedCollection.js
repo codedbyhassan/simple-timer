@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
+import { appendAuditEvent, readDocument, subscribeToDocument, writeDocument } from './localDatabase.js'
 
 export default function useIndexedCollection(key, defaults = []) {
   const [records, setRecords] = useState(defaults)
@@ -34,6 +34,7 @@ export default function useIndexedCollection(key, defaults = []) {
   const commit = useCallback(async (next) => {
     try {
       await writeDocument(key, next)
+      try { await appendAuditEvent({ action: 'Updated local configuration', resource: key, category: 'Administration' }) } catch { /* Keep the primary save successful if the audit write fails. */ }
       setRecords(next)
       setError('')
       return true
