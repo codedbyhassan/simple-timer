@@ -4,6 +4,7 @@ import useAdminCollection from './useAdminCollection.js'
 import useNurseWorkspace from '../nurse/useNurseWorkspace.js'
 import './admin styles/facilities.css'
 
+const EMPTY_DEPARTMENTS = []
 const TABS = [{ id: 'departments', label: 'Departments' }, { id: 'wards', label: 'Wards' }, { id: 'beds', label: 'Beds' }]
 const newId = (prefix) => `${prefix}-${globalThis.crypto?.randomUUID?.() || Date.now()}`
 const tone = (status) => status === 'Occupied' ? 'warning' : status === 'Available' || status === 'Open' ? 'success' : status === 'Cleaning' || status === 'Maintenance' || status === 'Out of service' ? 'critical' : 'neutral'
@@ -14,7 +15,7 @@ export default function FacilitiesPage({ menu }) {
   const [status, setStatus] = useState('all')
   const [form, setForm] = useState(null)
   const [error, setError] = useState('')
-  const { records: departments, loaded: departmentsLoaded, error: departmentsError, commit: commitDepartments } = useAdminCollection('facilities.departments', [])
+  const { records: departments, loaded: departmentsLoaded, error: departmentsError, commit: commitDepartments } = useAdminCollection('facilities.departments', EMPTY_DEPARTMENTS)
   const { data, loaded, error: workspaceError, commit } = useNurseWorkspace()
   const nurse = data.nurse || { wards: [], beds: [], tasks: [], admissions: [], discharges: [], activity: [] }
   const wards = nurse.wards || []
