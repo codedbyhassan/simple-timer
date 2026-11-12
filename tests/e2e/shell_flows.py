@@ -94,7 +94,7 @@ with sync_playwright() as playwright:
     page.goto(BASE + '/search?q=not-a-real-record')
     page.wait_for_selector('h1:has-text("Search records")')
     check('global search opens the local record search page', True)
-    check('search does not fabricate a matching patient', page.get_by_text('No matching records').count() <= 1)
+    check('search does not fabricate a matching patient', page.get_by_text('No matching records').count() == 1)
 
     page.goto(BASE + '/design-system')
     page.wait_for_selector('.hms-receipt')
