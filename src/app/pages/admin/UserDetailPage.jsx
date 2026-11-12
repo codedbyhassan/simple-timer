@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Dialog, Icon, PageHeader, StatusBadge } from '@ui'
 import { roleLabel } from '@core/access/roles.js'
@@ -145,11 +145,7 @@ export default function UserDetailPage() {
   const [editing, setEditing] = useState(isNew)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const [initial, setInitial] = useState(EMPTY_USER)
-
-  useEffect(() => {
-    if (loaded && user && !editing) setInitial({ ...EMPTY_USER, ...user })
-  }, [editing, loaded, user])
+  const initial = isNew ? EMPTY_USER : { ...EMPTY_USER, ...(user || {}) }
 
   const saveUser = async (form) => {
     const clean = Object.fromEntries(Object.entries(form).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]))
@@ -189,7 +185,6 @@ export default function UserDetailPage() {
   }
 
   const beginEdit = () => {
-    setInitial({ ...EMPTY_USER, ...user })
     setError('')
     setEditing(true)
   }
@@ -232,7 +227,7 @@ export default function UserDetailPage() {
         {error && !editing ? <p className="hms-user-detail__error" role="alert">{error}</p> : null}
       </div>
       <Dialog open={editing} title={isNew ? 'New local staff profile' : 'Edit staff details'} description="Enter the account details and choose a role for this staff member." onClose={cancelEdit} size="large">
-        <UserForm initial={initial} onSave={saveUser} onCancel={cancelEdit} saving={saving} error={error} isNew={isNew} />
+        <UserForm key={user?.id || 'new'} initial={initial} onSave={saveUser} onCancel={cancelEdit} saving={saving} error={error} isNew={isNew} />
       </Dialog>
     </>
   )
