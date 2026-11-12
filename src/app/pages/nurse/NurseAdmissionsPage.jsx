@@ -4,7 +4,7 @@ import { NurseEmpty, NurseErrorNotice, NurseField, NurseMessage, NursePatientIde
 import './nurse styles/shared.css'
 import './nurse styles/admissions.css'
 
-export default async async function NurseAdmissionsPage({ data, error, commit, can }) {
+export default function NurseAdmissionsPage({ data, error, commit, can }) {
   const [patientId, setPatientId] = useState('')
   const [wardId, setWardId] = useState('')
   const [reason, setReason] = useState('')
@@ -18,7 +18,7 @@ export default async async function NurseAdmissionsPage({ data, error, commit, c
   const open = nurse.admissions.filter((item) => item.status === 'Awaiting bed').sort((a, b) => (a.priority === 'Priority' ? -1 : 1) - (b.priority === 'Priority' ? -1 : 1) || new Date(a.requestedAt) - new Date(b.requestedAt))
   const completed = nurse.admissions.filter((item) => item.status === 'Admitted')
   const availableBeds = (ward) => nurse.beds.filter((bed) => bed.status === 'Available' && (!ward || bed.wardId === ward))
-  const addRequest = (event) => {
+  const addRequest = async (event) => {
     event.preventDefault()
     if (!can('nursing.observe')) { setFormError('Your role does not have permission to create admission requests.'); return }
     if (!patientId || !wardId || !reason.trim()) { setFormError('Select a patient, ward and reason for admission.'); return }
@@ -34,7 +34,7 @@ export default async async function NurseAdmissionsPage({ data, error, commit, c
       setShowForm(false)
     }
   }
-  const admit = (request) => {
+  const admit = async (request) => {
     if (!can('nursing.observe')) return
     const bedId = bedChoices[request.id]
     const bed = nurse.beds.find((item) => item.id === bedId && item.status === 'Available')
