@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getProfiles, saveProfiles } from '@core/storage/localProfiles.js'
+import { subscribeToDocument } from '@core/storage/localDatabase.js'
 
 const toUser = (profile) => ({
   ...profile,
@@ -16,12 +17,17 @@ export default function useAdminUsers() {
 
   useEffect(() => {
     let alive = true
-    getProfiles().then((profiles) => {
-      if (alive) setUsers(profiles.map(toUser))
-    }).catch((error) => {
-      if (alive) setStorageError(error instanceof Error ? error.message : 'Unable to load local profiles.')
-    }).finally(() => alive && setLoaded(true))
-    return () => { alive = false }
+    const refresh = async () => {
+      try {
+        const profiles = await getProfiles()
+        if (alive) { setUsers(profiles.map(toUser)); setStorageError('') }
+      } catch (error) {
+        if (alive) setStorageError(error instanceof Error ? error.message : 'Unable to load local profiles.')
+      } finally { if (alive) setLoaded(true) }
+    }
+    refresh()
+    const unsubscribe = subscribeToDocument('local.profiles', refresh)
+    return () => { alive = false; unsubscribe() }
   }, [])
 
   const commit = async (nextUsers) => {
