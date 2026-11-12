@@ -1,6 +1,23 @@
 # Role workspaces
 
-Ascend HMS has eight frontend workspaces. The selected local staff profile determines which workspace and menu permissions are visible. These roles are local demonstration profiles, not secure accounts.
+Ascend HMS presents eight main workspaces. Sign-in starts with workspace cards. A workspace with multiple active roles opens a second screen of role-dashboard cards; selecting one opens that role's dashboard. A workspace with only one active role routes directly to its dashboard. Inactive role profiles are not offered.
+
+The workspace is the department or operational area. The role dashboard determines the specific menus and permissions shown inside it.
+
+These are local demonstration profiles, not secure accounts or identity verification.
+
+## Workspace and role dashboard structure
+
+| Workspace | Role dashboards |
+|---|---|
+| Reception | Receptionist, Records Officer |
+| Nursing | Triage Nurse, Ward Nurse, Bed Manager |
+| Doctor | Doctor |
+| Laboratory | Laboratory Technician |
+| Pharmacy | Pharmacist, Pharmacy Assistant, Store Keeper |
+| Finance | Cashier, Finance Officer |
+| Claims | Claims Officer |
+| Administration | Hospital Administrator, Management Viewer |
 
 ## Reception
 
@@ -22,7 +39,7 @@ Investigation worklist, specimen collection and receipt, result entry, verificat
 
 Prescription queue, dispensing, partial fulfilment, batch and expiry selection, stock levels, alerts, formulary mappings and inventory.
 
-## Cashier
+## Finance
 
 Pending charges, full and partial payments, receipts, till and shift activity, refund requests, reconciliation, price list and billed-versus-claimed review.
 
@@ -38,14 +55,14 @@ Management dashboard, hospital profile, department/ward/bed configuration, local
 
 The following records share the same IndexedDB source:
 
-- Patient and appointment records connect reception, nursing, doctor, laboratory, pharmacy, cashier and claims.
+- Patient and appointment records connect reception, nursing, doctor, laboratory, pharmacy, finance and claims.
 - Encounter updates connect triage, consultation and OPD queues.
 - Investigation orders and results connect doctor and laboratory.
 - Prescriptions and dispensing connect doctor and pharmacy.
-- Service prices connect Administration and Cashier.
+- Service prices connect Administration and Finance.
 - Claims reference mappings connect Administration and Claims.
 - Wards and beds connect Administration and Nursing.
-- Refund requests connect Cashier and Administration.
+- Refund requests connect Finance and Administration.
 - Local operational and configuration changes are recorded in the audit history.
 
 ## Explicit boundaries
