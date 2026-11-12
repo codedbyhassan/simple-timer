@@ -79,10 +79,10 @@ export async function updateDocument(key, updater, fallback = null) {
 
 export function subscribeToDocument(key, callback) {
   const onChange = (event) => {
-    if (!event.detail?.key || event.detail.key === key) callback()
+    if (!event.detail?.key || event.detail.key === '*' || event.detail.key === key) callback()
   }
   const onMessage = (event) => {
-    if (!event.data?.key || event.data.key === key) callback()
+    if (!event.data?.key || event.data.key === '*' || event.data.key === key) callback()
   }
   window.addEventListener('ascend:local-data-changed', onChange)
   try {
@@ -114,15 +114,15 @@ export async function importLocalDatabase(backup) {
   if (!backup || backup.format !== 'ascend-hms-local-backup' || backup.version !== 1 || !Array.isArray(backup.documents)) {
     throw new Error('This file is not a supported Ascend HMS local backup.')
   }
+  if (!backup.documents.every((document) => typeof document?.key === 'string' && Object.prototype.hasOwnProperty.call(document, 'value'))) {
+    throw new Error('The backup contains an invalid record.')
+  }
   const db = await openDatabase()
   await new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE, 'readwrite')
     const store = transaction.objectStore(STORE)
     store.clear()
-    backup.documents.forEach((document) => {
-      if (typeof document?.key !== 'string' || !('value' in document)) throw new Error('The backup contains an invalid record.')
-      store.put(document)
-    })
+    backup.documents.forEach((document) => store.put(document))
     transaction.oncomplete = resolve
     transaction.onerror = () => reject(transaction.error || new Error('Unable to restore local records.'))
     transaction.onabort = () => reject(transaction.error || new Error('Local restore was cancelled.'))
