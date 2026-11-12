@@ -5,7 +5,7 @@ import { LabEmpty, LabError, LabField, LabNotice, LabPanel, LabPatient, LabStatu
 import './lab styles/shared.css'
 import './lab styles/specimens.css'
 
-export default function LabSpecimensPage({ data, error, commit, can }) {
+export default async async function LabSpecimensPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [nameConfirmed, setNameConfirmed] = useState(false)
@@ -33,7 +33,7 @@ export default function LabSpecimensPage({ data, error, commit, can }) {
           : data.lab.recollectionTasks,
       activity: [{ id: uid('LACT'), kind: 'Specimen', message: activityMessage, at: now }, ...data.lab.activity],
     }
-    if (commit({ ...data, lab })) {
+    if (await commit({ ...data, lab })) {
       setMessage(activityMessage)
       setActionError('')
       setNameConfirmed(false)
@@ -71,7 +71,7 @@ export default function LabSpecimensPage({ data, error, commit, can }) {
     const nextOrder = { ...selected, status: 'Ordered', resultValues: {}, resultStatus: 'Not entered', notification: null }
     const notification = { id: uid('LNOT'), orderId: selected.id, kind: 'Specimen rejected', message: `${selected.id} rejected: ${reason}. Recollection requested.`, at: now, recipient: selected.orderedBy, read: false }
     const latest = { ...data.lab, notifications: [notification, ...data.lab.notifications], specimens: data.lab.specimens.map((item) => item.orderId === selected.id ? nextSpecimen : item), orders: data.lab.orders.map((item) => item.id === selected.id ? nextOrder : item), recollectionTasks: [task, ...data.lab.recollectionTasks], activity: [{ id: uid('LACT'), kind: 'Specimen', message: `Specimen rejected · recollection requested · ${selected.id}`, at: now }, ...data.lab.activity] }
-    if (commit({ ...data, lab: latest })) {
+    if (await commit({ ...data, lab: latest })) {
       setMessage('Specimen rejected. A re-collection task was created and the ordering clinician was notified in the shared workspace.')
       setActionError('')
       setRejectReason('')
