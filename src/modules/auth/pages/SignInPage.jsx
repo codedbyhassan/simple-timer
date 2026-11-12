@@ -14,6 +14,7 @@ export default function SignInPage() {
   const [selected, setSelected] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [profileError, setProfileError] = useState('')
 
   useEffect(() => {
     let alive = true
@@ -22,7 +23,7 @@ export default function SignInPage() {
       const active = items.filter((profile) => profile.active)
       setProfiles(active)
       setSelected(active[0]?.id || '')
-    }).catch((error) => toast.error('Unable to load local profiles', error.message)).finally(() => alive && setLoading(false))
+    }).catch((error) => alive && setProfileError(error instanceof Error ? error.message : 'Unable to load local profiles.')).finally(() => alive && setLoading(false))
     return () => { alive = false }
   }, [toast])
 
@@ -46,6 +47,7 @@ export default function SignInPage() {
         <Text tone="muted">Open a local demonstration workspace. No account, password or network connection is required.</Text>
       </Stack>
       <form className="hms-local-signin" onSubmit={onSubmit}>
+        {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
         {loading ? <Text tone="muted">Loading local profiles…</Text> : profiles.length ? (
           <>
             <label className="hms-local-signin__label" htmlFor="local-profile">Staff role</label>
