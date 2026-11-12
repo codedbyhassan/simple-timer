@@ -7,6 +7,8 @@ export const ROLE_PERMISSIONS = {
   lab_technician: ['patients.search','patients.view','lab.view','lab.collect','lab.process','lab.verify','lab.manage_catalogue','inventory.view','inventory.receive','inventory.adjust'],
   pharmacist: ['patients.search','patients.view','pharmacy.view','pharmacy.verify','pharmacy.dispense','pharmacy.manage_formulary','inventory.view','inventory.receive','inventory.adjust'],
   pharmacy_assistant: ['patients.search','patients.view','pharmacy.view','inventory.view'],
+  store_keeper: ['inventory.view','inventory.receive','inventory.adjust'],
+  bed_manager: ['admin.manage_config','nursing.observe'],
   cashier: ['patients.search','patients.view','finance.view','finance.collect','finance.refund','finance.reconcile'],
   finance_officer: ['patients.search','patients.view','finance.view','finance.collect','finance.refund','finance.reconcile'],
   claims_officer: ['patients.search','patients.view','claims.view','claims.build','claims.enter_ccc','claims.export','claims.import_report','claims.manage_mappings','finance.view'],
