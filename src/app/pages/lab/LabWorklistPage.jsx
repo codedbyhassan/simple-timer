@@ -7,7 +7,7 @@ import './lab styles/worklist.css'
 
 const STAGES = ['All', 'Ordered', 'Collected', 'Received', 'In process', 'Awaiting verification', 'Verified']
 
-export default function LabWorklistPage({ data, error, commit, can }) {
+export default async function LabWorklistPage({ data, error, commit, can }) {
   const location = useLocation()
   const [query, setQuery] = useState('')
   const [stage, setStage] = useState('All')
@@ -33,7 +33,7 @@ export default function LabWorklistPage({ data, error, commit, can }) {
       orders: data.lab.orders.map((item) => item.id === order.id ? { ...item, status: 'In process', processingStartedAt: now } : item),
       activity: [{ id: uid('LACT'), kind: 'Worklist', message: `${order.id} processing started`, at: now }, ...data.lab.activity],
     }
-    if (!commit({ ...data, lab })) return
+    if (!await commit({ ...data, lab })) return
     setSelectedId(order.id)
   }
 
