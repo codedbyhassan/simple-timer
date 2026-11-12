@@ -1,8 +1,10 @@
+import os
 import sys
 from playwright.sync_api import sync_playwright
 
 BASE = 'http://127.0.0.1:5199'
 OUT = '/home/claude/shots/'
+os.makedirs(OUT, exist_ok=True)
 results = []
 
 ROLE_LABELS = {
