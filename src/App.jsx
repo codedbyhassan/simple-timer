@@ -11,16 +11,13 @@ import HospitalProfilePage from './app/pages/admin/HospitalProfilePage.jsx'
 import FacilitiesPage from './app/pages/admin/FacilitiesPage.jsx'
 import AccessManagementPage from './app/pages/admin/AccessManagementPage.jsx'
 import UserDetailPage from './app/pages/admin/UserDetailPage.jsx'
-import AdminMenuStub from './app/pages/admin/AdminMenuStub.jsx'
 import AdminOperationsPage from './app/pages/admin/AdminOperationsPage.jsx'
 import AdminRecordDetailPage from './app/pages/admin/AdminRecordDetailPage.jsx'
 import ScrollToTop from './app/ScrollToTop.jsx'
-import MenuStub from './app/pages/MenuStub.jsx'
 import Guarded from './app/pages/Guarded.jsx'
 import HomeRedirect from './app/pages/HomeRedirect.jsx'
 import ProfilePage from './app/pages/ProfilePage.jsx'
 import SettingsPage from './app/pages/SettingsPage.jsx'
-import DesignSystemPage from './app/pages/DesignSystemPage.jsx'
 import SearchPage from './app/pages/SearchPage.jsx'
 import ReceptionWorkspacePage from './app/pages/reception/ReceptionWorkspacePage.jsx'
 import PatientRecordPage from './app/pages/reception/PatientRecordPage.jsx'
@@ -68,7 +65,7 @@ export default function App() {
                     <Route
                       key={`${ws.id}-${menu.slug}`}
                       path={`/${ws.slug}/${menu.slug}`}
-                      element={<Guarded workspace={ws} menu={menu}>{ws.id === 'reception' ? <ReceptionWorkspacePage menu={menu} /> : ws.id === 'nurse' ? <NurseWorkspacePage menu={menu} /> : ws.id === 'pharmacy' ? <PharmacyWorkspacePage menu={menu} /> : ws.id === 'laboratory' ? <LabWorkspacePage menu={menu} /> : ws.id === 'doctor' ? <DoctorWorkspacePage menu={menu} /> : ws.id === 'cashier' ? <CashierWorkspacePage menu={menu} /> : ws.id === 'claims' ? <ClaimsWorkspacePage menu={menu} /> : ws.id !== 'admin' ? <MenuStub menu={menu} /> : menu.slug === 'overview' ? <ManagementDashboardPage menu={menu} /> : menu.slug === 'profile' ? <HospitalProfilePage menu={menu} /> : menu.slug === 'facilities' ? <FacilitiesPage menu={menu} /> : menu.slug === 'users' ? <AccessManagementPage menu={menu} /> : adminOperationsSlugs.includes(menu.slug) ? <AdminOperationsPage menu={menu} /> : <AdminMenuStub menu={menu} />}</Guarded>}
+                      element={<Guarded workspace={ws} menu={menu}>{ws.id === 'reception' ? <ReceptionWorkspacePage menu={menu} /> : ws.id === 'nurse' ? <NurseWorkspacePage menu={menu} /> : ws.id === 'pharmacy' ? <PharmacyWorkspacePage menu={menu} /> : ws.id === 'laboratory' ? <LabWorkspacePage menu={menu} /> : ws.id === 'doctor' ? <DoctorWorkspacePage menu={menu} /> : ws.id === 'cashier' ? <CashierWorkspacePage menu={menu} /> : ws.id === 'claims' ? <ClaimsWorkspacePage menu={menu} /> : ws.id !== 'admin' ? <Navigate to={workspaceHome(ws)} replace /> : menu.slug === 'overview' ? <ManagementDashboardPage menu={menu} /> : menu.slug === 'profile' ? <HospitalProfilePage menu={menu} /> : menu.slug === 'facilities' ? <FacilitiesPage menu={menu} /> : menu.slug === 'users' ? <AccessManagementPage menu={menu} /> : adminOperationsSlugs.includes(menu.slug) ? <AdminOperationsPage menu={menu} /> : <Navigate to={workspaceHome(ws)} replace />}</Guarded>}
                     />
                   )),
                 ])}
@@ -79,8 +76,6 @@ export default function App() {
                 {adminWorkspace && adminUsersMenu ? <Route path="/admin/users/:userId" element={<Guarded workspace={adminWorkspace} menu={adminUsersMenu}><UserDetailPage /></Guarded>} /> : null}
                 {receptionWorkspace && receptionPatientsMenu ? <Route path="/reception/patients/:patientId" element={<Guarded workspace={receptionWorkspace} menu={receptionPatientsMenu}><PatientRecordPage /></Guarded>} /> : null}
                 <Route path="/search" element={<SearchPage />} />
-                <Route path="/patient/:id" element={<PatientRecordPage />} />
-                <Route path="/design-system" element={<DesignSystemPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
