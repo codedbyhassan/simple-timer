@@ -206,7 +206,7 @@ function RefundsPage({ menu }) {
               {filtered.map((refund) => (
                 <article className="hms-admin-ops__refund-card" key={refund.id}>
                   <div className="hms-admin-ops__refund-icon"><Icon name="undo" size={18} /></div>
-                  <div className="hms-admin-ops__refund-main"><div className="hms-admin-ops__refund-title">{refund.source === 'cashier' ? <strong>{refund.reason}</strong> : <Link to={`/admin/refunds/${refund.id}`}>{refund.reason}</Link>}<StatusBadge tone={tone(refund.status)}>{refund.status}</StatusBadge></div><p>{refund.patient} · Invoice {refund.invoice}</p><small>{refund.source === 'cashier' ? `${refund.id} · ` : ''}{refund.requestedAt} · Requested by {refund.requestedBy}</small></div>
+                  <div className="hms-admin-ops__refund-main"><div className="hms-admin-ops__refund-title"><strong>{refund.reason}</strong><StatusBadge tone={tone(refund.status)}>{refund.status}</StatusBadge></div><p>{refund.patient} · Invoice {refund.invoice}</p><small>{refund.id} · {refund.requestedAt} · Requested by {refund.requestedBy}</small></div>
                   <strong className="hms-admin-ops__refund-amount">GHS {Number(refund.amount).toFixed(2)}</strong>
                   {refund.status === 'Pending' ? <div className="hms-admin-ops__refund-actions"><button type="button" className="hms-admin-ops__quiet-action" onClick={() => updateStatus(refund, 'Declined')}>Decline</button><button type="button" className="hms-admin-ops__primary-action" onClick={() => updateStatus(refund, 'Approved')}>Approve</button></div> : null}
                 </article>
