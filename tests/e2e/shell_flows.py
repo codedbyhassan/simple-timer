@@ -30,23 +30,23 @@ def check(name, condition, detail=''):
     print(('PASS' if condition else 'FAIL'), name, detail)
 
 WORKSPACE_FOR_ROLE = {
-    'receptionist': 'Reception', 'records_officer': 'Reception',
-    'triage_nurse': 'Nursing', 'ward_nurse': 'Nursing', 'bed_manager': 'Nursing',
-    'doctor': 'Doctor', 'lab_technician': 'Laboratory',
-    'pharmacist': 'Pharmacy', 'pharmacy_assistant': 'Pharmacy', 'store_keeper': 'Pharmacy',
-    'cashier': 'Finance', 'finance_officer': 'Finance',
-    'claims_officer': 'Claims', 'hospital_admin': 'Administration',
-    'management_viewer': 'Administration',
+    'receptionist': 'reception', 'records_officer': 'reception',
+    'triage_nurse': 'nurse', 'ward_nurse': 'nurse', 'bed_manager': 'nurse',
+    'doctor': 'doctor', 'lab_technician': 'laboratory',
+    'pharmacist': 'pharmacy', 'pharmacy_assistant': 'pharmacy', 'store_keeper': 'pharmacy',
+    'cashier': 'cashier', 'finance_officer': 'cashier',
+    'claims_officer': 'claims', 'hospital_admin': 'admin',
+    'management_viewer': 'admin',
 }
-MULTI_ROLE_WORKSPACES = {'Reception', 'Nursing', 'Pharmacy', 'Finance', 'Administration'}
+MULTI_ROLE_WORKSPACES = {'reception', 'nurse', 'pharmacy', 'cashier', 'admin'}
 
 def login(page, role):
     page.goto(f'{BASE}/signin')
     page.wait_for_selector('.hms-local-signin__card')
     workspace = WORKSPACE_FOR_ROLE[role]
-    page.locator('.hms-local-signin__card').filter(has_text=workspace).first.click()
+    page.locator(f'.hms-local-signin__card[data-workspace="{workspace}"]').click()
     if workspace in MULTI_ROLE_WORKSPACES:
-        page.locator('.hms-local-signin__role-card').filter(has_text=ROLE_LABELS[role]).click()
+        page.locator(f'.hms-local-signin__role-card[data-role="{role}"]').click()
     page.wait_for_selector('.hms-shell', timeout=8000)
     page.wait_for_timeout(250)
     print(f'LOGIN DEBUG {role}: {page.url} | {page.locator("body").inner_text()[:180]!r}')
