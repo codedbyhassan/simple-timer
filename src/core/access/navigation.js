@@ -23,7 +23,7 @@ export const WORKSPACES = [
   },
   {
     id: 'nurse', slug: 'nurse', label: 'Nurse', icon: 'heartPulse',
-    roles: ['triage_nurse', 'ward_nurse'],
+    roles: ['triage_nurse', 'ward_nurse', 'bed_manager'],
     purpose: 'Triage, vital signs, nursing activities, ward monitoring and admission coordination.',
     menus: [
       m('overview', 'Overview', 'layoutDashboard', ['nursing.triage', 'nursing.observe'], 'Current nursing workload and patient activity.'),
@@ -64,7 +64,7 @@ export const WORKSPACES = [
   },
   {
     id: 'pharmacy', slug: 'pharmacy', label: 'Pharmacy', icon: 'pill',
-    roles: ['pharmacist', 'pharmacy_assistant'],
+    roles: ['pharmacist', 'pharmacy_assistant', 'store_keeper'],
     purpose: 'Prescription processing, dispensing, stock control and formulary mapping.',
     menus: [
       m('overview', 'Overview', 'layoutDashboard', ['pharmacy.view'], 'Pharmacy workload and stock indicators.'),
