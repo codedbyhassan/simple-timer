@@ -5,7 +5,7 @@ import { DISCHARGE_CHECKS } from './nurseData.js'
 import './nurse styles/shared.css'
 import './nurse styles/discharge.css'
 
-export default async async async function NurseDischargePage({ data, error, commit, can }) {
+export default function NurseDischargePage({ data, error, commit, can }) {
   const [message, setMessage] = useState('')
   const [editingRecordId, setEditingRecordId] = useState('')
   const nurse = data.nurse
@@ -13,7 +13,7 @@ export default async async async function NurseDischargePage({ data, error, comm
   const completed = nurse.discharges.filter((item) => item.status === 'Discharged')
   const editingRecord = preparing.find((item) => item.id === editingRecordId)
 
-  const toggleCheck = (record, key, checked) => {
+  const toggleCheck = async (record, key, checked) => {
     if (!can('nursing.observe')) return
     const now = new Date().toISOString()
     const discharges = nurse.discharges.map((item) => item.id === record.id
@@ -21,7 +21,7 @@ export default async async async function NurseDischargePage({ data, error, comm
       : item)
     if (await commit({ ...data, nurse: { ...nurse, discharges } })) setMessage('Discharge checklist updated.')
   }
-  const completeDischarge = (record) => {
+  const completeDischarge = async (record) => {
     if (!can('nursing.observe')) return
     const outcome = record.outcome
     if (!outcome) { setMessage('Choose a discharge outcome before completing this checklist.'); return }
@@ -40,7 +40,7 @@ export default async async async function NurseDischargePage({ data, error, comm
       setEditingRecordId('')
     }
   }
-  const updateOutcome = (record, outcome) => {
+  const updateOutcome = async (record, outcome) => {
     if (!can('nursing.observe')) return
     const now = new Date().toISOString()
     const discharges = nurse.discharges.map((item) => item.id === record.id
