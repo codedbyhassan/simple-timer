@@ -7,7 +7,7 @@ import { deleteReceptionFile, getReceptionFile, saveReceptionFile } from './rece
 import './reception styles/shared.css'
 import './reception styles/documents.css'
 
-export default async async function DocumentsPage({ menu, data, error, commit }) {
+export default function DocumentsPage({ menu, data, error, commit }) {
   const [category, setCategory] = useState('All documents')
   const [patientId, setPatientId] = useState('All patients')
   const [query, setQuery] = useState('')
