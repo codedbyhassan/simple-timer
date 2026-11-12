@@ -1,5 +1,5 @@
 /* Fixed-viewport shell: the rail and the header never move, only the content scrolls. */
-.hms-shell { display: grid; grid-template-columns: var(--shell-rail-width) minmax(0, 1fr); height: 100vh; height: 100dvh; min-width: 1100px; overflow: hidden; }
+.hms-shell { display: grid; grid-template-columns: var(--shell-rail-width) minmax(0, 1fr); height: 100vh; height: 100dvh; min-width: 0; overflow: hidden; }
 .hms-shell.is-compact { grid-template-columns: var(--shell-rail-width-compact) minmax(0, 1fr); }
 
 .hms-shell__main { position: relative; min-width: 0; min-height: 0; background: var(--canvas); }
@@ -62,3 +62,37 @@
 .hms-account__text { min-width: 0; }
 .hms-account__name { margin: 0; font-weight: var(--weight-semibold); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .hms-account__sub { margin: 0; font-size: var(--text-sm); color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Responsive shell: keep the navigation reachable without forcing a desktop-width canvas. */
+@media (max-width: 1024px) {
+  .hms-shell { grid-template-columns: 72px minmax(0, 1fr); min-width: 0; }
+  .hms-rail { padding-inline: 8px; }
+  .hms-rail__brand { justify-content: center; padding: 0; }
+  .hms-rail__brand img { width: 38px; }
+  .hms-rail__label, .hms-rail__text, .hms-switch__label, .hms-switch__chev { display: none !important; }
+  .hms-rail__item, .hms-rail__collapse, .hms-switch { justify-content: center; padding-inline: 0; }
+  .hms-topbar { grid-template-columns: minmax(0, 1fr) minmax(190px, 280px) auto; gap: 12px; padding-inline: 18px; }
+  .hms-shell__content { padding-inline: 20px; }
+}
+@media (max-width: 680px) {
+  .hms-shell { grid-template-columns: 54px minmax(0, 1fr); min-width: 0; }
+  .hms-rail { padding: 10px 5px; }
+  .hms-rail__brand { height: 40px; margin-bottom: 10px; }
+  .hms-rail__switch { margin-bottom: 8px; }
+  .hms-rail__item, .hms-rail__collapse { height: 42px; border-radius: 10px; }
+  .hms-rail__scroll { gap: 10px; }
+  .hms-rail__rule { margin-inline: 5px; }
+  .hms-topbar { grid-template-columns: minmax(0, 1fr) auto; gap: 8px; height: 56px; padding-inline: 10px; }
+  .hms-topbar__left { display: none; }
+  .hms-topbar__center { min-width: 0; }
+  .hms-topbar__right { gap: 3px; }
+  .hms-shell__content { padding: calc(var(--shell-header-h, 56px) + 14px) 12px 20px; }
+  .hms-account__sub { display: none; }
+}
+@media (max-width: 380px) {
+  .hms-shell { grid-template-columns: 48px minmax(0, 1fr); }
+  .hms-rail { padding-inline: 3px; }
+  .hms-topbar { padding-inline: 7px; }
+  .hms-topbar__right { gap: 0; }
+  .hms-shell__content { padding-inline: 9px; }
+}
