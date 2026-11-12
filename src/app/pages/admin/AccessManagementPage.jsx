@@ -32,7 +32,7 @@ function UserCards({ users }) {
               <Icon name="chevronRight" size={17} />
             </div>
             <h2>{user.name}</h2>
-            <p className="hms-access__user-email">{user.email}</p>
+            <p className="hms-access__user-email">{user.email || 'No contact email'}</p>
             <div className="hms-access__user-meta">
               <span><Icon name="building" size={14} />{user.department}</span>
               <span><Icon name="keyRound" size={14} />{role?.label || roleLabel(user.role)}</span>
@@ -123,16 +123,16 @@ export default function AccessManagementPage({ menu }) {
       <PageHeader
         title={menu.label}
         description={menu.summary}
-        actions={tab === 'users' ? <Link className="hms-access__add-user" to="/admin/users/new"><Icon name="userPlus" size={17} />Add user</Link> : null}
+        actions={tab === 'users' ? <Link className="hms-access__add-user" to="/admin/users/new"><Icon name="userPlus" size={17} />Add profile</Link> : null}
       />
 
       <div className="hms-access">
         {storageError ? <div className="hms-access__error" role="alert">{storageError}</div> : null}
         <div className="hms-access__summary">
-          <div><span className="hms-access__summary-icon"><Icon name="users" size={18} /></span><span><strong>{allUsers.length}</strong><small>Staff accounts</small></span></div>
+          <div><span className="hms-access__summary-icon"><Icon name="users" size={18} /></span><span><strong>{allUsers.length}</strong><small>Local profiles</small></span></div>
           <div><span className="hms-access__summary-icon"><Icon name="keyRound" size={18} /></span><span><strong>{ADMIN_ACCESS_ROLES.length}</strong><small>System roles</small></span></div>
           <div><span className="hms-access__summary-icon"><Icon name="shieldCheck" size={18} /></span><span><strong>{ADMIN_PERMISSION_GROUPS.reduce((count, group) => count + group.permissions.length, 0)}</strong><small>Permission codes</small></span></div>
-          <div className="hms-access__summary-status"><StatusBadge tone="success">Access controls active</StatusBadge></div>
+          <div className="hms-access__summary-status"><StatusBadge tone="success">Local role rules</StatusBadge></div>
         </div>
 
         <section className="hms-access__workspace">
@@ -153,7 +153,7 @@ export default function AccessManagementPage({ menu }) {
             {tab === 'users' ? (
               <label className="hms-access__status-filter"><span>Status</span>
                 <select value={status} onChange={(event) => setStatus(event.target.value)} aria-label="Filter users by status">
-                  {['All statuses', 'Active', 'Invited', 'Suspended'].map((item) => <option key={item}>{item}</option>)}
+                  {['All statuses', 'Active', 'Suspended'].map((item) => <option key={item}>{item}</option>)}
                 </select>
               </label>
             ) : null}
