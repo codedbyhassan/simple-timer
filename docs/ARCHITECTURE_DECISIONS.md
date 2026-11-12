@@ -7,7 +7,8 @@ Ascend HMS is a frontend-only, local-first application. It has no backend, API s
 - Plain JavaScript and JSX with React and Vite.
 - IndexedDB is the authoritative store for operational records, local profiles, facility settings, service prices, claims mappings, notifications and audit history.
 - All role workspaces share a versioned hospital workspace document for records that cross workflow boundaries.
-- Separate IndexedDB documents hold local profile data, facility configuration, hospital settings, notifications and audit history.
+- Separate IndexedDB documents hold local profile data, facility configuration, hospital settings, notifications, audit history and interface preferences.
+- Theme and sidebar preferences use localStorage only as an optional first-paint cache; IndexedDB is authoritative.
 - Workspace updates merge changed records by ID to reduce lost updates between tabs on the same installation.
 - Local profile selection applies role-specific navigation and frontend permissions. It is not secure authentication and is not an authorisation boundary.
 - Browser and Electron installations have independent local databases. There is no device-to-device synchronisation.
@@ -26,6 +27,7 @@ Ascend HMS is a frontend-only, local-first application. It has no backend, API s
 | Hospital profile | `admin.hospital-profile` |
 | Operating preferences | `admin.settings` |
 | Notifications | `local.notifications` |
+| Interface preferences | `local.ui-preferences` |
 | Audit history | `admin.audit` |
 
 ## Explicit limitations
