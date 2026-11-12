@@ -6,7 +6,7 @@ import useLocalDepartments from '@core/storage/useLocalDepartments.js'
 import './reception styles/shared.css'
 import './reception styles/appointments.css'
 
-export default async async async function AppointmentsPage({ menu, data, error, commit, can }) {
+export default function AppointmentsPage({ menu, data, error, commit, can }) {
   const { options: departmentOptions } = useLocalDepartments()
   const [date, setDate] = useState(TODAY)
   const [filter, setFilter] = useState('All')
@@ -22,17 +22,17 @@ export default async async async function AppointmentsPage({ menu, data, error, 
       && `${nameOf(patient)} ${patient?.id} ${appointment.department} ${appointment.provider} ${appointment.reason}`.toLowerCase().includes(query.toLowerCase())
   }).sort((a, b) => a.time.localeCompare(b.time))
 
-  const checkIn = (appointment) => {
+  const checkIn = async (appointment) => {
     if (!can('encounters.open')) return
     const result = createCheckIn(data, appointment.patientId, {}, appointment.id)
     if (result.error) { setFormError(result.error); return }
     if (await commit(result.data)) setMessage(result.message)
   }
-  const setAppointmentStatus = (appointment, status) => {
+  const setAppointmentStatus = async (appointment, status) => {
     if (!can('appointments.manage')) return
     if (await commit({ ...data, appointments: data.appointments.map((item) => item.id === appointment.id ? { ...item, status } : item) })) setMessage(`${nameOf(patientFor(data, appointment.patientId))} marked ${status.toLowerCase()}.`)
   }
-  const createAppointment = (event) => {
+  const createAppointment = async (event) => {
     event.preventDefault()
     if (!can('appointments.manage')) { setFormError('Your role does not have permission to schedule appointments.'); return }
     if (!values.patientId) { setFormError('Select a patient before booking an appointment.'); return }
