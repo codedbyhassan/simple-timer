@@ -15,7 +15,7 @@ function resultRows(data, order) {
   }))
 }
 
-export default async function DoctorResultsPage({ data, error, commit, can }) {
+export default function DoctorResultsPage({ data, error, commit, can }) {
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
   const activePatientIds = new Set(data.queue.map((entry) => entry.patientId))
@@ -26,7 +26,7 @@ export default async function DoctorResultsPage({ data, error, commit, can }) {
       return critical || (b.verifiedAt || b.orderedAt).localeCompare(a.verifiedAt || a.orderedAt)
     })
   const reviewedIds = new Set((data.doctor.reviewedResults || []).map((item) => item.orderId))
-  const acknowledge = (order) => {
+  const acknowledge = async (order) => {
     setMessage('')
     setActionError('')
     if (!can('clinical.consult')) { setActionError('Your role cannot acknowledge clinical results.'); return }
