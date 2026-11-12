@@ -4,9 +4,10 @@ The application shell contains a role-aware side rail, top bar and content area.
 
 ## Navigation and access
 
-- Menus are derived from `src/core/access/navigation.js` and filtered by the selected local profile's role permissions.
+- Menus are derived from `src/core/access/navigation.js` and filtered by the selected role's permissions.
+- Sign-in presents the eight main workspaces first.
+- A workspace with multiple active roles opens role-dashboard cards. A workspace with one active role routes directly to its dashboard.
 - Local profiles are stored in IndexedDB. They provide frontend role navigation, not identity verification or secure authentication.
-- Each built-in local profile has one role. Switching roles means signing out and selecting another profile.
 - Direct navigation to a route outside the selected role's permissions displays the no-access page.
 - No URL query parameter can impersonate a role.
 
@@ -27,4 +28,4 @@ The application shell contains a role-aware side rail, top bar and content area.
 
 ## Tests
 
-`tests/e2e/shell_flows.py` exercises local profile selection, role navigation, route access, local notifications, profile switching, theme behaviour, sidebar collapse, global search and viewport overflow. Run it against the local Vite server with Playwright installed.
+`tests/e2e/shell_flows.py` exercises workspace selection, role-dashboard selection, role navigation, route access, local notifications, profile switching, theme behaviour, sidebar collapse, global search and viewport overflow. Run it against the local Vite server with Playwright installed.
