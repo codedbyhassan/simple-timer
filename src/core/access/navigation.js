@@ -77,7 +77,7 @@ export const WORKSPACES = [
     ],
   },
   {
-    id: 'cashier', slug: 'cashier', label: 'Cashier', icon: 'wallet',
+    id: 'cashier', slug: 'cashier', label: 'Finance', icon: 'wallet',
     roles: ['cashier', 'finance_officer'],
     purpose: 'Billing, payments, receipts, refunds, cashier operations and reconciliation.',
     menus: [
