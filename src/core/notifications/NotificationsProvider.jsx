@@ -1,58 +1,59 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useToast } from '@ui'
-import { readDocument, subscribeToDocument, writeDocument } from '@core/storage/localDatabase.js'
+import { readDocument, subscribeToDocument, updateDocument } from '@core/storage/localDatabase.js'
 
 const NotificationsContext = createContext(null)
 const clock = () => new Date().toLocaleTimeString('en-GB', { hour12: false, hour: '2-digit', minute: '2-digit' })
 const STORAGE_KEY = 'local.notifications'
+const makeId = () => globalThis.crypto?.randomUUID?.() || `note-${Date.now()}-${Math.random().toString(36).slice(2)}`
 
 export function NotificationsProvider({ children }) {
   const toast = useToast()
   const [items, setItems] = useState([])
-  const seq = useRef(0)
 
   useEffect(() => {
     let alive = true
-    const load = async () => {
-      try {
-        const stored = await readDocument(STORAGE_KEY)
-        if (alive && Array.isArray(stored)) {
-          setItems(stored)
-          seq.current = stored.reduce((max, item) => Math.max(max, Number(item.id) || 0), 0)
-        }
-      } catch { /* The notification panel remains usable when local history cannot be read. */ }
-    }
-    load()
     const refresh = async () => {
       try {
         const stored = await readDocument(STORAGE_KEY)
         if (alive && Array.isArray(stored)) setItems(stored)
       } catch { /* The current in-memory list remains available. */ }
     }
+    refresh()
     const unsubscribe = subscribeToDocument(STORAGE_KEY, refresh)
     return () => { alive = false; unsubscribe() }
   }, [])
 
-  const notify = useCallback(({ tier = 'important', title, message, target }) => {
-    const id = ++seq.current
-    const next = [{ id, tier, title, message, target, time: clock(), createdAt: new Date().toISOString(), read: false, acknowledged: false }, ...items].slice(0, 300)
-    setItems(next)
-    writeDocument(STORAGE_KEY, next).catch(() => {})
+  const notify = useCallback(async ({ tier = 'important', title, message, target }) => {
+    const item = { id: makeId(), tier, title, message, target, time: clock(), createdAt: new Date().toISOString(), read: false, acknowledged: false }
+    try {
+      const next = await updateDocument(STORAGE_KEY, (current) => [item, ...(Array.isArray(current) ? current : [])].slice(0, 300), [])
+      setItems(next)
+    } catch (error) {
+      toast.error('Notification could not be saved', error instanceof Error ? error.message : 'Local notification storage is unavailable.')
+      return null
+    }
     if (tier === 'important') toast.info(title, message)
-    return id
-  }, [items, toast])
+    return item.id
+  }, [toast])
 
-  const markAllRead = useCallback(() => {
-    const next = items.some((item) => !item.read) ? items.map((item) => ({ ...item, read: true })) : items
-    setItems(next)
-    writeDocument(STORAGE_KEY, next).catch(() => {})
-  }, [items])
+  const markAllRead = useCallback(async () => {
+    try {
+      const next = await updateDocument(STORAGE_KEY, (current) => (Array.isArray(current) ? current : []).map((item) => ({ ...item, read: true })), [])
+      setItems(next)
+    } catch (error) {
+      toast.error('Notifications could not be updated', error instanceof Error ? error.message : 'Local notification storage is unavailable.')
+    }
+  }, [toast])
 
-  const acknowledge = useCallback((id) => {
-    const next = items.map((item) => item.id === id ? { ...item, acknowledged: true, read: true } : item)
-    setItems(next)
-    writeDocument(STORAGE_KEY, next).catch(() => {})
-  }, [items])
+  const acknowledge = useCallback(async (id) => {
+    try {
+      const next = await updateDocument(STORAGE_KEY, (current) => (Array.isArray(current) ? current : []).map((item) => item.id === id ? { ...item, acknowledged: true, read: true } : item), [])
+      setItems(next)
+    } catch (error) {
+      toast.error('Notification could not be acknowledged', error instanceof Error ? error.message : 'Local notification storage is unavailable.')
+    }
+  }, [toast])
 
   useEffect(() => {
     if (!import.meta.env.DEV) return undefined
