@@ -9,7 +9,7 @@ const examples = {
   'G-DRG': ['OPD-GEN-01', 'OPD-PED-01', 'IPD-MED-01'],
   'Department specialty': ['GEN-MED', 'PAED', 'OBGYN', 'DENT'],
 }
-export default function ClaimsMappingPage({ data, error, commit, can }) {
+export default async function ClaimsMappingPage({ data, error, commit, can }) {
   const [targets, setTargets] = useState(Object.fromEntries(data.claims.mappings.map((item) => [item.id, item.target || ''])))
   const [message, setMessage] = useState('')
   const [actionError, setActionError] = useState('')
@@ -23,7 +23,7 @@ export default function ClaimsMappingPage({ data, error, commit, can }) {
     if (!target) { setActionError(`Enter a target reference for ${mapping.source}.`); return }
     const now = new Date().toISOString()
     const claims = { ...data.claims, mappings: data.claims.mappings.map((item) => item.id === mapping.id ? { ...item, target, status: 'Mapped', mappedAt: now, mappedBy: 'Claims officer' } : item), activity: [{ id: uid('CACT'), message: `Mapping updated for ${mapping.source}.`, at: now }, ...data.claims.activity] }
-    if (commit({ ...data, claims })) {
+    if (await commit({ ...data, claims })) {
       setMessage(`${mapping.source} mapping saved. Refresh affected claim snapshots to recalculate readiness.`)
       setEditingMappingId('')
     }
