@@ -81,7 +81,7 @@ with sync_playwright() as playwright:
     page.wait_for_url('**/admin/overview')
     check('document title is Ascend HMS', page.title() == 'Ascend HMS')
     check('dashboard has one page heading', page.locator('h1:has-text("Management dashboard")').count() == 1)
-    check('dashboard uses its actual description', page.get_by_text('The hospital-wide management overview.').is_visible())
+    check('dashboard uses its actual description', page.get_by_text('Current totals calculated from records saved in this local installation.').is_visible())
     check('single-role profile has no workspace switcher', page.locator('.hms-switch').count() == 0)
     check('rail identifies administration', page.locator('.hms-rail__label').inner_text().strip().lower() == 'administration')
     page.screenshot(path=OUT + 'shell-admin-light.png')
@@ -95,6 +95,7 @@ with sync_playwright() as playwright:
 
     page.goto(BASE + '/search?q=not-a-real-record')
     page.wait_for_selector('h1:has-text("Search records")')
+    page.wait_for_selector('text=No matching records')
     check('global search opens the local record search page', True)
     check('search does not fabricate a matching patient', page.get_by_text('No matching records').count() == 1)
 
@@ -106,9 +107,10 @@ with sync_playwright() as playwright:
     page.click('button[aria-label="Account menu"]')
     page.click('[role=menuitem]:has-text("Profile")')
     page.wait_for_url('**/profile')
-    check('profile clearly identifies local access mode', page.get_by_text('Profiles and permissions are stored in IndexedDB on this device.').is_visible())
+    check('profile clearly identifies local access mode', page.get_by_text('Access mode').is_visible() and page.get_by_text('Local profile').is_visible())
     page.click('button:has-text("Switch role profile")')
     page.wait_for_url('**/signin')
+    page.wait_for_selector('#local-profile')
     check('switching profile returns to the local profile selector', page.locator('#local-profile').count() == 1)
 
     login(page, 'hospital_admin')
@@ -134,7 +136,7 @@ with sync_playwright() as playwright:
     page.wait_for_selector('.hms-bell__count')
     page.reload()
     page.wait_for_selector('.hms-shell')
-    page.click('button[aria-label="Notifications"]')
+    page.click('button[aria-label^="Notifications"]')
     page.wait_for_selector('text=Local test event')
     check('notifications persist after reload through IndexedDB', True)
     page.keyboard.press('Escape')
