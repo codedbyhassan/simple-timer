@@ -5,6 +5,9 @@ const localDate = (date) => {
   return `${year}-${month}-${day}`
 }
 
+export const DEPARTMENTS = []
+export const DOCUMENT_CATEGORIES = ['Referrals', 'Identity', 'Insurance', 'Laboratory', 'Imaging', 'Clinical notes', 'Other']
+
 export const TODAY = localDate(new Date())
 export const TOMORROW = localDate(new Date(Date.now() + 86_400_000))
 
