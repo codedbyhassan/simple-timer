@@ -7,7 +7,7 @@ import './lab styles/worklist.css'
 
 const STAGES = ['All', 'Ordered', 'Collected', 'Received', 'In process', 'Awaiting verification', 'Verified']
 
-export default async function LabWorklistPage({ data, error, commit, can }) {
+export default function LabWorklistPage({ data, error, commit, can }) {
   const location = useLocation()
   const [query, setQuery] = useState('')
   const [stage, setStage] = useState('All')
@@ -25,7 +25,7 @@ export default async function LabWorklistPage({ data, error, commit, can }) {
       && search.includes(query.toLowerCase().trim())
   }).sort((a, b) => (a.priority === 'Urgent' ? -1 : a.priority === 'Priority' ? 0 : 1) - (b.priority === 'Urgent' ? -1 : b.priority === 'Priority' ? 0 : 1) || a.orderedAt.localeCompare(b.orderedAt)), [data, stage, priority, testId, locationFilter, query])
   const selected = orders.find((order) => order.id === selectedId) || orders[0]
-  const startProcessing = (order) => {
+  const startProcessing = async (order) => {
     if (!can('lab.process') || order.status !== 'Received') return
     const now = new Date().toISOString()
     const lab = {
