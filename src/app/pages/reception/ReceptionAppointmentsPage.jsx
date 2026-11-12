@@ -6,7 +6,7 @@ import useLocalDepartments from '@core/storage/useLocalDepartments.js'
 import './reception styles/shared.css'
 import './reception styles/appointments.css'
 
-export default function AppointmentsPage({ menu, data, error, commit, can }) {
+export default async async async function AppointmentsPage({ menu, data, error, commit, can }) {
   const { options: departmentOptions } = useLocalDepartments()
   const [date, setDate] = useState(TODAY)
   const [filter, setFilter] = useState('All')
@@ -26,11 +26,11 @@ export default function AppointmentsPage({ menu, data, error, commit, can }) {
     if (!can('encounters.open')) return
     const result = createCheckIn(data, appointment.patientId, {}, appointment.id)
     if (result.error) { setFormError(result.error); return }
-    if (commit(result.data)) setMessage(result.message)
+    if (await commit(result.data)) setMessage(result.message)
   }
   const setAppointmentStatus = (appointment, status) => {
     if (!can('appointments.manage')) return
-    if (commit({ ...data, appointments: data.appointments.map((item) => item.id === appointment.id ? { ...item, status } : item) })) setMessage(`${nameOf(patientFor(data, appointment.patientId))} marked ${status.toLowerCase()}.`)
+    if (await commit({ ...data, appointments: data.appointments.map((item) => item.id === appointment.id ? { ...item, status } : item) })) setMessage(`${nameOf(patientFor(data, appointment.patientId))} marked ${status.toLowerCase()}.`)
   }
   const createAppointment = (event) => {
     event.preventDefault()
@@ -39,7 +39,7 @@ export default function AppointmentsPage({ menu, data, error, commit, can }) {
     if (!values.department) { setFormError('Select a configured department before booking an appointment.'); return }
     if (values.date < TODAY) { setFormError('Choose today or a future date.'); return }
     const appointment = { ...values, id: uid('APT'), provider: values.provider.trim() || 'To be assigned', reason: values.reason.trim() || 'Scheduled visit', status: 'Expected' }
-    if (commit({ ...data, appointments: [...data.appointments, appointment] })) {
+    if (await commit({ ...data, appointments: [...data.appointments, appointment] })) {
       setDate(values.date)
       setFilter('All')
       setShowForm(false)
