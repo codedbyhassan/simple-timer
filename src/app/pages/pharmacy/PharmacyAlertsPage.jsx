@@ -7,7 +7,7 @@ import './pharmacy styles/alerts.css'
 
 const EXPIRY_WINDOW_DAYS = 30
 
-export default async function PharmacyAlertsPage({ data, error, commit }) {
+export default function PharmacyAlertsPage({ data, error, commit }) {
   const [message, setMessage] = useState('')
   const today = new Date()
   today.setHours(0, 0, 0, 0)
@@ -30,7 +30,7 @@ export default async function PharmacyAlertsPage({ data, error, commit }) {
   const active = alerts.filter((alert) => !data.pharmacy.reviewedAlerts.includes(alert.id))
   const acknowledgedCount = alerts.length - active.length
 
-  const markReviewed = (alert) => {
+  const markReviewed = async (alert) => {
     const pharmacy = { ...data.pharmacy, reviewedAlerts: [...new Set([...data.pharmacy.reviewedAlerts, alert.id])] }
     if (await commit({ ...data, pharmacy })) setMessage(`${alert.medicine.name} alert marked reviewed.`)
   }
