@@ -4,7 +4,7 @@ import { CashierError, CashierField, CashierNotice, CashierPanel, dateLabel, mon
 import './cashier styles/shared.css'
 import './cashier styles/refunds.css'
 
-export default function CashierRefundsPage({ data, error, commit, can }) {
+export default async function CashierRefundsPage({ data, error, commit, can }) {
   const [showForm, setShowForm] = useState(false)
   const paidInvoices = data.payments.filter((item) => Number(item.paid) > 0)
   const [invoiceId, setInvoiceId] = useState(paidInvoices[0]?.id || '')
@@ -24,7 +24,7 @@ export default function CashierRefundsPage({ data, error, commit, can }) {
     const now = new Date().toISOString()
     const request = { id: uid('REF'), invoiceId, patientId: invoice.patientId, amount: value, reason: reason.trim(), status: 'Pending approval', requestedAt: now, requestedBy: 'Cashier' }
     const cashier = { ...data.cashier, refunds: [request, ...data.cashier.refunds], activity: [{ id: uid('CACT'), message: `Refund request created for ${invoiceId}`, at: now }, ...data.cashier.activity] }
-    if (commit({ ...data, cashier })) {
+    if (await commit({ ...data, cashier })) {
       setMessage(`${request.id} was recorded as a pending request. It has not been paid or approved.`)
       setAmount('')
       setReason('')
