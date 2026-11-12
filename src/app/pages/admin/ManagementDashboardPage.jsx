@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Icon, PageHeader, StatusBadge } from '@ui'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
 import useNurseWorkspace from '../nurse/useNurseWorkspace.js'
@@ -54,11 +55,11 @@ export default function ManagementDashboardPage({ menu }) {
         <div className="hms-management__grid">
           <Metric label="Patient records" value={loaded ? data.patients.length : '—'} detail="Registered patients" icon="users" />
           <Metric label="Appointments today" value={loaded ? todayAppointments.length : '—'} detail={today} icon="calendar" />
-          <Metric label="Open encounters" value={loaded ? openQueue.length : '—'} detail="Not yet closed" to="/reception/opd" icon="clipboardList" />
-          <Metric label="Beds occupied" value={loaded ? `${occupiedBeds}/${beds.length}` : '—'} detail="Current bed records" to="/nurse/wards" icon="bed" />
+          <Metric label="Open encounters" value={loaded ? openQueue.length : '—'} detail="Not yet closed" icon="clipboardList" />
+          <Metric label="Beds occupied" value={loaded ? `${occupiedBeds}/${beds.length}` : '—'} detail="Current bed records" icon="bed" />
           <Metric label="Pending lab orders" value={loaded ? pendingLabs.length : '—'} detail="Awaiting verification or completion" icon="flask" />
           <Metric label="Open prescriptions" value={loaded ? pendingPrescriptions.length : '—'} detail="Awaiting dispensing" icon="pill" />
-          <Metric label="Outstanding balance" value={loaded ? `GHS ${unpaid.toFixed(2)}` : '—'} detail="Calculated from saved invoices" to="/cashier/charges" icon="wallet" />
+          <Metric label="Outstanding balance" value={loaded ? `GHS ${unpaid.toFixed(2)}` : '—'} detail="Calculated from saved invoices" icon="wallet" />
           <Metric label="Claims ready" value={loaded ? readyClaims : '—'} detail="Locally prepared records" icon="fileText" />
         </div>
         {loaded && (waitingAlerts.length > 0 || labAlerts.length > 0 || occupancyAlert) ? <section className="hms-management__attention" aria-label="Operational attention"><div><strong>Operational attention</strong><span>Based on the local thresholds in Operating settings.</span></div>{waitingAlerts.length ? <StatusBadge tone="warning">{waitingAlerts.length} waiting over {waitLimit} min</StatusBadge> : null}{labAlerts.length ? <StatusBadge tone="warning">{labAlerts.length} lab orders over {labLimit} min</StatusBadge> : null}{occupancyAlert ? <StatusBadge tone="critical">Bed occupancy {Math.round(occupancy)}%</StatusBadge> : null}</section> : null}
@@ -66,8 +67,7 @@ export default function ManagementDashboardPage({ menu }) {
           <div className="hms-management__empty">
             <span><Icon name="users" size={22} /></span>
             <h2>No hospital records yet</h2>
-            <p>This installation is empty. Add your first patient to begin a local workflow. The dashboard will calculate figures as records are created.</p>
-            <Link to="/reception/desk">Register a patient <Icon name="arrowRight" size={15} /></Link>
+            <p>This installation is empty. Sign out and select a Reception role profile to register the first patient. The dashboard will calculate figures as records are created.</p>
           </div>
         ) : null}
         <div className="hms-management__links">
