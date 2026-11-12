@@ -280,7 +280,6 @@ function SettingsPage({ menu }) {
 }
 
 function ReportsPage({ menu }) {
-  const { records: patients, loaded: patientsLoaded } = useAdminCollection('reports.patients', [])
   const { data: workspace, loaded: workspaceLoaded } = useReceptionWorkspace()
   const patientCount = workspace.patients.length
   const appointmentCount = workspace.appointments.length
@@ -290,7 +289,7 @@ function ReportsPage({ menu }) {
     { label: 'Appointments', count: appointmentCount, destination: '/reception/appointments' },
     { label: 'Encounters', count: encounterCount, destination: '/reception/opd' },
   ]
-  const ready = patientsLoaded && workspaceLoaded
+  const ready = workspaceLoaded
   return (
     <>
       <PageHeader title={menu.label} description="Operational summaries calculated from the records stored in this local installation." />
