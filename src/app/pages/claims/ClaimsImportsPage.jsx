@@ -47,7 +47,7 @@ export default function ClaimsImportsPage({ data, error, commit, can }) {
         const row = rows.find((item) => item.claimId === claim.id)
         return row && ['Import passed', 'Warned', 'Failed'].includes(row.result) ? { ...claim, status: row.result, importResult: row.message, updatedAt: now } : claim
       }), activity: [{ id: uid('CACT'), message: `Import report ${file.name} reviewed (${rows.length} row(s)).`, at: now }, ...data.claims.activity] }
-      if (commit({ ...data, claims: reports })) setMessage(`Read ${rows.length} report row(s) from ${file.name}. Results were matched locally where claim IDs were found; unmatched rows are retained for review.`)
+      if (await commit({ ...data, claims: reports })) setMessage(`Read ${rows.length} report row(s) from ${file.name}. Results were matched locally where claim IDs were found; unmatched rows are retained for review.`)
     } catch (readError) {
       setActionError(readError instanceof Error ? readError.message : 'Unable to read the selected import report.')
     } finally {
