@@ -37,7 +37,7 @@ function claimXmlPreview(record, patient) {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<claimsBatch>\n  <claim id="${escapeXml(record.id)}">\n    <member>${escapeXml(patient?.memberNumber)}</member>\n    <dateOfBirth>${escapeXml(patient?.dateOfBirth)}</dateOfBirth>\n    <service>${escapeXml(record.service)}</service>\n    <diagnosisCode>${escapeXml(record.diagnosisCode)}</diagnosisCode>\n    <physicianID>${escapeXml(record.physicianId)}</physicianID>\n    <claimCheckCode>${escapeXml(record.claimCheckCode)}</claimCheckCode>\n    <preauthorisationCode>${escapeXml(record.preauthorisationCode)}</preauthorisationCode>\n  </claim>\n</claimsBatch>`
 }
 
-export default function ClaimsListPage({ data, error, commit, can }) {
+export default async async function ClaimsListPage({ data, error, commit, can }) {
   const location = useLocation()
   const records = data.claims.records
   const initialFilter = location.state?.status || 'All'
@@ -91,7 +91,7 @@ export default function ClaimsListPage({ data, error, commit, can }) {
     })
     const now = new Date().toISOString()
     const claims = { ...data.claims, records: refreshed, activity: [{ id: uid('CACT'), message: `Refreshed ${refreshed.length} claim snapshot(s).`, at: now }, ...data.claims.activity] }
-    if (commit({ ...data, claims })) {
+    if (await commit({ ...data, claims })) {
       setMessage(`${newRecords.length} new eligible invoice(s) added; ${refreshed.length} snapshot(s) validated from current records.`)
     }
   }
@@ -105,7 +105,7 @@ export default function ClaimsListPage({ data, error, commit, can }) {
     const { blockers, warnings } = validate(next, data)
     const updated = { ...next, blockers, warnings, status: blockers.length ? 'Not ready' : 'Ready', snapshotVersion: selected.snapshotVersion + 1 }
     const claims = { ...data.claims, records: records.map((item) => item.id === selected.id ? updated : item), activity: [{ id: uid('CACT'), message: `Office fields saved for ${selected.id}.`, at: new Date().toISOString() }, ...data.claims.activity] }
-    if (commit({ ...data, claims })) { setMessage('Claims office fields saved to the current snapshot.'); setShowOfficeFields(false) }
+    if (await commit({ ...data, claims })) { setMessage('Claims office fields saved to the current snapshot.'); setShowOfficeFields(false) }
   }
 
   return <>
