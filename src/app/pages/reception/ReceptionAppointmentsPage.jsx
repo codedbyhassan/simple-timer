@@ -45,7 +45,7 @@ export default function AppointmentsPage({ menu, data, error, commit, can }) {
       setShowForm(false)
       setFormError('')
       setMessage(`Appointment booked for ${nameOf(patientFor(data, appointment.patientId))}.`)
-      setValues({ patientId: '', date: TODAY, time: '11:00', department: 'General medicine', provider: '', reason: '' })
+      setValues({ patientId: '', date: TODAY, time: '11:00', department: '', provider: '', reason: '' })
     }
   }
 
