@@ -8,14 +8,13 @@ export function AuthProvider({ children }) {
   const [state, setState] = useState({ status: 'loading', user: null })
 
   useEffect(() => {
-    if (!authService) return undefined
     let alive = true
-    authService.getSession().then((s) => alive && setState(toState(s))).catch(() => alive && setState(toState(null)))
+    authService.getSession().then((session) => alive && setState(toState(session))).catch((error) => alive && setState({ status: 'error', user: null, error }))
     const off = authService.onAuthChange((_event, session) => alive && setState(toState(session)))
     return () => { alive = false; off() }
   }, [])
 
-  const signIn = useCallback((email, password) => authService.signIn(email, password), [])
+  const signIn = useCallback((profileId) => authService.signIn(profileId), [])
   const signOut = useCallback(() => authService.signOut(), [])
   const value = useMemo(() => ({ ...state, signIn, signOut }), [state, signIn, signOut])
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
