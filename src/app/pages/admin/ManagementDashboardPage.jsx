@@ -6,6 +6,7 @@ import useLabWorkspace from '../lab/useLabWorkspace.js'
 import usePharmacyWorkspace from '../pharmacy/usePharmacyWorkspace.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useClaimsWorkspace from '../claims/useClaimsWorkspace.js'
+import useHospitalSettings from '@core/storage/useHospitalSettings.js'
 import './admin styles/managementdashboard.css'
 
 const Metric = ({ label, value, detail, to, icon }) => (
@@ -24,6 +25,7 @@ export default function ManagementDashboardPage({ menu }) {
   const pharmacy = usePharmacyWorkspace()
   const cashier = useCashierWorkspace()
   const claims = useClaimsWorkspace()
+  const { settings, loaded: settingsLoaded } = useHospitalSettings()
   const data = reception.data
   const today = new Date().toISOString().slice(0, 10)
   const todayAppointments = data.appointments.filter((item) => item.date === today)
@@ -34,7 +36,14 @@ export default function ManagementDashboardPage({ menu }) {
   const readyClaims = (claims.data.claims?.records || []).filter((item) => item.status === 'Ready').length
   const beds = nursing.data.nurse?.beds || []
   const occupiedBeds = beds.filter((item) => item.status === 'Occupied').length
-  const loaded = [reception, nursing, laboratory, pharmacy, cashier, claims].every((item) => item.loaded)
+  const waitLimit = Math.max(1, Number(settings.patient_wait_warning) || 25)
+  const bedLimit = Math.min(100, Math.max(1, Number(settings.bed_occupancy_warning) || 85))
+  const labLimit = Math.max(1, Number(settings.lab_turnaround_target) || 150)
+  const waitingAlerts = openQueue.filter((item) => item.arrivedAt && Number.isFinite(Date.parse(item.arrivedAt)) && Date.now() - Date.parse(item.arrivedAt) >= waitLimit * 60000)
+  const labAlerts = pendingLabs.filter((item) => item.orderedAt && Number.isFinite(Date.parse(item.orderedAt)) && Date.now() - Date.parse(item.orderedAt) >= labLimit * 60000)
+  const occupancy = beds.length ? occupiedBeds / beds.length * 100 : 0
+  const occupancyAlert = beds.length > 0 && occupancy >= bedLimit
+  const loaded = [reception, nursing, laboratory, pharmacy, cashier, claims].every((item) => item.loaded) && settingsLoaded
 
   return (
     <>
@@ -51,6 +60,7 @@ export default function ManagementDashboardPage({ menu }) {
           <Metric label="Outstanding balance" value={loaded ? `GHS ${unpaid.toFixed(2)}` : '—'} detail="Calculated from saved invoices" to="/cashier/charges" icon="wallet" />
           <Metric label="Claims ready" value={loaded ? readyClaims : '—'} detail="Locally prepared records" to="/claims/list" icon="fileText" />
         </div>
+        {loaded && (waitingAlerts.length > 0 || labAlerts.length > 0 || occupancyAlert) ? <section className="hms-management__attention" aria-label="Operational attention"><div><strong>Operational attention</strong><span>Based on the local thresholds in Operating settings.</span></div>{waitingAlerts.length ? <Link to="/nurse/triage"><StatusBadge tone="warning">{waitingAlerts.length} waiting over {waitLimit} min</StatusBadge></Link> : null}{labAlerts.length ? <Link to="/lab/worklist"><StatusBadge tone="warning">{labAlerts.length} lab orders over {labLimit} min</StatusBadge></Link> : null}{occupancyAlert ? <Link to="/nurse/wards"><StatusBadge tone="critical">Bed occupancy {Math.round(occupancy)}%</StatusBadge></Link> : null}</section> : null}
         {loaded && data.patients.length === 0 ? (
           <div className="hms-management__empty">
             <span><Icon name="users" size={22} /></span>
