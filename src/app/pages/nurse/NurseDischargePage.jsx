@@ -5,7 +5,7 @@ import { DISCHARGE_CHECKS } from './nurseData.js'
 import './nurse styles/shared.css'
 import './nurse styles/discharge.css'
 
-export default function NurseDischargePage({ data, error, commit, can }) {
+export default async async async function NurseDischargePage({ data, error, commit, can }) {
   const [message, setMessage] = useState('')
   const [editingRecordId, setEditingRecordId] = useState('')
   const nurse = data.nurse
@@ -19,7 +19,7 @@ export default function NurseDischargePage({ data, error, commit, can }) {
     const discharges = nurse.discharges.map((item) => item.id === record.id
       ? { ...item, checks: { ...item.checks, [key]: checked }, updatedAt: now }
       : item)
-    if (commit({ ...data, nurse: { ...nurse, discharges } })) setMessage('Discharge checklist updated.')
+    if (await commit({ ...data, nurse: { ...nurse, discharges } })) setMessage('Discharge checklist updated.')
   }
   const completeDischarge = (record) => {
     if (!can('nursing.observe')) return
@@ -35,7 +35,7 @@ export default function NurseDischargePage({ data, error, commit, can }) {
       ? { ...item, status: 'Cleaning', patientId: '', since: now }
       : item)
     const activity = [{ id: uid('ACT'), kind: 'Discharge', message: `${nameOf(patientFor(data, record.patientId))} discharge completed from ${ward?.name || 'ward'}`, at: now }, ...nurse.activity]
-    if (commit({ ...data, nurse: { ...nurse, discharges, beds, activity } })) {
+    if (await commit({ ...data, nurse: { ...nurse, discharges, beds, activity } })) {
       setMessage(`${nameOf(patientFor(data, record.patientId))} discharge checklist completed. Bed ${record.bedId} is marked for cleaning.`)
       setEditingRecordId('')
     }
@@ -46,7 +46,7 @@ export default function NurseDischargePage({ data, error, commit, can }) {
     const discharges = nurse.discharges.map((item) => item.id === record.id
       ? { ...item, outcome, checks: { ...item.checks, outcome: Boolean(outcome) }, updatedAt: now }
       : item)
-    if (commit({ ...data, nurse: { ...nurse, discharges } })) setMessage('Discharge outcome recorded.')
+    if (await commit({ ...data, nurse: { ...nurse, discharges } })) setMessage('Discharge outcome recorded.')
   }
 
   return <>
