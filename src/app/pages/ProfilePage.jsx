@@ -17,7 +17,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <PageHeader title="Profile" description="The local staff profile currently selected for this installation." />
+      <PageHeader title="Profile" description="The local role profile currently selected for this installation." />
       <div style={{ display: 'grid', gap: 18, maxWidth: 720 }}>
         <Card>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
