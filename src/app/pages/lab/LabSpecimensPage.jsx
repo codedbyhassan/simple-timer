@@ -5,7 +5,7 @@ import { LabEmpty, LabError, LabField, LabNotice, LabPanel, LabPatient, LabStatu
 import './lab styles/shared.css'
 import './lab styles/specimens.css'
 
-export default async async function LabSpecimensPage({ data, error, commit, can }) {
+export default function LabSpecimensPage({ data, error, commit, can }) {
   const location = useLocation()
   const [selectedId, setSelectedId] = useState(location.state?.orderId || '')
   const [nameConfirmed, setNameConfirmed] = useState(false)
@@ -20,7 +20,7 @@ export default async async function LabSpecimensPage({ data, error, commit, can 
   const specimen = selected ? specimenFor(data, selected.id) : null
   const patient = selected ? patientFor(data, selected.patientId) : null
 
-  const updateSpecimen = (nextSpecimen, nextOrder, activityMessage, task) => {
+  const updateSpecimen = async (nextSpecimen, nextOrder, activityMessage, task) => {
     const now = new Date().toISOString()
     const lab = {
       ...data.lab,
@@ -60,7 +60,7 @@ export default async async function LabSpecimensPage({ data, error, commit, can 
     updateSpecimen({ ...specimen, status: 'Received', receivedAt: now }, { ...selected, status: 'Received', receivedAt: now }, `Specimen received · ${selected.id}`)
   }
 
-  const reject = () => {
+  const reject = async () => {
     if (!selected || !specimen || !can('lab.collect')) { setActionError('Your role cannot reject specimens.'); return }
     if (specimen.status !== 'Collected' && specimen.status !== 'Received') { setActionError('Only a collected or received specimen can be rejected.'); return }
     if (!rejectReason.trim()) { setActionError('A documented rejection reason is required.'); return }
