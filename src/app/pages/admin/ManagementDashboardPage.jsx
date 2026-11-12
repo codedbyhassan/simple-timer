@@ -1,123 +1,70 @@
 import { Link } from 'react-router-dom'
-import { ChartCard, Icon, PageHeader, PillBarChart, StatusBadge } from '@ui'
-import { ADMIN_BED_TOTALS, ADMIN_DEPARTMENTS } from './facilitiesData.js'
+import { Icon, PageHeader, StatusBadge } from '@ui'
+import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
+import useNurseWorkspace from '../nurse/useNurseWorkspace.js'
+import useLabWorkspace from '../lab/useLabWorkspace.js'
+import usePharmacyWorkspace from '../pharmacy/usePharmacyWorkspace.js'
+import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
+import useClaimsWorkspace from '../claims/useClaimsWorkspace.js'
 import './admin styles/managementdashboard.css'
 
-const attention = [
-  { title: 'Refund approvals', detail: '3 requests waiting for review', icon: 'creditCard', tone: 'warning' },
-  { title: 'Inventory adjustments', detail: '2 changes need a second approver', icon: 'packageBox', tone: 'warning' },
-  { title: 'Critical lab results', detail: '1 result awaiting acknowledgement', icon: 'alertTriangle', tone: 'critical' },
-]
-
-const activity = [
-  { title: 'Role permissions reviewed', detail: 'Hospital administrator · 10:42', icon: 'keyRound' },
-  { title: 'Ward capacity updated', detail: 'Facilities · 09:18', icon: 'bed' },
-  { title: 'Monthly report generated', detail: 'Finance · 08:55', icon: 'barChart' },
-]
+const Metric = ({ label, value, detail, to, icon }) => (
+  <Link className="hms-management__metric" to={to}>
+    <span className="hms-management__metric-icon"><Icon name={icon} size={18} /></span>
+    <span className="hms-management__metric-label">{label}</span>
+    <strong>{value}</strong>
+    <small>{detail}</small>
+  </Link>
+)
 
 export default function ManagementDashboardPage({ menu }) {
-  const occupancy = Math.round((ADMIN_BED_TOTALS.occupied / ADMIN_BED_TOTALS.capacity) * 100)
+  const reception = useReceptionWorkspace()
+  const nursing = useNurseWorkspace()
+  const laboratory = useLabWorkspace()
+  const pharmacy = usePharmacyWorkspace()
+  const cashier = useCashierWorkspace()
+  const claims = useClaimsWorkspace()
+  const data = reception.data
+  const today = new Date().toISOString().slice(0, 10)
+  const todayAppointments = data.appointments.filter((item) => item.date === today)
+  const openQueue = data.queue.filter((item) => !['Completed', 'Closed', 'Discharged'].includes(item.stage))
+  const pendingLabs = (laboratory.data.lab?.orders || []).filter((item) => !['Verified', 'Cancelled'].includes(item.status))
+  const pendingPrescriptions = (pharmacy.data.pharmacy?.prescriptions || []).filter((item) => !['Dispensed', 'Cancelled'].includes(item.status))
+  const unpaid = data.payments.reduce((sum, item) => sum + Math.max(0, Number(item.billed || 0) - Number(item.paid || 0)), 0)
+  const readyClaims = (claims.data.claims?.records || []).filter((item) => item.status === 'Ready').length
+  const beds = nursing.data.nurse?.beds || []
+  const occupiedBeds = beds.filter((item) => item.status === 'Occupied').length
+  const loaded = [reception, nursing, laboratory, pharmacy, cashier, claims].every((item) => item.loaded)
 
   return (
     <>
-      <PageHeader title={menu.label} description={menu.summary} />
-
-      <div className="hms-admin-dashboard">
-        <section className="hms-admin-dashboard__snapshot" aria-label="Today's hospital snapshot">
-          <div className="hms-admin-dashboard__snapshot-head">
-            <div>
-              <p className="hms-admin-dashboard__eyebrow">Friday, 6 November 2026</p>
-              <h2>Hospital at a glance</h2>
-            </div>
-            <StatusBadge tone="success">Services operational</StatusBadge>
-          </div>
-          <div className="hms-admin-dashboard__figures">
-            <div><span>Patients seen</span><strong>146</strong><small>today</small></div>
-            <div><span>Appointments</span><strong>84</strong><small>scheduled today</small></div>
-            <div><span>Beds occupied</span><strong>{ADMIN_BED_TOTALS.occupied} <small>/ {ADMIN_BED_TOTALS.capacity}</small></strong><small>{occupancy}% occupancy</small></div>
-            <div><span>Open incidents</span><strong>7</strong><small>2 require follow-up</small></div>
-          </div>
-        </section>
-
-        <div className="hms-admin-dashboard__body">
-          <div className="hms-admin-dashboard__main">
-            <ChartCard eyebrow="Hospital operations" title="Weekly patient activity">
-              <PillBarChart
-                label="Patients seen by day this week"
-                unit="patients"
-                height={184}
-                data={[
-                  { label: 'Mon', value: 128 },
-                  { label: 'Tue', value: 154 },
-                  { label: 'Wed', value: 139 },
-                  { label: 'Thu', value: 139 },
-                  { label: 'Fri', value: 146 },
-                  { label: 'Sat', value: 0 },
-                  { label: 'Sun', value: 0 },
-                ]}
-              />
-            </ChartCard>
-
-            <ChartCard eyebrow="Service delivery" title="Department activity">
-              <div className="hms-admin-dashboard__departments">
-                {ADMIN_DEPARTMENTS.map((department) => (
-                  <div className="hms-admin-dashboard__department" key={department.name}>
-                    <div className="hms-admin-dashboard__department-label">
-                      <Link to="/admin/facilities?view=departments">{department.name}</Link>
-                      <span>{department.visits} visits</span>
-                    </div>
-                    <div className="hms-admin-dashboard__track" aria-label={`${department.name} activity ${department.activity}%`}>
-                      <span style={{ width: `${department.activity}%` }} />
-                    </div>
-                    <StatusBadge tone={department.tone}>{department.state}</StatusBadge>
-                  </div>
-                ))}
-              </div>
-            </ChartCard>
-          </div>
-
-          <aside className="hms-admin-dashboard__side">
-            <ChartCard eyebrow="Leadership attention" title="Needs review">
-              <ul className="hms-admin-dashboard__attention">
-                {attention.map((item) => (
-                  <li key={item.title}>
-                    <span className={`hms-admin-dashboard__item-icon is-${item.tone}`}><Icon name={item.icon} size={17} /></span>
-                    <span className="hms-admin-dashboard__item-copy">
-                      <strong>{item.title}</strong>
-                      <small>{item.detail}</small>
-                    </span>
-                    <Icon name="chevronRight" size={16} />
-                  </li>
-                ))}
-              </ul>
-            </ChartCard>
-
-            <ChartCard eyebrow="Administration" title="Recent activity">
-              <ul className="hms-admin-dashboard__activity">
-                {activity.map((item) => (
-                  <li key={item.title}>
-                    <span className="hms-admin-dashboard__activity-icon"><Icon name={item.icon} size={16} /></span>
-                    <span className="hms-admin-dashboard__item-copy">
-                      <strong>{item.title}</strong>
-                      <small>{item.detail}</small>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </ChartCard>
-
-            <Link to="/admin/facilities?view=wards" className="hms-admin-dashboard__occupancy">
-              <div className="hms-admin-dashboard__occupancy-head">
-                <span className="hms-admin-dashboard__occupancy-icon"><Icon name="bed" size={18} /></span>
-                <span><strong>Bed occupancy</strong><small>All wards</small></span>
-                <b>{occupancy}%</b>
-              </div>
-              <div className="hms-admin-dashboard__track"><span style={{ width: `${occupancy}%` }} /></div>
-              <div className="hms-admin-dashboard__occupancy-foot"><span>{ADMIN_BED_TOTALS.occupied} occupied</span><span>{ADMIN_BED_TOTALS.capacity - ADMIN_BED_TOTALS.occupied} available</span></div>
-            </Link>
-          </aside>
+      <PageHeader title={menu.label} description="Current totals calculated from records saved in this local installation." />
+      <section className="hms-management">
+        <div className="hms-management__notice"><span><Icon name="database" size={17} /></span><div><strong>Local data overview</strong><p>Figures update from IndexedDB records on this device. Nothing is synchronised with another installation.</p></div><StatusBadge tone="neutral">On this device</StatusBadge></div>
+        <div className="hms-management__grid">
+          <Metric label="Patient records" value={loaded ? data.patients.length : '—'} detail="Registered patients" to="/reception/patients" icon="users" />
+          <Metric label="Appointments today" value={loaded ? todayAppointments.length : '—'} detail={today} to="/reception/appointments" icon="calendar" />
+          <Metric label="Open encounters" value={loaded ? openQueue.length : '—'} detail="Not yet closed" to="/reception/opd" icon="clipboardList" />
+          <Metric label="Beds occupied" value={loaded ? `${occupiedBeds}/${beds.length}` : '—'} detail="Current bed records" to="/nurse/wards" icon="bed" />
+          <Metric label="Pending lab orders" value={loaded ? pendingLabs.length : '—'} detail="Awaiting verification or completion" to="/lab/worklist" icon="flask" />
+          <Metric label="Open prescriptions" value={loaded ? pendingPrescriptions.length : '—'} detail="Awaiting dispensing" to="/pharmacy/queue" icon="pill" />
+          <Metric label="Outstanding balance" value={loaded ? `GHS ${unpaid.toFixed(2)}` : '—'} detail="Calculated from saved invoices" to="/cashier/charges" icon="wallet" />
+          <Metric label="Claims ready" value={loaded ? readyClaims : '—'} detail="Locally prepared records" to="/claims/list" icon="fileText" />
         </div>
-      </div>
+        {loaded && data.patients.length === 0 ? (
+          <div className="hms-management__empty">
+            <span><Icon name="users" size={22} /></span>
+            <h2>No hospital records yet</h2>
+            <p>This installation is empty. Add your first patient to begin a local workflow. The dashboard will calculate figures as records are created.</p>
+            <Link to="/reception/desk">Register a patient <Icon name="arrowRight" size={15} /></Link>
+          </div>
+        ) : null}
+        <div className="hms-management__links">
+          <Link to="/admin/users"><Icon name="users" size={17} />Manage local staff profiles <Icon name="arrowUpRight" size={15} /></Link>
+          <Link to="/admin/facilities"><Icon name="building" size={17} />Configure hospital facilities <Icon name="arrowUpRight" size={15} /></Link>
+          <Link to="/admin/backup"><Icon name="download" size={17} />Export or restore local data <Icon name="arrowUpRight" size={15} /></Link>
+        </div>
+      </section>
     </>
   )
 }
