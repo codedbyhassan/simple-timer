@@ -7,6 +7,13 @@ const isRecord = (value) => value !== null && typeof value === 'object' && !Arra
 const equal = (left, right) => JSON.stringify(left) === JSON.stringify(right)
 
 export function mergeChanged(base, next, current) {
+  if (Array.isArray(base) && Array.isArray(next) && base.every((item) => !isRecord(item)) && next.every((item) => !isRecord(item))) {
+    const baseSet = new Set(base)
+    const nextSet = new Set(next)
+    const result = Array.isArray(current) ? current.filter((item) => !baseSet.has(item) || nextSet.has(item)) : [...base]
+    next.forEach((item) => { if (!baseSet.has(item) && !result.includes(item)) result.push(item) })
+    return result
+  }
   if (Array.isArray(base) && Array.isArray(next) && base.every((item) => isRecord(item) && item.id != null) && next.every((item) => isRecord(item) && item.id != null)) {
     const baseMap = new Map(base.map((item) => [item.id, item]))
     const nextMap = new Map(next.map((item) => [item.id, item]))
