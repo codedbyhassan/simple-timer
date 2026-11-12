@@ -2,13 +2,23 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon, PageHeader, StatusBadge } from '@ui'
 import { ErrorNotice, SearchField, EmptyResult, PatientIdentity, getClaimGaps, nameOf, patientPath } from './ReceptionShared.jsx'
+import useHospitalSettings from '@core/storage/useHospitalSettings.js'
 import './reception styles/shared.css'
 import './reception styles/claim-gaps.css'
 
 export default function ClaimGapsPage({ menu, data, error }) {
+  const { settings } = useHospitalSettings()
+  const expiryWarningDays = Math.max(0, Number(settings.nhis_expiry_warning) || 60)
   const [query, setQuery] = useState('')
   const [severity, setSeverity] = useState('All priorities')
-  const rows = data.patients.flatMap((patient) => getClaimGaps(patient).map((gap) => ({ patient, ...gap })))
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  const expirySoon = data.patients.flatMap((patient) => {
+    if (patient.coverage !== 'NHIS' || !patient.expiry) return []
+    const expiry = new Date(`${patient.expiry}T23:59:59`)
+    const days = Math.ceil((expiry - today) / 86400000)
+    return Number.isFinite(days) && days >= 0 && days <= expiryWarningDays ? [{ patient, label: `NHIS membership expires in ${days} day${days === 1 ? '' : 's'}`, severity: 'Needs attention' }] : []
+  })
+  const rows = [...data.patients.flatMap((patient) => getClaimGaps(patient).map((gap) => ({ patient, ...gap }))), ...expirySoon]
   const filtered = rows.filter((item) => (
     (severity === 'All priorities' || item.severity === severity)
     && `${nameOf(item.patient)} ${item.patient.id} ${item.patient.memberNumber} ${item.label}`.toLowerCase().includes(query.toLowerCase())
@@ -19,7 +29,7 @@ export default function ClaimGapsPage({ menu, data, error }) {
 
   return (
     <>
-      <PageHeader title={menu.label} description="Find missing or invalid patient details that may prevent accurate claim preparation." actions={<Link className="hms-reception__button hms-reception__button--quiet" to="/reception/patients"><Icon name="users" size={16} />Patient directory</Link>} />
+      <PageHeader title={menu.label} description={`Find missing or invalid patient details and NHIS cover expiring within ${expiryWarningDays} days.`} actions={<Link className="hms-reception__button hms-reception__button--quiet" to="/reception/patients"><Icon name="users" size={16} />Patient directory</Link>} />
       <div className="hms-reception">
         <ErrorNotice error={error} />
         <section className="hms-reception__gap-summary"><div className="hms-reception__gap-score"><span className="hms-reception__eyebrow">NHIS profile completeness</span><strong>{complete}%</strong><p>Patient records with a membership number and expiry on file</p><div className="hms-reception__progress"><span style={{ width: `${complete}%` }} /></div></div><div><span className="hms-reception__eyebrow">Items requiring review</span><strong>{rows.length}</strong><small>across {new Set(rows.map((item) => item.patient.id)).size} patient records</small></div><div><span className="hms-reception__eyebrow">High priority</span><strong>{high}</strong><small>NHIS number, expiry or principal member gaps</small></div></section>
