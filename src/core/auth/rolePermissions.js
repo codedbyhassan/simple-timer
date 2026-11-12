@@ -1,0 +1,15 @@
+export const ROLE_PERMISSIONS = {
+  receptionist: ['patients.search','patients.view','patients.create','patients.update','appointments.view','appointments.manage','encounters.open','finance.view'],
+  records_officer: ['patients.search','patients.view','patients.create','patients.update','appointments.view','encounters.open'],
+  triage_nurse: ['patients.search','patients.view','encounters.open','nursing.triage','nursing.observe'],
+  ward_nurse: ['patients.search','patients.view','nursing.observe'],
+  doctor: ['patients.search','patients.view','clinical.consult','clinical.finalize','clinical.order','clinical.prescribe','clinical.refer','lab.view','pharmacy.view'],
+  lab_technician: ['patients.search','patients.view','lab.view','lab.collect','lab.process','lab.verify','lab.manage_catalogue','inventory.view','inventory.receive','inventory.adjust'],
+  pharmacist: ['patients.search','patients.view','pharmacy.view','pharmacy.verify','pharmacy.dispense','pharmacy.manage_formulary','inventory.view','inventory.receive','inventory.adjust'],
+  pharmacy_assistant: ['patients.search','patients.view','pharmacy.view','inventory.view'],
+  cashier: ['patients.search','patients.view','finance.view','finance.collect','finance.refund','finance.reconcile'],
+  finance_officer: ['patients.search','patients.view','finance.view','finance.collect','finance.refund','finance.reconcile'],
+  claims_officer: ['patients.search','patients.view','claims.view','claims.build','claims.enter_ccc','claims.export','claims.import_report','claims.manage_mappings','finance.view'],
+  hospital_admin: ['admin.manage_users','admin.manage_config','admin.manage_catalogue','audit.view','audit.review_break_glass','system.view_sla','reports.view','reports.export','finance.manage_prices','finance.approve_refund','claims.manage_mappings','inventory.view','inventory.approve_adjustment'],
+  management_viewer: ['reports.view','reports.export'],
+}
