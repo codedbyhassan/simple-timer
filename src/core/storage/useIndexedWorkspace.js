@@ -52,7 +52,7 @@ export default function useIndexedWorkspace(defaults, errorLabel = 'workspace') 
       setError(saveError instanceof Error ? saveError.message : `Unable to save ${errorLabel} changes on this device.`)
       return false
     }
-  }, [errorLabel])
+  }, [errorLabel, defaults])
 
   return { data, error, loaded, commit }
 }
