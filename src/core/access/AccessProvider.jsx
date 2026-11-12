@@ -28,7 +28,7 @@ export function AccessProvider({ children }) {
     const can = (code) => permissions.has(code)
     const roles = state.access?.roles || []
     const workspaces = workspacesForRoles(roles)
-    const home = workspaces[0] ? workspaceHome(workspaces[0]) : '/profile'
+    const home = workspaces[0] ? workspaceHome(workspaces[0], can) : '/profile'
     return { ...state, can, roles, workspaces, home, retry }
   }, [state, retry])
 
