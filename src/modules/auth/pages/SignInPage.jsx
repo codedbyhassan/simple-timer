@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthLayout, Heading, Stack, Text, useToast } from '@ui'
 import { getProfiles } from '@core/storage/localProfiles.js'
+import { WORKSPACES, workspaceHome } from '@core/access/navigation.js'
+import { roleLabel } from '@core/access/roles.js'
 import { useAuth } from '@core/auth'
 import './local-signin.css'
 
@@ -11,53 +13,117 @@ export default function SignInPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [profiles, setProfiles] = useState([])
-  const [selected, setSelected] = useState('')
+  const [workspaceId, setWorkspaceId] = useState('')
   const [loading, setLoading] = useState(true)
-  const [busy, setBusy] = useState(false)
+  const [busyRole, setBusyRole] = useState('')
   const [profileError, setProfileError] = useState('')
 
   useEffect(() => {
     let alive = true
     getProfiles().then((items) => {
       if (!alive) return
-      const active = items.filter((profile) => profile.active)
-      setProfiles(active)
-      setSelected(active[0]?.id || '')
+      setProfiles(items.filter((profile) => profile.active))
     }).catch((error) => alive && setProfileError(error instanceof Error ? error.message : 'Unable to load local profiles.')).finally(() => alive && setLoading(false))
     return () => { alive = false }
   }, [])
 
-  const onSubmit = async (event) => {
-    event.preventDefault()
-    if (!selected || busy) return
-    setBusy(true)
+  const availableWorkspaces = useMemo(() => WORKSPACES.map((workspace) => ({
+    ...workspace,
+    availableRoles: workspace.roles.filter((role) => profiles.some((profile) => profile.role === role)),
+  })).filter((workspace) => workspace.availableRoles.length), [profiles])
+
+  const selectedWorkspace = availableWorkspaces.find((workspace) => workspace.id === workspaceId) || null
+
+  const openRole = async (workspace, role) => {
+    const profile = profiles.find((item) => item.role === role)
+    if (!profile || busyRole) return
+    setBusyRole(role)
     try {
-      await signIn(selected)
-      navigate(location.state?.from || '/', { replace: true })
+      await signIn(profile.id)
+      navigate(workspaceHome(workspace), { replace: true, state: { from: location.state?.from || null } })
     } catch (error) {
-      toast.error('Unable to open profile', error.message)
-      setBusy(false)
+      toast.error('Unable to open workspace', error.message)
+      setBusyRole('')
     }
+  }
+
+  const chooseWorkspace = (workspace) => {
+    if (workspace.availableRoles.length === 1) {
+      openRole(workspace, workspace.availableRoles[0])
+      return
+    }
+    setWorkspaceId(workspace.id)
   }
 
   return (
     <AuthLayout>
       <Stack gap="xs">
-        <Heading>Choose a role profile</Heading>
-        <Text tone="muted">Select a local role profile to open its workspace. This does not verify a real person’s identity.</Text>
+        <Heading>{selectedWorkspace ? `Choose a ${selectedWorkspace.label} role` : 'Choose your workspace'}</Heading>
+        <Text tone="muted">
+          {selectedWorkspace
+            ? `Select the role dashboard you want to open in ${selectedWorkspace.label}.`
+            : 'Select your department to continue to its workspace.'}
+        </Text>
       </Stack>
-      <form className="hms-local-signin" onSubmit={onSubmit}>
-        {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
-        {loading ? <Text tone="muted">Loading local profiles…</Text> : profiles.length ? (
-          <>
-            <label className="hms-local-signin__label" htmlFor="local-profile">Role profile</label>
-            <select id="local-profile" value={selected} onChange={(event) => setSelected(event.target.value)} disabled={busy}>
-              {profiles.map((profile) => <option key={profile.id} value={profile.id}>{profile.displayName || profile.name} · {profile.department}</option>)}
-            </select>
-            <button className="hms-local-signin__submit" type="submit" disabled={!selected || busy}>{busy ? 'Opening workspace…' : 'Continue to workspace'}</button>
-          </>
-        ) : <Text tone="muted">No active profiles are available. Restore a backup containing an active hospital administrator profile.</Text>}
-      </form>
+
+      {profileError ? <p className="hms-local-signin__error" role="alert">{profileError}</p> : null}
+
+      {loading ? <Text tone="muted">Loading available workspaces…</Text> : availableWorkspaces.length ? (
+        selectedWorkspace ? (
+          <section className="hms-local-signin__selection" aria-label={`${selectedWorkspace.label} role dashboards`}>
+            <button className="hms-local-signin__back" type="button" onClick={() => setWorkspaceId('')} disabled={Boolean(busyRole)}>
+              <span aria-hidden="true">←</span> All workspaces
+            </button>
+            <div className="hms-local-signin__grid hms-local-signin__grid--roles">
+              {selectedWorkspace.availableRoles.map((role) => {
+                const profile = profiles.find((item) => item.role === role)
+                const isBusy = busyRole === role
+                return (
+                  <button
+                    className="hms-local-signin__card hms-local-signin__role-card"
+                    type="button"
+                    key={role}
+                    onClick={() => openRole(selectedWorkspace, role)}
+                    disabled={Boolean(busyRole)}
+                  >
+                    <span className="hms-local-signin__card-mark" aria-hidden="true">{roleLabel(role).slice(0, 1).toUpperCase()}</span>
+                    <span className="hms-local-signin__card-copy">
+                      <strong>{roleLabel(role)}</strong>
+                      <span>{profile?.department || selectedWorkspace.label}</span>
+                    </span>
+                    <span className="hms-local-signin__card-arrow" aria-hidden="true">{isBusy ? '…' : '→'}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+        ) : (
+          <section className="hms-local-signin__selection" aria-label="Available workspaces">
+            <div className="hms-local-signin__grid">
+              {availableWorkspaces.map((workspace) => (
+                <button
+                  className="hms-local-signin__card"
+                  type="button"
+                  key={workspace.id}
+                  onClick={() => chooseWorkspace(workspace)}
+                  disabled={Boolean(busyRole)}
+                >
+                  <span className="hms-local-signin__card-mark" aria-hidden="true">{workspace.label.slice(0, 1).toUpperCase()}</span>
+                  <span className="hms-local-signin__card-copy">
+                    <strong>{workspace.label}</strong>
+                    <span>{workspace.purpose}</span>
+                    {workspace.availableRoles.length > 1 ? <small>{workspace.availableRoles.length} role dashboards</small> : <small>Continue to dashboard</small>}
+                  </span>
+                  <span className="hms-local-signin__card-arrow" aria-hidden="true">{busyRole && workspace.availableRoles.includes(busyRole) ? '…' : '→'}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )
+      ) : (
+        <Text tone="muted">No active role profiles are available. Restore a backup containing an active hospital administrator profile.</Text>
+      )}
+
       <div className="hms-local-signin__notice">
         <strong>Local demonstration mode</strong>
         <span>Records stay in this browser or desktop installation. This mode does not provide secure staff authentication or synchronise data between devices.</span>
