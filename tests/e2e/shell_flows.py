@@ -63,7 +63,7 @@ with sync_playwright() as playwright:
         'pharmacist': ('/pharmacy/overview', ['Overview', 'Prescription queue', 'Dispensing panel', 'Stock alerts', 'Stock levels', 'Formulary mapping flags', 'Inventory']),
         'cashier': ('/cashier/overview', ['Overview', 'Pending charges', 'Payment panel and receipts', 'My till and shift', 'Refunds', 'Shift reconciliation', 'Price list', 'Billed vs claimed']),
         'claims_officer': ('/claims/overview', ['Overview', 'Pipeline', 'Claims list and detail', 'Mapping queue', 'Export batches', 'Import reports', 'Month progress']),
-        'hospital_admin': ('/admin/overview', ['Management dashboard', 'Hospital profile', 'Departments, wards, beds', 'Local staff profiles', 'Service catalogue and prices', 'Reference mappings', 'Operating settings', 'Reports', 'Refund approvals', 'Inventory console', 'Local activity history', 'Backup and restore']),
+        'hospital_admin': ('/admin/overview', ['Management dashboard', 'Hospital profile', 'Departments, wards, beds', 'Local role profiles', 'Service catalogue and prices', 'Reference mappings', 'Operating settings', 'Reports', 'Refund approvals', 'Inventory console', 'Local activity history', 'Backup and restore']),
         'management_viewer': ('/admin/overview', ['Management dashboard', 'Reports']),
     }
 
@@ -105,7 +105,7 @@ with sync_playwright() as playwright:
     page.click('[role=menuitem]:has-text("Profile")')
     page.wait_for_url('**/profile')
     check('profile clearly identifies local access mode', page.get_by_text('Profiles and permissions are stored in IndexedDB on this device.').is_visible())
-    page.click('button:has-text("Switch local profile")')
+    page.click('button:has-text("Switch role profile")')
     page.wait_for_url('**/signin')
     check('switching profile returns to the local profile selector', page.locator('#local-profile').count() == 1)
 
