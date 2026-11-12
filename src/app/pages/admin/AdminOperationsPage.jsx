@@ -4,17 +4,17 @@ import { ChartCard, Icon, MetricCard, PageHeader, SegmentedBar, StatusBadge } fr
 import useAdminCollection from './useAdminCollection.js'
 import useCashierWorkspace from '../cashier/useCashierWorkspace.js'
 import useReceptionWorkspace from '../reception/useReceptionWorkspace.js'
+import useLabWorkspace from '../lab/useLabWorkspace.js'
+import usePharmacyWorkspace from '../pharmacy/usePharmacyWorkspace.js'
+import useClaimsWorkspace from '../claims/useClaimsWorkspace.js'
 import { uid } from '../cashier/CashierShared.jsx'
 import { appendAuditEvent, exportLocalDatabase, importLocalDatabase, readDocument, writeDocument } from '@core/storage/localDatabase.js'
 import {
   AUDIT_SEED,
-  BACKUP_JOBS,
   CATALOGUE_SEED,
   INVENTORY_SEED,
   MAPPINGS_SEED,
   REFUNDS_SEED,
-  REPORT_ACTIVITY,
-  REPORTS,
   SETTINGS_DEFAULTS,
 } from './operationalData.js'
 import './admin styles/adminoperations.css'
@@ -37,6 +37,27 @@ function SearchBox({ value, onChange, placeholder }) {
 }
 
 function CataloguePage({ menu }) {
+  const { data, loaded, error, commit } = useCashierWorkspace()
+  const records = (data.cashier?.prices || []).map((item) => ({ ...item, price: Number(item.amount || 0), code: item.code || '', claimCode: item.claimCode || '', status: item.status || 'Active', category: item.category || 'Uncategorised' }))
+  const [query, setQuery] = useState('')
+  const [category, setCategory] = useState('All services')
+  const categories = ['All services', ...new Set(records.map((record) => record.category))]
+  const filtered = records.filter((record) => `${record.name} ${record.code} ${record.claimCode} ${record.category}`.toLowerCase().includes(query.toLowerCase()) && (category === 'All services' || record.category === category))
+  const save = async (next) => commit({ ...data, cashier: { ...data.cashier, prices: next.map((item) => ({ ...item, amount: Number(item.price ?? item.amount ?? 0) })) } })
+  return (
+    <>
+      <PageHeader title={menu.label} description="Service prices used by the cashier are managed from this shared local catalogue." actions={<Link className="hms-admin-ops__primary-action" to="/admin/catalogue/new"><Icon name="plus" size={17} />Add service</Link>} />
+      <div className="hms-admin-ops">
+        {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
+        <div className="hms-admin-ops__metrics"><MetricCard label="Catalogue items" value={loaded ? records.length : '—'} icon="tag" caption="Configured local services" /><MetricCard label="Active services" value={records.filter((item) => item.status === 'Active').length} icon="checkCircle" caption="Available to cashier" /><MetricCard label="Mapping gaps" value={records.filter((item) => !item.claimCode).length} icon="link" caption="No claim code assigned" /><MetricCard label="Average price" value={records.length ? `GHS ${(records.reduce((sum,item)=>sum+item.price,0)/records.length).toFixed(2)}` : '—'} icon="creditCard" caption="Across configured services" /></div>
+        <section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Shared billing configuration</span><h2>Service directory</h2><p>Adding or editing a service here changes the price list used by the cashier workspace.</p></div><StatusBadge tone="neutral">{filtered.length} shown</StatusBadge></div>
+          <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search service, code or tariff" /><select aria-label="Filter by category" value={category} onChange={(event)=>setCategory(event.target.value)}>{categories.map((item)=><option key={item}>{item}</option>)}</select></div>
+          {!loaded ? <div className="hms-admin-ops__empty">Loading service catalogue…</div> : <div className="hms-admin-ops__table-wrap"><table className="hms-admin-ops__table"><thead><tr><th>Service</th><th>Category</th><th>Service code</th><th>Claims tariff</th><th>Price</th><th>Status</th><th /></tr></thead><tbody>{filtered.map((record)=><tr key={record.id}><td><Link className="hms-admin-ops__row-link" to={`/admin/catalogue/${record.id}`}>{record.name}</Link></td><td>{record.category}</td><td><code>{record.code || '—'}</code></td><td><code>{record.claimCode || '—'}</code></td><td className="hms-admin-ops__amount">GHS {record.price.toFixed(2)}</td><td><StatusBadge tone={tone(record.status)}>{record.status}</StatusBadge></td><td><Link className="hms-admin-ops__icon-link" to={`/admin/catalogue/${record.id}`} aria-label={`View ${record.name}`}><Icon name="chevronRight" size={17} /></Link></td></tr>)}</tbody></table>{filtered.length===0?<div className="hms-admin-ops__empty">No services configured. Add a service to establish the cashier price list.</div>:null}</div>}
+        </section>
+      </div>
+    </>
+  )
+}) {
   const { records, loaded, error } = useAdminCollection('hms.admin.catalogue.v1', CATALOGUE_SEED)
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All services')
@@ -100,6 +121,32 @@ function CataloguePage({ menu }) {
 }
 
 function MappingsPage({ menu }) {
+  const { data, loaded, error, commit } = useClaimsWorkspace()
+  const records = data.claims?.mappings || []
+  const [query, setQuery] = useState('')
+  const [tab, setTab] = useState('All')
+  const needsReview = records.filter((record) => record.status !== 'Mapped')
+  const types = [...new Set(records.map((record) => record.type || record.kind || 'Other'))]
+  const filtered = records.filter((record) => `${record.source} ${record.sourceCode} ${record.target} ${record.targetCode} ${record.type || record.kind}`.toLowerCase().includes(query.toLowerCase()) && (tab === 'All' || (tab === 'Needs review' ? record.status !== 'Mapped' : (record.type || record.kind) === tab)))
+  const remove = async (record) => {
+    if (!window.confirm(`Delete mapping for ${record.source}?`)) return
+    await commit({ ...data, claims: { ...data.claims, mappings: records.filter((item) => item.id !== record.id) } })
+  }
+  return (
+    <>
+      <PageHeader title={menu.label} description="Reference mappings shared with claims preparation." actions={<Link className="hms-admin-ops__primary-action" to="/admin/mappings/new"><Icon name="plus" size={17} />Add mapping</Link>} />
+      <div className="hms-admin-ops">
+        {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
+        <div className="hms-admin-ops__mapping-hero"><div className="hms-admin-ops__mapping-copy"><span className="hms-admin-ops__eyebrow">Reference integrity</span><h2>Claims reference mappings</h2><p>These records are used by the claims workspace. Only mappings entered here are shown.</p></div><div className="hms-admin-ops__mapping-count"><strong>{needsReview.length}</strong><span>items need review</span></div><SegmentedBar label="Mapped and needs review" segments={[{label:'Mapped',value:records.length-needsReview.length,tone:'accent'},{label:'Needs review',value:needsReview.length,tone:'muted'}]} /></div>
+        <section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Shared mapping library</span><h2>Reference mappings</h2></div><StatusBadge tone="neutral">{records.length-needsReview.length} mapped</StatusBadge></div>
+          <div className="hms-admin-ops__tabs">{['All','Needs review',...types].map((item)=><button key={item} type="button" className={tab===item?'is-active':''} onClick={()=>setTab(item)}>{item}{item==='Needs review'?<b>{needsReview.length}</b>:null}</button>)}</div>
+          <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search source or target code" /><span className="hms-admin-ops__subtle">{filtered.length} mappings</span></div>
+          {!loaded?<div className="hms-admin-ops__empty">Loading mappings…</div>:<div className="hms-admin-ops__mapping-list">{filtered.map((record)=><div key={record.id} className={`hms-admin-ops__mapping-row${record.status!=='Mapped'?' is-attention':''}`}><span className="hms-admin-ops__mapping-icon"><Icon name="link" size={18}/></span><span className="hms-admin-ops__mapping-source"><strong>{record.source}</strong><code>{record.sourceCode||'No source code'}</code></span><span className="hms-admin-ops__mapping-arrow"><Icon name="arrowUpRight" size={17}/></span><span className="hms-admin-ops__mapping-target"><strong>{record.target||'Target not assigned'}</strong><code>{record.targetCode||'—'}</code></span><span className="hms-admin-ops__mapping-meta">{record.type||record.kind||'Reference'}<small>{record.reviewed||'Not reviewed'}</small></span><StatusBadge tone={tone(record.status)}>{record.status||'Needs review'}</StatusBadge><Link to={`/admin/mappings/${record.id}`} aria-label={`Edit mapping ${record.source}`}><Icon name="edit" size={16}/></Link><button type="button" onClick={()=>remove(record)} aria-label={`Delete mapping ${record.source}`}><Icon name="trash" size={16}/></button></div>)}{filtered.length===0?<div className="hms-admin-ops__empty">No mappings configured. Add a mapping to prepare claims references.</div>:null}</div>}
+        </section>
+      </div>
+    </>
+  )
+}) {
   const { records, loaded, error } = useAdminCollection('hms.admin.mappings.v1', MAPPINGS_SEED)
   const [query, setQuery] = useState('')
   const [tab, setTab] = useState('All')
@@ -413,6 +460,30 @@ function RefundsPage({ menu }) {
 }
 
 function InventoryPage({ menu }) {
+  const lab = useLabWorkspace()
+  const pharmacy = usePharmacyWorkspace()
+  const labItems = (lab.data.lab?.stock || []).map((item)=>({id:item.id,name:item.name,category:item.category||'Laboratory',location:'Laboratory',onHand:Number(item.quantity||0),reorder:Number(item.reorderLevel||item.reorder||0),unit:item.unit||'units',unitCost:Number(item.unitCost||0)}))
+  const pharmacyItems = (pharmacy.data.pharmacy?.medicines || []).map((medicine)=>({id:medicine.id,name:medicine.name,category:medicine.category||'Medicine',location:'Pharmacy',onHand:(pharmacy.data.pharmacy?.batches||[]).filter((batch)=>batch.medicineId===medicine.id).reduce((sum,batch)=>sum+Number(batch.quantity||0),0),reorder:Number(medicine.reorderLevel||0),unit:medicine.unit||'units',unitCost:Number(medicine.unitPrice||0)}))
+  const records=[...labItems,...pharmacyItems].map((item)=>({...item,status:item.onHand<=0?'Out of stock':item.reorder>0&&item.onHand<=item.reorder?'Low stock':'In stock'}))
+  const [query,setQuery]=useState('')
+  const [filter,setFilter]=useState('All stock')
+  const filtered=records.filter((item)=>`${item.name} ${item.id} ${item.location} ${item.category}`.toLowerCase().includes(query.toLowerCase())&&(filter==='All stock'||item.status===filter))
+  const low=records.filter((item)=>item.status!=='In stock')
+  const valuation=records.reduce((sum,item)=>sum+item.onHand*item.unitCost,0)
+  const loaded=lab.loaded&&pharmacy.loaded
+  return (
+    <>
+      <PageHeader title={menu.label} description="Inventory totals derived from laboratory stock and pharmacy batches stored in IndexedDB." />
+      <div className="hms-admin-ops">
+        <div className="hms-admin-ops__metrics hms-admin-ops__metrics--three"><MetricCard label="Inventory lines" value={loaded?records.length:'—'} icon="packageBox" caption="Configured lab and pharmacy items"/><MetricCard label="Reorder attention" value={loaded?low.length:'—'} icon="alertTriangle" caption="Low or unavailable"/><MetricCard label="Stock valuation" value={loaded?`GHS ${valuation.toFixed(2)}`:'—'} icon="creditCard" caption="Where unit cost is recorded"/></div>
+        <section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Shared stock records</span><h2>Inventory items</h2><p>Stock changes are made in the responsible laboratory or pharmacy workspace.</p></div><StatusBadge tone={low.length?'warning':'neutral'}>{low.length} need attention</StatusBadge></div>
+          <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search item, ID or location"/><select aria-label="Filter inventory" value={filter} onChange={(event)=>setFilter(event.target.value)}>{['All stock','In stock','Low stock','Out of stock'].map((item)=><option key={item}>{item}</option>)}</select></div>
+          {!loaded?<div className="hms-admin-ops__empty">Loading local stock…</div>:<div className="hms-admin-ops__table-wrap"><table className="hms-admin-ops__table"><thead><tr><th>Item</th><th>Location</th><th>On hand</th><th>Reorder at</th><th>Unit cost</th><th>Status</th></tr></thead><tbody>{filtered.map((item)=><tr key={item.id}><td><strong>{item.name}</strong><small className="hms-admin-ops__cell-sub">{item.id} · {item.category}</small></td><td>{item.location}</td><td className="hms-admin-ops__amount">{item.onHand} {item.unit}</td><td>{item.reorder||'—'}</td><td>{item.unitCost? `GHS ${item.unitCost.toFixed(2)}`:'—'}</td><td><StatusBadge tone={tone(item.status)}>{item.status}</StatusBadge></td></tr>)}</tbody></table>{filtered.length===0?<div className="hms-admin-ops__empty">No inventory records are configured. Add stock in the laboratory or pharmacy workspace.</div>:null}</div>}
+        </section>
+      </div>
+    </>
+  )
+}) {
   const { records, loaded, error } = useAdminCollection('hms.admin.inventory.v1', INVENTORY_SEED)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState('All stock')
