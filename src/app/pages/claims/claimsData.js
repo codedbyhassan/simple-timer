@@ -2,7 +2,7 @@ import { LAB_SEED } from '../lab/labData.js'
 
 const timestamp = new Date().toISOString()
 
-export const CLAIMS_SEED = {
+const CLAIMS_SEED_REFERENCE = {
   ...LAB_SEED,
   claims: {
     records: [
@@ -48,4 +48,8 @@ export const CLAIMS_SEED = {
     ],
     activity: [{ id: 'CACT-001', message: 'Claim snapshot prepared for INV-1048.', at: timestamp }],
   },
+}
+
+export const CLAIMS_SEED = {
+  ...CLAIMS_SEED_REFERENCE, claims: { ...CLAIMS_SEED_REFERENCE.claims, records: [], mappings: [], batches: [], reports: [], activity: [] },
 }
