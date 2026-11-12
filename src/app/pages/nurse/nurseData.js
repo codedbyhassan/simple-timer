@@ -2,7 +2,7 @@ import { RECEPTION_SEED } from '../reception/receptionData.js'
 
 const minutesAgo = (minutes) => new Date(Date.now() - minutes * 60_000).toISOString()
 
-export const NURSE_SEED = {
+const NURSE_SEED_REFERENCE = {
   ...RECEPTION_SEED,
   nurse: {
     wards: [
@@ -56,6 +56,10 @@ export const NURSE_SEED = {
       { id: 'ACT-1003', kind: 'Admission', message: 'New admission request awaiting a bed', at: minutesAgo(42) },
     ],
   },
+}
+
+export const NURSE_SEED = {
+  ...NURSE_SEED_REFERENCE, nurse: { ...NURSE_SEED_REFERENCE.nurse, wards: [], beds: [], tasks: [], admissions: [], discharges: [], activity: [] },
 }
 
 export const TRIAGE_PRIORITIES = ['Routine', 'Priority', 'Urgent']
