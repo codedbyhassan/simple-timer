@@ -71,11 +71,17 @@ with sync_playwright() as playwright:
 
     expected = {
         'receptionist': ('/reception/overview', ['Overview', 'Reception desk', 'Appointments', 'Patients', 'Documents', 'OPD queue', 'Claim data gaps', 'Payment status']),
+    'records_officer': ('/reception/overview', ['Overview', 'Reception desk', 'Appointments', 'Patients', 'Documents', 'OPD queue', 'Claim data gaps']),
         'triage_nurse': ('/nurse/overview', ['Overview', 'Triage queue', 'Ward and bed board', 'Nursing tasks', 'Admission requests', 'Discharge checklist', 'OPD queue']),
+    'ward_nurse': ('/nurse/overview', ['Overview', 'Ward and bed board', 'Nursing tasks', 'Admission requests', 'Discharge checklist']),
+    'bed_manager': ('/nurse/overview', ['Overview', 'Ward and bed board', 'Nursing tasks', 'Admission requests', 'Discharge checklist']),
         'doctor': ('/doctor/overview', ['Overview', 'My queue', 'Consultation', 'Results inbox', 'My admissions', 'OPD queue']),
         'lab_technician': ('/lab/overview', ['Overview', 'Worklist', 'Specimens', 'Result entry and verification', 'Critical results', 'Test catalogue', 'Inventory']),
         'pharmacist': ('/pharmacy/overview', ['Overview', 'Prescription queue', 'Dispensing panel', 'Stock alerts', 'Stock levels', 'Formulary mapping flags', 'Inventory']),
+    'pharmacy_assistant': ('/pharmacy/overview', ['Overview', 'Prescription queue', 'Stock alerts', 'Stock levels', 'Inventory']),
+    'store_keeper': ('/pharmacy/alerts', ['Stock alerts', 'Stock levels', 'Inventory']),
         'cashier': ('/cashier/overview', ['Overview', 'Pending charges', 'Payment panel and receipts', 'My till and shift', 'Refunds', 'Shift reconciliation', 'Price list', 'Billed vs claimed']),
+    'finance_officer': ('/cashier/overview', ['Overview', 'Pending charges', 'Payment panel and receipts', 'My till and shift', 'Refunds', 'Shift reconciliation', 'Price list', 'Billed vs claimed']),
         'claims_officer': ('/claims/overview', ['Overview', 'Pipeline', 'Claims list and detail', 'Mapping queue', 'Export batches', 'Import reports', 'Month progress']),
         'hospital_admin': ('/admin/overview', ['Management dashboard', 'Hospital profile', 'Departments, wards, beds', 'Local role profiles', 'Service catalogue and prices', 'Reference mappings', 'Operating settings', 'Reports', 'Refund approvals', 'Inventory console', 'Local activity history', 'Backup and restore']),
         'management_viewer': ('/admin/overview', ['Management dashboard', 'Reports']),
