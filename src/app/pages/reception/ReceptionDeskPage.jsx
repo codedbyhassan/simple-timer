@@ -27,7 +27,7 @@ const EMPTY_PATIENT = {
   reason: '',
 }
 
-export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
+export default async async async function ReceptionDeskPage({ menu, data, error, commit, can }) {
   const { options: departmentOptions } = useLocalDepartments()
   const [query, setQuery] = useState('')
   const [selectedPatientId, setSelectedPatientId] = useState('')
@@ -51,7 +51,7 @@ export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
     if (!can('encounters.open')) { setFormError('Your role does not have permission to check patients into the OPD queue.'); return }
     const result = createCheckIn(data, patientId, details, appointmentId)
     if (result.error) { setFormError(result.error); return }
-    if (commit(result.data)) { setMessage(result.message); setSelectedPatientId(patientId) }
+    if (await commit(result.data)) { setMessage(result.message); setSelectedPatientId(patientId) }
   }
   const createPatient = (event) => {
     event.preventDefault()
@@ -71,14 +71,14 @@ export default function ReceptionDeskPage({ menu, data, error, commit, can }) {
     if (values.visitType === 'Appointment') {
       const appointment = { id: uid('APT'), patientId: patient.id, date: TODAY, time: '12:00', department: values.department, provider: 'To be assigned', reason: values.reason || 'Reception booking', status: 'Expected' }
       next = { ...next, appointments: [appointment, ...data.appointments] }
-      if (commit(next)) { setMessage(`${nameOf(patient)} registered and added to today’s appointment schedule.`); setValues(EMPTY_PATIENT); setStep(0); setQuery(''); setShowRegistration(false) }
+      if (await commit(next)) { setMessage(`${nameOf(patient)} registered and added to today’s appointment schedule.`); setValues(EMPTY_PATIENT); setStep(0); setQuery(''); setShowRegistration(false) }
       return
     }
     if (values.visitType === 'Walk-in' && can('encounters.open')) {
       const result = createCheckIn(next, patient.id, values)
       next = result.data
     }
-    if (commit(next)) { setMessage(values.visitType === 'Walk-in' && can('encounters.open') ? `${nameOf(patient)} registered and checked in.` : `${nameOf(patient)} registered successfully.`); setSelectedPatientId(patient.id); setValues(EMPTY_PATIENT); setStep(0); setQuery(''); setDifferentPerson(false); setShowRegistration(false) }
+    if (await commit(next)) { setMessage(values.visitType === 'Walk-in' && can('encounters.open') ? `${nameOf(patient)} registered and checked in.` : `${nameOf(patient)} registered successfully.`); setSelectedPatientId(patient.id); setValues(EMPTY_PATIENT); setStep(0); setQuery(''); setDifferentPerson(false); setShowRegistration(false) }
   }
   const nextStep = () => {
     if (step === 0 && (!values.firstName.trim() || !values.lastName.trim() || !values.sex || !values.phone.trim())) { setFormError('Enter the patient’s name, sex and contact number to continue.'); return }
