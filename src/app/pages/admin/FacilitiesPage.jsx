@@ -56,7 +56,7 @@ export default function FacilitiesPage({ menu }) {
     else setError(workspaceError || 'Unable to save bed.')
   }
   const remove = async (item) => {
-    if (!window.confirm(`Delete ${item.name || item.id} from this local facility directory?`)) return
+    if (!window.confirm(`Delete ${item.name || item.id} from the facility directory?`)) return
     if (tab === 'departments') {
       if (wards.some((ward) => ward.departmentId === item.id)) { setError('Move or remove the wards assigned to this department first.'); return }
       const ok = await commitDepartments(departments.filter((row) => row.id !== item.id))
@@ -83,7 +83,7 @@ export default function FacilitiesPage({ menu }) {
 
   return (
     <>
-      <PageHeader title={menu.label} description="Configure departments, wards and beds stored in this local installation." actions={<button type="button" className="hms-facilities__add" onClick={startNew} disabled={!ready || (tab === 'wards' && !departments.length) || (tab === 'beds' && !wards.length)}><Icon name="plus" size={16} />Add {tab === 'departments' ? 'department' : tab === 'wards' ? 'ward' : 'bed'}</button>} />
+      <PageHeader title={menu.label} description="Configure departments, wards and beds for the hospital." actions={<button type="button" className="hms-facilities__add" onClick={startNew} disabled={!ready || (tab === 'wards' && !departments.length) || (tab === 'beds' && !wards.length)}><Icon name="plus" size={16} />Add {tab === 'departments' ? 'department' : tab === 'wards' ? 'ward' : 'bed'}</button>} />
       <div className="hms-facilities">
         <section className="hms-facilities__capacity" aria-label="Local bed capacity">
           <div className="hms-facilities__capacity-copy"><span className="hms-facilities__eyebrow">Configured capacity</span><h2>Bed status</h2><p>{occupied} occupied · {available} available · {beds.length} total beds</p></div>

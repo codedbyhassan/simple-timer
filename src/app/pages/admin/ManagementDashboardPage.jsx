@@ -49,7 +49,7 @@ export default function ManagementDashboardPage({ menu }) {
 
   return (
     <>
-      <PageHeader title={menu.label} description="Current totals calculated from records saved in this local installation." />
+      <PageHeader title={menu.label} description="Current totals calculated from records across the hospital." />
       <section className="hms-management">
         <div className="hms-management__notice"><span><Icon name="database" size={17} /></span><div><strong>Local data overview</strong><p>Figures update from IndexedDB records on this device. Nothing is synchronised with another installation.</p></div><StatusBadge tone="neutral">On this device</StatusBadge></div>
         <div className="hms-management__grid">

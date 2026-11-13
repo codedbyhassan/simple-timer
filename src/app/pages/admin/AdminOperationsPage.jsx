@@ -149,8 +149,8 @@ function ReportsPage({ menu }) {
   ]
   return (
     <>
-      <PageHeader title={menu.label} description="Operational summaries calculated from records saved in this local installation." />
-      <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown. No sample charts or generated activity are included.</p></div></div>
+      <PageHeader title={menu.label} description="Operational summaries calculated from records across the hospital." />
+      <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Reporting</span><h2>Available record summaries</h2><p>Only counts derived from saved records are shown.</p></div></div>
         {!loaded ? <div className="hms-admin-ops__empty">Reading local records…</div> : <div className="hms-admin-ops__report-grid">{rows.map((item)=><div className="hms-admin-ops__report-card" key={item.label}><div className="hms-admin-ops__report-card-head"><span><Icon name="fileText" size={19}/></span><StatusBadge tone="neutral">Local records</StatusBadge></div><h3>{item.label}</h3><p>{item.count.toLocaleString()} saved records in this installation.</p><div className="hms-admin-ops__report-card-foot"><span>Calculated from IndexedDB</span></div></div>)}</div>}
       </section></div>
     </>
@@ -257,7 +257,7 @@ function AuditPage({ menu }) {
       <PageHeader title={menu.label} description={menu.summary} actions={<button type="button" className="hms-admin-ops__quiet-action" onClick={() => window.print()}><Icon name="download" size={16} />Print view</button>} />
       <div className="hms-admin-ops">
         {error ? <div className="hms-admin-ops__error" role="alert">{error}</div> : null}
-        <div className="hms-admin-ops__audit-banner"><span><Icon name="shieldCheck" size={19} /></span><div><strong>Administrative activity trail</strong><p>Chronological record of changes saved by this local installation.</p></div><StatusBadge tone="neutral">Local history</StatusBadge></div>
+        <div className="hms-admin-ops__audit-banner"><span><Icon name="shieldCheck" size={19} /></span><div><strong>Administrative activity trail</strong><p>Chronological record of changes made across the hospital.</p></div><StatusBadge tone="neutral">Audit trail</StatusBadge></div>
         <section className="hms-admin-ops__surface">
           <div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Governance</span><h2>Event history</h2></div><span className="hms-admin-ops__subtle">{filtered.length} events</span></div>
           <div className="hms-admin-ops__filters"><SearchBox value={query} onChange={setQuery} placeholder="Search actor, event or record" /><select aria-label="Filter audit category" value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item}>{item}</option>)}</select></div>
@@ -312,7 +312,7 @@ function BackupPage({ menu }) {
   }
   return (
     <>
-      <PageHeader title={menu.label} description="Create and restore a backup of this browser or desktop installation." />
+      <PageHeader title={menu.label} description="Create and restore a backup of all hospital records." />
       <div className="hms-admin-ops"><section className="hms-admin-ops__surface"><div className="hms-admin-ops__surface-head"><div><span className="hms-admin-ops__eyebrow">Local data protection</span><h2>Backup and restore</h2><p>Ascend HMS does not run scheduled or cloud backups. Export a local backup file and store it outside this device.</p></div></div>
         <div className="hms-admin-ops__backup-grid"><article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="download" size={21}/></span><h3>Export local data</h3><p>Download an archive containing IndexedDB records, local staff profiles, preferences and application data.</p><button type="button" className="hms-admin-ops__primary-action" onClick={downloadBackup} disabled={busy}><Icon name="download" size={16}/>{busy?'Working…':'Download backup'}</button>{lastExport?<small>Last exported: {lastExport}</small>:null}</article>
           <article className="hms-admin-ops__surface"><span className="hms-admin-ops__settings-icon"><Icon name="upload" size={21}/></span><h3>Restore from file</h3><p>Replace the local database with a previously exported Ascend HMS backup file.</p><label className="hms-admin-ops__primary-action"><Icon name="upload" size={16}/>Choose backup file<input type="file" accept="application/json,.json" onChange={restoreBackup} disabled={busy} hidden/></label></article></div>

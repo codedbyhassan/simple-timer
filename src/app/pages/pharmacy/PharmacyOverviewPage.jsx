@@ -39,7 +39,7 @@ export default function PharmacyOverviewPage({ data, error }) {
             return <div className="hms-pharmacy__stock-glance-row" key={medicine.id}><div><span><strong>{medicine.name}</strong><small>{quantity} {medicine.unit}s · reorder at {medicine.reorderLevel}</small></span><StatusBadge tone={quantity === 0 ? 'critical' : quantity <= medicine.reorderLevel ? 'warning' : 'success'}>{quantity === 0 ? 'Out of stock' : quantity <= medicine.reorderLevel ? 'Low' : 'Available'}</StatusBadge></div><div className="hms-pharmacy__stock-bar"><i style={{ width: `${ratio}%` }} /></div></div>
           })}</div>
         </PharmacyPanel>
-        <PharmacyPanel title="Recent activity" description="Latest events in this browser's workspace." actions={<PharmacyMenuLink to="/pharmacy/inventory">Open inventory</PharmacyMenuLink>}>
+        <PharmacyPanel title="Recent activity" description="Latest pharmacy events." actions={<PharmacyMenuLink to="/pharmacy/inventory">Open inventory</PharmacyMenuLink>}>
           {recent.length ? <div className="hms-pharmacy__activity">{recent.map((item) => <div key={item.id}><span className="hms-pharmacy__activity-icon"><Icon name={item.type === 'Dispense' ? 'pill' : item.type === 'Mapping' ? 'link' : 'packageBox'} size={15} /></span><span><strong>{item.message}</strong><small>{when(item.at)}</small></span></div>)}</div> : <PharmacyEmpty title="No activity yet">Workspace activity will appear here.</PharmacyEmpty>}
         </PharmacyPanel>
         <PharmacyPanel title="Quick access" description="Open the modules used most by the pharmacy team.">

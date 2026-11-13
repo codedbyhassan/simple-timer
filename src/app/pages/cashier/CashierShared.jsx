@@ -4,7 +4,7 @@ export const uid = (prefix) => `${prefix}-${globalThis.crypto?.randomUUID?.() ||
 export const patientName = (patient) => patient ? `${patient.firstName} ${patient.lastName}` : 'Patient record'
 export const patientFor = (data, id) => data.patients.find((patient) => patient.id === id)
 export const money = (value) => new Intl.NumberFormat('en-GH', { style: 'currency', currency: 'GHS', minimumFractionDigits: 2 }).format(Number(value || 0))
-export const balance = (invoice) => Math.max(0, Number(invoice.billed || 0) - Number(invoice.paid || 0))
+export const balance = (invoice) => Math.max(0, Number(invoice?.billed || 0) - Number(invoice?.paid || 0))
 export const dateLabel = (value) => value ? new Date(value).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—'
 export const statusTone = (value) => value === 'Settled' || value === 'Reconciled' ? 'success' : value === 'Pending approval' ? 'warning' : value === 'Unpaid' ? 'critical' : 'info'
 

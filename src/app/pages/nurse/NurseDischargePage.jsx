@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Dialog, Icon, PageHeader, StatusBadge } from '@ui'
 import { NurseEmpty, NurseErrorNotice, NurseMessage, NursePatientIdentity, nameOf, patientFor, statusTone, uid } from './NurseShared.jsx'
 import { DISCHARGE_CHECKS } from './nurseData.js'
+import { alreadyCharged, bedDayCharge } from '@core/billing/charges.js'
 import './nurse styles/shared.css'
 import './nurse styles/discharge.css'
 
@@ -35,8 +36,12 @@ export default function NurseDischargePage({ data, error, commit, can }) {
       ? { ...item, status: 'Cleaning', patientId: '', since: now }
       : item)
     const activity = [{ id: uid('ACT'), kind: 'Discharge', message: `${nameOf(patientFor(data, record.patientId))} discharge completed from ${ward?.name || 'ward'}`, at: now }, ...nurse.activity]
-    if (await commit({ ...data, nurse: { ...nurse, discharges, beds, activity } })) {
-      setMessage(`${nameOf(patientFor(data, record.patientId))} discharge checklist completed. Bed ${record.bedId} is marked for cleaning.`)
+    const admission = (nurse.admissions || []).find((item) => item.patientId === record.patientId && item.bedId === record.bedId && item.status === 'Admitted')
+    const reference = admission?.id || record.id
+    const charge = bedDayCharge(data, { patientId: record.patientId, admittedAt: admission?.admittedAt || record.createdAt || now, dischargedAt: now, wardName: ward?.name, reference })
+    const payments = alreadyCharged(data.payments, 'Inpatient', reference) ? data.payments : [charge, ...data.payments]
+    if (await commit({ ...data, payments, nurse: { ...nurse, discharges, beds, activity } })) {
+      setMessage(`${nameOf(patientFor(data, record.patientId))} discharged. Bed stay charge sent to billing and bed ${record.bedId} marked for cleaning.`)
       setEditingRecordId('')
     }
   }

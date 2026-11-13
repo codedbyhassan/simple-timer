@@ -105,14 +105,14 @@ function EditableRecord({ module, menu }) {
     const next = record ? records.map((item) => item.id === record.id ? updated : item) : [...records, updated]
     const success = await commit(next)
     if (success) navigate(`/admin/${module}/${encodeURIComponent(updated.id)}`, { replace: true })
-    else setFormError(storageError || 'Unable to save this local record.')
+    else setFormError(storageError || 'Unable to save this record.')
   }
 
   const remove = async () => {
-    if (!window.confirm(`Remove ${title} from this local ${module} list?`)) return
+    if (!window.confirm(`Remove ${title} from the ${module} list?`)) return
     const success = await commit(records.filter((item) => item.id !== record.id))
     if (success) navigate(`/admin/${module}`, { replace: true })
-    else setFormError(storageError || 'Unable to delete this local record.')
+    else setFormError(storageError || 'Unable to delete this record.')
   }
 
   if (!loaded) return <div className="hms-admin-ops__empty">Loading record…</div>

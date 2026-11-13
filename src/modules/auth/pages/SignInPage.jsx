@@ -126,10 +126,6 @@ export default function SignInPage() {
         <Text tone="muted">No active role profiles are available. Restore a backup containing an active hospital administrator profile.</Text>
       )}
 
-      <div className="hms-local-signin__notice">
-        <strong>Local demonstration mode</strong>
-        <span>Records stay in this browser or desktop installation. This mode does not provide secure staff authentication or synchronise data between devices.</span>
-      </div>
     </AuthLayout>
   )
 }

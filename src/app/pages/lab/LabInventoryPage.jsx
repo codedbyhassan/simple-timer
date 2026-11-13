@@ -92,7 +92,6 @@ export default function LabInventoryPage({ data, error, commit, can }) {
       <LabPanel title="Stock movement ledger" description="Signed movements show receipts, issues, and adjustments." actions={<label className="hms-lab__ledger-filter">Type<select value={filter} onChange={(event) => setFilter(event.target.value)}><option>All</option><option>Receipt</option><option>Issue</option><option>Adjustment</option></select></label>}>
         {movements.length ? <div className="hms-lab__stock-table-wrap"><table className="hms-lab__table"><thead><tr><th>Time</th><th>Item</th><th>Movement</th><th>Change</th><th>Reference</th><th>Reason</th></tr></thead><tbody>{movements.map((item) => <tr key={item.id}><td>{new Date(item.at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</td><td>{data.lab.stock.find((stock) => stock.id === item.stockId)?.name || item.stockId}</td><td><StatusBadge tone={item.type === 'Receipt' ? 'success' : item.type === 'Issue' ? 'accent' : 'warning'}>{item.type}</StatusBadge></td><td className={item.quantity < 0 ? 'is-negative' : 'is-positive'}>{item.quantity > 0 ? '+' : ''}{item.quantity}</td><td>{item.reference || '—'}</td><td>{item.reason}</td></tr>)}</tbody></table></div> : <LabEmpty title="No movements recorded">Inventory movements will be shown here.</LabEmpty>}
       </LabPanel>
-      <LabNotice>Inventory changes are stored in this browser. Production receipts, issues, and adjustments require server-side authorization and transaction-level audit logging.</LabNotice>
     </div>
   </>
 }

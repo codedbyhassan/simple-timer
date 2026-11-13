@@ -189,7 +189,7 @@ export default function PharmacyDispensingPage({ data, error, commit, can }) {
       <PharmacyError error={error} />
       {message ? <PharmacyNotice tone="success">{message}</PharmacyNotice> : null}
       {actionError ? <PharmacyNotice tone="error">{actionError}</PharmacyNotice> : null}
-      <PharmacyNotice tone="info">Verify allergies and clinical details in the patient chart. Dispensing records are stored in this browser and are not server-verified.</PharmacyNotice>
+      <PharmacyNotice tone="info">Verify allergies and clinical details in the patient chart.</PharmacyNotice>
       <div className="hms-pharmacy__dispense-layout">
         <PharmacyPanel title="Prescription worklist" description="Select an active prescription to prepare a dispense.">
           <div className="hms-pharmacy__dispense-list">{data.pharmacy.prescriptions.filter((rx) => rx.status !== 'Dispensed').map((rx) => <button type="button" className={`hms-pharmacy__dispense-choice${selectedId === rx.id ? ' is-selected' : ''}`} onClick={() => { setSelection({ key: location.key, id: rx.id }); setActionError(''); setMessage(''); setShowDispenseForm(false) }} key={rx.id}><span><strong>{rx.id}</strong><small>{personNameSafe(patientFor(data, rx.patientId))} · {ageLabel(rx.prescribedAt)} ago</small></span><StatusBadge tone={statusTone(rx.priority)}>{rx.priority}</StatusBadge><span className="hms-pharmacy__choice-status">{rx.status}</span></button>)}</div>

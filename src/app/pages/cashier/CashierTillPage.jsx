@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
-import { CashierError, CashierNotice, CashierPanel, dateLabel, money } from './CashierShared.jsx'
+import { CashierError, CashierPanel, dateLabel, money } from './CashierShared.jsx'
 import './cashier styles/shared.css'
 import './cashier styles/till.css'
 
@@ -14,7 +14,7 @@ export default function CashierTillPage({ data, error }) {
   return <>
     <PageHeader title="My till and shift" description="Review your current shift, payment activity, and collections by method." actions={<Link className="hms-cashier__button" to="/cashier/reconciliation"><Icon name="scale" size={16} />Reconcile shift</Link>} />
     <div className="hms-cashier">
-      <CashierError error={error} /><CashierNotice>Opening float and transaction totals are stored in this browser; reconcile them against the actual cash drawer.</CashierNotice>
+      <CashierError error={error} />
       <div className="hms-cashier__metrics"><MetricCard label="Shift status" value={shift.status} icon="clock" caption={`Started ${dateLabel(shift.openedAt)}`} /><MetricCard label="Opening float" value={money(shift.openingFloat)} icon="wallet" caption="Shift opening amount" /><MetricCard label="Collected today" value={money(total)} icon="receipt" caption={`${transactions.length} transactions`} /><MetricCard label="Cash collected" value={money(cash)} icon="wallet" caption="Before reconciliation" /></div>
       <div className="hms-cashier__till-grid">
         <CashierPanel title="Collections by method" description="Transactions recorded during today’s shift.">

@@ -26,7 +26,7 @@ export default function AppLayout() {
               <Button size="md" intent="secondary" onClick={async () => { await signOut(); navigate('/signin', { replace: true }) }}>Sign out</Button>
             </div>
           )}>
-            The local profile or IndexedDB data could not be read. Check browser storage availability and try again.
+            Your profile could not be loaded. Please try again.
           </EmptyState>
         </div>
       </div>
@@ -41,7 +41,7 @@ export default function AppLayout() {
     ? [{ id: current.id, label: current.label, items: visibleMenus(current, access.can).map((menu) => ({ to: menuPath(current, menu), label: menu.label, icon: menu.icon })) }]
     : []
 
-  const name = access.access.displayName || user?.displayName || user?.name || 'Local profile'
+  const name = access.access.displayName || user?.displayName || user?.name || 'Staff'
   const role = access.roles.length ? roleLabel(access.roles[0]) : ''
   const critical = notes.pendingCritical
 
@@ -61,7 +61,7 @@ export default function AppLayout() {
           onOpenItem={(n) => n.target && navigate(n.target)}
         />
       )}
-      user={{ name, sub: role || user?.department || 'Local profile' }}
+      user={{ name, sub: role || user?.department || 'Staff' }}
       menuItems={[
         { id: 'settings', label: 'Settings', icon: 'settings', onSelect: () => navigate('/settings') },
         { id: 'profile', label: 'Profile', icon: 'user', onSelect: () => navigate('/profile') },

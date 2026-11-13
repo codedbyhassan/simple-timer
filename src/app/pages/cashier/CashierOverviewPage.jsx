@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
-import { balance, CashierError, CashierNotice, CashierPanel, money, patientFor, patientName } from './CashierShared.jsx'
+import { balance, CashierError, CashierPanel, money, patientFor, patientName } from './CashierShared.jsx'
 import './cashier styles/shared.css'
 import './cashier styles/overview.css'
 
@@ -16,7 +16,7 @@ export default function CashierOverviewPage({ data, error }) {
     <PageHeader title="Cashier overview" description="Daily billing queue, collections, till activity, and claims reconciliation." actions={<Link className="hms-cashier__button hms-cashier__button--primary" to="/cashier/charges"><Icon name="creditCard" size={16} />Review charges</Link>} />
     <div className="hms-cashier">
       <CashierError error={error} />
-      <CashierNotice>Payments and receipts are stored in this browser only. Confirm actual balances and accepted payment methods in the hospital finance system.</CashierNotice>
+      
       <div className="hms-cashier__metrics">
         <MetricCard label="Open balances" value={pending.length} icon="creditCard" caption={`${money(pending.reduce((sum, item) => sum + balance(item), 0))} outstanding`} />
         <MetricCard label="Collected today" value={money(collected)} icon="wallet" caption={`${transactions.length} recorded transaction${transactions.length === 1 ? '' : 's'}`} />

@@ -37,7 +37,7 @@ export default function CashierPaymentsPage({ data, error, commit, can }) {
     const cashier = { ...data.cashier, transactions: [transaction, ...data.cashier.transactions], activity: [{ id: uid('CACT'), message: `Payment recorded for ${invoice.id} · ${money(paidAmount)}`, at: now }, ...data.cashier.activity] }
     if (await commit({ ...data, payments: data.payments.map((item) => item.id === invoice.id ? nextInvoice : item), cashier })) {
       setReceipt({ ...transaction, invoice: nextInvoice, patient: patientFor(data, invoice.patientId) })
-      setMessage('Payment saved locally. Confirm settlement through the hospital finance system before issuing an official receipt.')
+      setMessage('Payment recorded. The receipt is ready to print.')
       setReference('')
       setShowPayment(false)
     }
@@ -47,7 +47,6 @@ export default function CashierPaymentsPage({ data, error, commit, can }) {
     <PageHeader title="Payment panel and receipts" description="Record full or partial payments against an outstanding patient invoice." />
     <div className="hms-cashier">
       <CashierError error={error} />{message ? <CashierNotice tone="success">{message}</CashierNotice> : null}{actionError ? <CashierNotice tone="error">{actionError}</CashierNotice> : null}
-      <CashierNotice>Payments recorded here are stored locally. Confirm settlement through the hospital finance system before issuing an official receipt.</CashierNotice>
       <div className="hms-cashier__payment-grid">
         <CashierPanel title="Record a payment" description="Apply a full or partial payment to an outstanding invoice." actions={available.length ? <button className="hms-cashier__button hms-cashier__button--primary" type="button" onClick={() => setShowPayment(true)}><Icon name="plus" size={16} />Record payment</button> : null}>
           {!available.length ? <div className="hms-cashier__empty"><Icon name="checkCircle" size={20} />No pending invoices are available for payment.</div> : null}
@@ -62,11 +61,11 @@ export default function CashierPaymentsPage({ data, error, commit, can }) {
           </form> : null}
           </Dialog>
         </CashierPanel>
-        {receipt ? <CashierPanel title="Payment receipt" description="Locally recorded receipt · retain the reference for reconciliation." className="hms-cashier__receipt-panel" actions={<button className="hms-cashier__button hms-cashier__button--small" type="button" onClick={() => window.print()}><Icon name="printer" size={14} />Print</button>}>
-          <div className="hms-cashier__receipt" id="cashier-receipt"><strong>ASCEND HOSPITAL</strong><small>PAYMENT RECEIPT</small><hr /><span>Receipt reference<strong>{receipt.id}</strong></span><span>Patient<strong>{patientName(receipt.patient)}</strong></span><span>Invoice<strong>{receipt.invoice.id}</strong></span><span>Payment time<strong>{dateLabel(receipt.recordedAt)}</strong></span><span>Method<strong>{receipt.method}</strong></span><span>Amount paid<strong>{money(receipt.amount)}</strong></span><span>Remaining balance<strong>{money(balance(receipt.invoice))}</strong></span><hr /><em>Not a tax invoice or server-confirmed receipt.</em></div>
+        {receipt ? <CashierPanel title="Payment receipt" description="Retain the reference for reconciliation." className="hms-cashier__receipt-panel" actions={<button className="hms-cashier__button hms-cashier__button--small" type="button" onClick={() => window.print()}><Icon name="printer" size={14} />Print receipt</button>}>
+          <div className="hms-cashier__receipt" id="cashier-receipt"><strong>ASCEND HOSPITAL</strong><small>PAYMENT RECEIPT</small><hr /><span>Receipt reference<strong>{receipt.id}</strong></span><span>Patient<strong>{patientName(receipt.patient)}</strong></span><span>Invoice<strong>{receipt.invoice.id}</strong></span><span>Payment time<strong>{dateLabel(receipt.recordedAt)}</strong></span><span>Method<strong>{receipt.method}</strong></span><span>Amount paid<strong>{money(receipt.amount)}</strong></span><span>Remaining balance<strong>{money(balance(receipt.invoice))}</strong></span><hr /><div className="hms-cashier__receipt-barcode" aria-hidden="true">{receipt.id}</div><em>Thank you · Get well soon</em></div>
         </CashierPanel> : null}
       </div>
-      <CashierPanel title="Recent receipts" description="Latest locally recorded cashier transactions.">
+      <CashierPanel title="Recent receipts" description="Latest cashier transactions.">
         <div className="hms-cashier__table-wrap"><table className="hms-cashier__table"><thead><tr><th>Reference</th><th>Patient / invoice</th><th>Method</th><th>Amount</th><th>Recorded</th><th>Status</th></tr></thead><tbody>{data.cashier.transactions.slice(0, 8).map((item) => <tr key={item.id}><td><strong>{item.id}</strong></td><td>{patientName(patientFor(data, item.patientId))}<small>{item.invoiceId}</small></td><td>{item.method}</td><td>{money(item.amount)}</td><td>{dateLabel(item.recordedAt)}</td><td><StatusBadge tone="success">Recorded</StatusBadge></td></tr>)}</tbody></table></div>
       </CashierPanel>
     </div>

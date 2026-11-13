@@ -112,7 +112,7 @@ export default function ClaimsListPage({ data, error, commit, can }) {
     <PageHeader title="Claims list and detail" description="Review validation, inspect read-only source fields, and update claim-office-only fields." actions={<button className="hms-claims__button hms-claims__button--primary" type="button" onClick={refreshSnapshots} disabled={!can('claims.build')}><Icon name="refresh" size={16} />Build / refresh snapshots</button>} />
     <div className="hms-claims">
       <ClaimsError error={error} />{message ? <ClaimsNotice tone="success">{message}</ClaimsNotice> : null}{actionError ? <ClaimsNotice tone="error">{actionError}</ClaimsNotice> : null}
-      <ClaimsNotice>Patient and clinical data shown here are read-only. Fix source problems in the originating workspace; this local XML preview is illustrative and not verified for CLAIM-it import.</ClaimsNotice>
+      <ClaimsNotice>Patient and clinical data shown here are read-only. Fix source problems in the originating workspace.</ClaimsNotice>
       <div className="hms-claims__claim-layout">
         <ClaimsPanel title="Saved claims" description={`${filtered.length} matching record(s)`} className="hms-claims__claim-list-panel">
           <div className="hms-claims__filters"><label className="hms-claims__field"><span>Search claims</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Claim, invoice, or patient" /></label><label className="hms-claims__field"><span>Readiness</span><select value={filter} onChange={(event) => setFilter(event.target.value)}>{['All', 'Not ready', 'Ready', 'Exported', 'Import passed', 'Warned', 'Failed'].map((status) => <option key={status}>{status}</option>)}</select></label></div>
@@ -128,7 +128,7 @@ export default function ClaimsListPage({ data, error, commit, can }) {
             {!selected.blockers.length && !selected.warnings.length ? <ClaimsEmpty>No blockers or warnings on this snapshot.</ClaimsEmpty> : null}
             <h3>Claims office fields</h3>
             <button type="button" className="hms-claims__button" onClick={() => setShowOfficeFields(true)} disabled={!can('claims.enter_ccc')}><Icon name="edit" size={15} />Edit office fields</button>
-            <h3>Illustrative XML preview</h3><pre className="hms-claims__xml-preview">{claimXmlPreview(selected, patient)}</pre>
+            <h3>XML preview</h3><pre className="hms-claims__xml-preview">{claimXmlPreview(selected, patient)}</pre>
           </ClaimsPanel>
           <Dialog open={showOfficeFields} title="Claims office fields" description="Update claims-only references for this snapshot." onClose={() => setShowOfficeFields(false)}>
             <div className="hms-claims__office-fields"><ClaimsField label="Claims Check Code (optional · 5 digits)" value={ccc} onChange={setCcc} maxLength={5} inputMode="numeric" /><ClaimsField label="Pre-authorisation code" value={preauth} onChange={setPreauth} /><ClaimsField label="Physician ID" value={physician} onChange={setPhysician} /></div>

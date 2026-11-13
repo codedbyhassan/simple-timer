@@ -173,7 +173,7 @@ export default function UserDetailPage() {
     const success = await commit(nextUsers)
     setSaving(false)
     if (success) navigate(`/admin/users/${encodeURIComponent(record.id)}`, { replace: true })
-    else setError(storageError || 'Unable to save this local profile.')
+    else setError(storageError || 'Unable to save this profile.')
   }
 
   const deleteUser = async () => {
@@ -181,7 +181,7 @@ export default function UserDetailPage() {
     if (!window.confirm(`Delete local role profile ${user.name}?`)) return
     const success = await commit(users.filter((item) => item.id !== user.id))
     if (success) navigate('/admin/users', { replace: true })
-    else setError(storageError || 'Unable to remove this local profile.')
+    else setError(storageError || 'Unable to remove this profile.')
   }
 
   const beginEdit = () => {

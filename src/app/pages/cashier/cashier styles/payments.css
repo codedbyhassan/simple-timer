@@ -13,3 +13,21 @@
 .hms-cashier__receipt > span > strong { text-align: right; }
 .hms-cashier__receipt hr { width: 100%; border: 0; border-top: 1px dashed var(--border); }
 @media (max-width: 800px) { .hms-cashier__payment-grid { grid-template-columns: 1fr; } }
+
+.hms-cashier__receipt-barcode {
+  margin: 10px auto 4px;
+  height: 46px;
+  width: 100%;
+  background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 4px, currentColor 4px 5px, transparent 5px 8px);
+  color: var(--text);
+  font-size: 0;
+}
+
+/* Thermal POS printing: only the receipt prints, sized for 80mm rolls (fits 58mm too). */
+@media print {
+  @page { size: 80mm auto; margin: 4mm; }
+  body * { visibility: hidden !important; }
+  #cashier-receipt, #cashier-receipt * { visibility: visible !important; color: #000 !important; }
+  #cashier-receipt { position: absolute; inset: 0 auto auto 0; width: 72mm; font-size: 11px; background: #fff !important; box-shadow: none !important; border: 0 !important; }
+  #cashier-receipt .hms-cashier__receipt-barcode { background: repeating-linear-gradient(90deg, #000 0 2px, transparent 2px 4px, #000 4px 5px, transparent 5px 8px) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon, MetricCard, PageHeader, StatusBadge } from '@ui'
-import { ClaimsError, ClaimsNotice, ClaimsPanel, dateLabel, money, patientFor, patientName } from './ClaimsShared.jsx'
+import { ClaimsError, ClaimsPanel, dateLabel, money, patientFor, patientName } from './ClaimsShared.jsx'
 import './claims styles/shared.css'
 import './claims styles/overview.css'
 
@@ -15,7 +15,7 @@ export default function ClaimsOverviewPage({ data, error }) {
   return <>
     <PageHeader title="Claims overview" description="NHIS claim snapshots, validation gaps, export readiness, and imported outcomes." actions={<Link className="hms-claims__button hms-claims__button--primary" to="/claims/list"><Icon name="fileText" size={16} />Review claims</Link>} />
     <div className="hms-claims">
-      <ClaimsError error={error} /><ClaimsNotice>Claims are local snapshots, not a server-backed insurance record. Exports are illustrative, not certified for CLAIM-it import. There is no claim-submission action.</ClaimsNotice>
+      <ClaimsError error={error} />
       <div className="hms-claims__metrics"><MetricCard label="Saved snapshots" value={records.length} icon="fileText" caption={`${thisMonth.length} for this month`} /><MetricCard label="Export ready" value={ready.length} icon="checkCircle" caption="No validation blockers" /><MetricCard label="Mapping gaps" value={gaps} icon="link" caption="Reference mapping needs review" /><MetricCard label="Export batches" value={claims.batches.length} icon="upload" caption="Download history" /></div>
       <div className="hms-claims__overview-grid">
         <ClaimsPanel title="Recent claim snapshots" description="Latest saved claim records." actions={<Link className="hms-claims__link" to="/claims/list">Open claim list <Icon name="arrowUpRight" size={14} /></Link>}>

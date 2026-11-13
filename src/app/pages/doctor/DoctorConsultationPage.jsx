@@ -3,12 +3,13 @@ import { Link, useLocation } from 'react-router-dom'
 import { Dialog, Icon, PageHeader, StatusBadge } from '@ui'
 import { DIAGNOSIS_OPTIONS, DOCTOR_NAME } from './doctorData.js'
 import { claimGaps, DoctorEmpty, DoctorError, DoctorField, DoctorNotice, DoctorPanel, DoctorPatient, patientFor, priorityRank, statusTone, uid } from './DoctorShared.jsx'
+import { alreadyCharged, consultationCharge } from '@core/billing/charges.js'
 import './doctor styles/shared.css'
 import './doctor styles/consultation.css'
 
 const EMPTY_FORM = {
   complaints: '', history: '', examination: '', diagnosisCode: '', diagnosisDescription: '',
-  orders: [], prescriptions: [], procedures: [], referralFacility: '', referralReason: '', disposition: '',
+  orders: [], prescriptions: [], procedures: [], referralFacility: '', referralReason: '', disposition: '', admitWardId: '', admitPriority: 'Routine', admitReason: '',
 }
 const PROCEDURES = ['ECG', 'Wound dressing', 'Nebulisation', 'Minor procedure']
 
@@ -188,6 +189,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
   }
   const finalise = async () => {
     if (!selected || !can('clinical.finalize')) { setActionError('Your role cannot finalise consultations.'); return }
+    if (form.disposition === 'Admit' && (!form.admitWardId || !(form.admitReason || '').trim())) { setActionError('Choose a ward and clinical indication for the admission.'); return }
     const blockers = claimGaps(form, data)
     if (blockers.length) { setActionError(`Cannot finalise: ${blockers.join(' ')}`); return }
     const now = new Date().toISOString()
@@ -209,14 +211,15 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
     if (form.disposition === 'Admit') {
       const admission = {
         id: uid('ADM'), patientId: selected.patientId, requestedAt: now, department: selected.department || 'General medicine',
-        reason: `Admission requested by ${DOCTOR_NAME}`, priority: selected.priority || 'Routine',
-        status: 'Awaiting bed', wardId: '', bedId: '', encounterId: selected.id, requestedBy: DOCTOR_NAME,
+        reason: form.admitReason.trim(), priority: form.admitPriority || 'Routine',
+        status: 'Awaiting bed', wardId: form.admitWardId, bedId: '', encounterId: selected.id, requestedBy: DOCTOR_NAME,
       }
       nurse = { ...nurse, admissions: [admission, ...(nurse.admissions || [])] }
     }
-    if (await commit({ ...data, queue, doctor: updatedDoctor, nurse })) {
+    const payments = alreadyCharged(data.payments, 'Consultation', selected.id) ? data.payments : [consultationCharge(data, selected, now), ...data.payments]
+    if (await commit({ ...data, queue, doctor: updatedDoctor, nurse, payments })) {
       setDraftState({ encounterId: selected.id, value: finalized })
-      setMessage(form.disposition === 'Admit' ? 'Consultation finalised and admission request added to the shared nurse workspace.' : 'Consultation finalised. The encounter is now read-only.')
+      setMessage(form.disposition === 'Admit' ? 'Consultation finalised, fee sent to billing and admission request sent to the ward.' : 'Consultation finalised and fee sent to billing.')
       setActionError('')
     }
   }
@@ -287,7 +290,7 @@ export default function DoctorConsultationPage({ data, error, commit, can }) {
             <div className="hms-doctor__inline-fields"><DoctorField label="Procedure" value={procedureName} onChange={setProcedureName} options={PROCEDURES} disabled={draftReadOnly} /><DoctorField label="Date" type="date" value={procedureDate} onChange={setProcedureDate} disabled={draftReadOnly} /><button type="button" className="hms-doctor__button hms-doctor__button--quiet" onClick={addProcedure} disabled={draftReadOnly}>Add procedure</button></div>
           </Dialog>
           <Dialog open={formDialog === 'disposition'} title="Referral and disposition" description="Record where the patient is going next." onClose={() => setFormDialog('')}>
-            <div className="hms-doctor__form-grid hms-doctor__form-grid--diagnosis"><DoctorField label="Disposition" value={form.disposition} onChange={(value) => change('disposition', value)} options={[{ value: '', label: 'Select a disposition' }, 'Discharge home', 'Admit', 'Refer', 'Follow-up']} disabled={draftReadOnly} />{form.disposition === 'Refer' ? <><DoctorField label="Facility or service" value={form.referralFacility} onChange={(value) => change('referralFacility', value)} placeholder="Referral facility name" disabled={draftReadOnly} /><DoctorField label="Referral reason" value={form.referralReason} onChange={(value) => change('referralReason', value)} placeholder="Reason and relevant instructions" disabled={draftReadOnly} /></> : null}</div>
+            <div className="hms-doctor__form-grid hms-doctor__form-grid--diagnosis"><DoctorField label="Disposition" value={form.disposition} onChange={(value) => change('disposition', value)} options={[{ value: '', label: 'Select a disposition' }, 'Discharge home', 'Admit', 'Refer', 'Follow-up']} disabled={draftReadOnly} />{form.disposition === 'Refer' ? <><DoctorField label="Facility or service" value={form.referralFacility} onChange={(value) => change('referralFacility', value)} placeholder="Referral facility name" disabled={draftReadOnly} /><DoctorField label="Referral reason" value={form.referralReason} onChange={(value) => change('referralReason', value)} placeholder="Reason and relevant instructions" disabled={draftReadOnly} /></> : null}{form.disposition === 'Admit' ? <><DoctorField label="Admit to ward" value={form.admitWardId} onChange={(value) => change('admitWardId', value)} options={[{ value: '', label: (data.nurse?.wards || []).length ? 'Select a ward' : 'No wards configured' }, ...(data.nurse?.wards || []).map((ward) => ({ value: ward.id, label: ward.name || ward.id }))]} disabled={draftReadOnly} /><DoctorField label="Admission priority" value={form.admitPriority} onChange={(value) => change('admitPriority', value)} options={['Routine', 'Priority', 'Emergency']} disabled={draftReadOnly} /><DoctorField label="Clinical indication" value={form.admitReason} onChange={(value) => change('admitReason', value)} placeholder="Reason for admission" disabled={draftReadOnly} /></> : null}</div>
           </Dialog>
           <DoctorPanel title="Investigations" description="New laboratory orders are shared with the Lab worklist and block finalisation until verified.">
             {form.orders.length ? <ul className="hms-doctor__line-list">{form.orders.map((item) => <li key={item.id}><span><strong>{item.name}</strong><small>{item.orderId ? `${item.orderId} · ${item.status}` : `${item.priority} priority · draft`}</small></span>{!item.orderId && !draftReadOnly ? <button type="button" className="hms-doctor__icon-button" aria-label={`Remove ${item.name}`} onClick={() => change('orders', form.orders.filter((row) => row.id !== item.id))}><Icon name="trash" size={15} /></button> : null}</li>)}</ul> : <p className="hms-doctor__muted">No investigations added to this consultation.</p>}
