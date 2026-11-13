@@ -3,7 +3,8 @@ import { authService } from '../auth/authService.js'
 import { workspaceHome, workspacesForRoles } from './navigation.js'
 import { useAuth } from '../auth/AuthProvider.jsx'
 
-const AccessContext = createContext(null)
+// Kept on globalThis so hot reloads of this file reuse the same context instead of orphaning consumers.
+const AccessContext = globalThis.__hmsAccessContext || (globalThis.__hmsAccessContext = createContext(null))
 
 export function AccessProvider({ children }) {
   const auth = useAuth()
